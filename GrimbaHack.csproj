@@ -9,34 +9,51 @@
     <LangVersion>latest</LangVersion>
     <RestoreAdditionalProjectSources>
       https://api.nuget.org/v3/index.json;
-      https://nuget.bepinex.dev/v3/index.json
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json;
     </RestoreAdditionalProjectSources>
     <RootNamespace>GrimbaHack</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+    <PackageReference Include="UniverseLib.IL2CPP.Interop" Version="1.5.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\libraries\interop\Assembly-CSharp.dll</HintPath>
+      <HintPath>deps\interop\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
-      <HintPath>..\libraries\interop\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>deps\interop\Il2Cppmscorlib.dll</HintPath>
     </Reference>
     <Reference Include="Unity.InputSystem">
-      <HintPath>..\libraries\interop\Unity.InputSystem.dll</HintPath>
+      <HintPath>deps\interop\Unity.InputSystem.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\libraries\interop\UnityEngine.dll</HintPath>
+      <HintPath>deps\interop\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>deps\interop\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\libraries\interop\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>deps\interop\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\libraries\interop\UnityEngine.IMGUIModule.dll</HintPath>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>deps\interop\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>deps\interop\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule">
+      <HintPath>deps\interop\UnityEngine.UIElementsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>deps\interop\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UniverseLib.IL2CPP.Interop">
+      <HintPath>deps\lib\net6.0\UniverseLib.IL2CPP.Interop.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
