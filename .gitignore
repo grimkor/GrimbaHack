@@ -5,3 +5,6 @@ bin
 obj
 
 Folder.DotSettings.user
+
+deps/interop/**
+!**/.gitkeep
