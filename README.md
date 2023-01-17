@@ -48,6 +48,6 @@ Shows the frame data for the current character, please note that this calculatio
 ## To Fix
 - [ ] Frame advantage is not resetting per hit when hit/blockstun doesn't expire.
 - [ ] Menu closed by default.
-- [ ] Multi-select select should be false by default, it currently needs to be toggled off then on to work.
+- [ x ] Multi-select select should be false by default, it currently needs to be toggled off then on to work.
 - [ ] Add UniverseLib to the release files.
-- [ ] Frame advantage shows up in versus matches by default.
+- [ x ] Frame advantage shows up in versus matches by default.

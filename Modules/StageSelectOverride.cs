@@ -80,8 +80,8 @@ public sealed class StageSelectOverride
         // CREATE TOGGLE
         UIFactory.CreateToggle(stageSelectGroup, "StageSelectToggle", out Toggle stageSelectToggle,
             out Text stageSelectToggleText, checkHeight: 20, checkWidth: 20);
-        stageSelectToggle.enabled = Enabled;
         stageSelectToggle.onValueChanged.AddListener(new Action<bool>(enabled => { Enabled = enabled; }));
+        stageSelectToggle.isOn = false;
 
         stageSelectToggleText.text = "Enable Stage Select Override";
 
