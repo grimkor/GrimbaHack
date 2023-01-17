@@ -55,6 +55,7 @@ public class FrameDataManager : ModuleBase
     {
         var toggle = UIFactory.CreateToggle(contentRoot, "Show frame data for attacks", out var frameDataToggle,
             out var frameDataToggleLabel);
+        frameDataToggle.isOn = false;
         frameDataToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
         frameDataToggleLabel.text = "Show frame data for attacks";
         UIFactory.SetLayoutElement(frameDataToggle.gameObject, minHeight: 25, minWidth: 50);
@@ -92,6 +93,7 @@ public class FrameDataBehaviour : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         gameObject.hideFlags = HideFlags.HideAndDontSave;
         Instance = gameObject.AddComponent<FrameDataBehaviour>();
+        Instance.enabled = false;
     }
 
     private LabelValueOverlayText _frameAdvantageOverlay;

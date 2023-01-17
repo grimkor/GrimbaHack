@@ -16,7 +16,6 @@ public class UISetup
     public static void Init(BasePlugin basePlugin)
     {
         Plugin = basePlugin;
-        
         Universe.Init(1f, DelayInit, LogHandler, new()
         {
             Disable_EventSystem_Override = false,
