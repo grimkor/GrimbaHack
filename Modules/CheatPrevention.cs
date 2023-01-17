@@ -33,6 +33,14 @@ public class CheatPrevention
         {
             if (Enabled && bannedModes.Contains(matchType))
             {
+                foreach (var member in team.heroes)
+                {
+                    Plugin.Log.LogInfo("*******");
+                    Plugin.Log.LogInfo(member.index);
+                    Plugin.Log.LogInfo(member.color);
+                    Plugin.Log.LogInfo(member.skin);
+                    Plugin.Log.LogInfo("*******");
+                }
                 var hasDuplicatesinReferenceArray = team.heroes.GroupBy(x => x).Any(g => g.Count() > 1);
                 // If the player has duplicates in their hero selection prevent the match from starting
                 if (hasDuplicatesinReferenceArray)
