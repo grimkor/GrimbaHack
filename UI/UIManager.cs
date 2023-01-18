@@ -32,6 +32,7 @@ public static class UIManager
         _panels.Add(PanelTypes.Global, new GlobalPanel(UIBase));
         _panels.Add(PanelTypes.TrainingMode, new TrainingModePanel(UIBase));
         _panels.Add(PanelTypes.BGMPlayer, new BGMPlayerPanel(UIBase));
+        UIBase.Enabled = false;
     }
 
     public static void Update()

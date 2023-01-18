@@ -1,7 +1,7 @@
 # GrimbaHack - Power Rangers Battle for the Grid Mod
 
 ## !!!Warning!!!
-Using this mod  may result in a ban from the game. Use at your own risk. Mods that can affects online play for other people have been restricted to:
+Using this mod may result in a ban from the game. Use at your own risk. Mods that can affects online play for other people have been restricted to:
 * Training Mode
 * Local Versus Mode
 * Arcade Mode
@@ -13,12 +13,12 @@ I have also allowed these mods for passworded lobbies and direct matches however
 This is a mod for Power Rangers Battle for the Grid on PC. This mod is a work in progress and is not yet complete. It is currently in a playable state, but there are still many things to be added and fixed.
 
 ## How do I install this?
-1. Download the latest DLL file from the [releases page](https://github.com/grimkor/GrimbaHack/releases/latest) and keep it aside for a later step.
+1. Download the latest release from the [releases page](https://github.com/grimkor/GrimbaHack/releases) and keep aside for a later step.
 2. Download the linked version of BepInEx for your operating system. BepInEx is a mod loader for Unity games. It is required for this mod to work:
     * [Windows](https://builds.bepinex.dev/projects/bepinex_be/665/BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.665%2B6aabdb5.zip)
     * [Linux](https://builds.bepinex.dev/projects/bepinex_be/665/BepInEx-Unity.IL2CPP-linux-x64-6.0.0-be.665%2B6aabdb5.zip)
 3. Extract the BepInEx zip file into the game's install directory. This is usually `C:\Program Files (x86)\Steam\steamapps\common\Power Rangers Battle for the Grid` on Windows or `~/.steam/steam/steamapps/common/Power Rangers Battle for the Grid` on Linux.
-4. Extract the GrimbaHack.dll file into the extracted BepInEx/plugins folder.
+4. Extract the GrimbaHack zip file into the extracted BepInEx/plugins folder.
 5. Run the game, the game will take a while when first running BepInEx to generate some files. Once the game is running, you can press F1 to open and close the mod menu.
 
 ## How do I use this?
@@ -44,3 +44,9 @@ Allows you to play the BGM from any stage in the game. Player will automatically
 These settings will only work in training mode currently:
 #### Show Frame Data
 Shows the frame data for the current character, please note that this calculation is still in testing and may not be accurate. To get the most accurate results you must be holding a movement button at the end of the move as the calculation is tied to the animation system.
+
+## To Fix
+- [ ] Frame advantage is not resetting per hit when hit/blockstun doesn't expire.
+- [ ] anti-cheat measure can lock a user from logging into lobbies after trying to connect to the game with a "cheat"-like mod enabled.
+- [ ] Fix the frame data calculation to be more accurate.
+- [ ] Sort options to have the right default state, some more should probably be off by default.
