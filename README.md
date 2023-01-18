@@ -44,6 +44,17 @@ Allows you to play the BGM from any stage in the game. Player will automatically
 These settings will only work in training mode currently:
 #### Show Frame Data
 Shows the frame data for the current character, please note that this calculation is still in testing and may not be accurate. To get the most accurate results you must be holding a movement button at the end of the move as the calculation is tied to the animation system.
+### Collision Box Viewer
+Allows you to see the following collision boxes in real-time:
+* Hit
+* Hurt
+* Projectile
+* Proximity
+* Physics/Collision
+
+To enable select the option in the training menu from the mod and you may need to quick reset the training to get it started. From there simple toggle it again to turn off.
+### Simulation Speed Modifier
+Modify the speed of the game, use the input field or the +/- buttons to change to the desired % and then press the "Set Speed" button to apply that speed. To turn it off either quick reset in training or delete the number in the field and it will auto-fill back to "100" for you to apply.
 
 ## To Fix
 - [ ] Frame advantage is not resetting per hit when hit/blockstun doesn't expire.
