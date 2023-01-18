@@ -47,7 +47,6 @@ Shows the frame data for the current character, please note that this calculatio
 
 ## To Fix
 - [ ] Frame advantage is not resetting per hit when hit/blockstun doesn't expire.
-- [ x ] Menu closed by default.
-- [ x ] Multi-select select should be false by default, it currently needs to be toggled off then on to work.
-- [ ] Add UniverseLib to the release files.
-- [ x ] Frame advantage shows up in versus matches by default.
+- [ ] anti-cheat measure can lock a user from logging into lobbies after trying to connect to the game with a "cheat"-like mod enabled.
+- [ ] Fix the frame data calculation to be more accurate.
+- [ ] Sort options to have the right default state, some more should probably be off by default.
