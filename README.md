@@ -58,6 +58,7 @@ Modify the speed of the game, use the input field or the +/- buttons to change t
 
 ## To Fix
 - [ ] Frame advantage is not resetting per hit when hit/blockstun doesn't expire.
+- [ ] Frame advantage does not take into account of the simulation speed.
 - [ ] anti-cheat measure can lock a user from logging into lobbies after trying to connect to the game with a "cheat"-like mod enabled.
 - [ ] Fix the frame data calculation to be more accurate.
 - [ ] Sort options to have the right default state, some more should probably be off by default.

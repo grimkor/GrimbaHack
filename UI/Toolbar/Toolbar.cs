@@ -38,5 +38,7 @@ public sealed class Toolbar
         ButtonContainer = UIFactory.CreateUIObject("ButtonFlex", toolbarPanel);
         UIFactory.SetLayoutElement(ButtonContainer.gameObject, 25, flexibleHeight: 1000, flexibleWidth: 1000);
         UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(ButtonContainer, false, true, true, true, 5, 2, 2, 2, 2);
+        var Text = UIFactory.CreateLabel(toolbarPanel.gameObject, "VersionText", Data.Global.Version,
+            TextAnchor.MiddleRight, Color.white, fontSize: 16);
     }
 }
