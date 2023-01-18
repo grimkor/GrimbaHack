@@ -16,7 +16,6 @@ This is a mod for Power Rangers Battle for the Grid on PC. This mod is a work in
 1. Download the latest release from the [releases page](https://github.com/grimkor/GrimbaHack/releases) and keep aside for a later step.
 2. Download the linked version of BepInEx for your operating system. BepInEx is a mod loader for Unity games. It is required for this mod to work:
     * [Windows](https://builds.bepinex.dev/projects/bepinex_be/665/BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.665%2B6aabdb5.zip)
-    * [Linux](https://builds.bepinex.dev/projects/bepinex_be/665/BepInEx-Unity.IL2CPP-linux-x64-6.0.0-be.665%2B6aabdb5.zip)
 3. Extract the BepInEx zip file into the game's install directory. This is usually `C:\Program Files (x86)\Steam\steamapps\common\Power Rangers Battle for the Grid` on Windows or `~/.steam/steam/steamapps/common/Power Rangers Battle for the Grid` on Linux.
 4. Extract the GrimbaHack zip file into the extracted BepInEx/plugins folder.
 5. Run the game, the game will take a while when first running BepInEx to generate some files. Once the game is running, you can press F1 to open and close the mod menu.
