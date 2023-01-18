@@ -34,11 +34,11 @@ Allows you to enable a free moving camera that you can control with the keyboard
 
 ### BGM Player
 Allows you to play the BGM from any stage in the game. Player will automatically progress to the next track when the current track ends. 
-    * **Play** - Plays the selected track.
-    * **Pause** - Pauses the currently playing track.
-    * **Song Select** - Selects the track to play.
-    * **<<** - Rewinds the currently playing track. or plays the previous track if the current track is less than 5 seconds in.
-    * **>>** - Plays the next track.
+* **Play** - Plays the selected track.
+* **Pause** - Pauses the currently playing track.
+* **Song Select** - Selects the track to play.
+* **<<** - Rewinds the currently playing track. or plays the previous track if the current track is less than 5 seconds in.
+* **>>** - Plays the next track.
 
 ### Training Mode
 These settings will only work in training mode currently:
