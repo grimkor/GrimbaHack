@@ -23,6 +23,8 @@ public enum PanelTypes
 
 public static class Global
 {
+    public static readonly string Version = "v0.2.1";
+
     public static readonly List<Stage> Stages = new()
     {
         new Stage() { Label = "Training", Value = "Arena_MET" },
