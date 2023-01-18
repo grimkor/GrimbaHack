@@ -29,5 +29,6 @@ public class TrainingModePanel : MenuPanelBase
         SetActive(false);
         FrameDataManager.CreateUIControls(ContentRoot);
         CollisionBoxViewer.CreateUIControls(ContentRoot);
+        SimulationSpeed.CreateUIControls(ContentRoot);
     }
 }
