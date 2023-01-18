@@ -41,6 +41,7 @@ public sealed class PickSameCharacter : CheatPrevention
             spacing: 10, childAlignment: TextAnchor.MiddleLeft);
         UIFactory.CreateToggle(pickSameCharacterGroup, "PickSameCharacterToggle", out var pickSameCharacterToggle,
             out var pickSameCharacterToggleLabel);
+        pickSameCharacterToggle.isOn = Enabled;
         pickSameCharacterToggleLabel.text = "Enable Picking Same Character Multiple Times";
         pickSameCharacterToggle.onValueChanged.AddListener(new Action<bool>((value) => { Enabled = value; }));
 
