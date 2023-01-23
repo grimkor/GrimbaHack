@@ -31,5 +31,6 @@ public class TrainingModePanel : MenuPanelBase
         CollisionBoxViewer.CreateUIControls(ContentRoot);
         SimulationSpeed.CreateUIControls(ContentRoot);
         DummyExPunish.CreateUIControls(ContentRoot);
+        UnlimitedInstall.CreateUIControls(ContentRoot);
     }
 }
