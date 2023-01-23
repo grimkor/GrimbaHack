@@ -31,7 +31,7 @@ public class Plugin : BasePlugin
         var harmony = new Harmony("Base.Grimbakor.Mod");
         harmony.PatchAll(Assembly.GetExecutingAssembly());
         CameraControl.Init();
-        // AddComponent<PatchCollisionShit>();
+        AddComponent<TrainingModeDummy>();
     }
     //
     // [HarmonyPatch(typeof(SimulationManager), nameof(SimulationManager.Initialize))]
