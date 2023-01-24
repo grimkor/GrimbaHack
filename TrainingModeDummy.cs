@@ -4,7 +4,7 @@ using Il2CppSystem.Collections.Generic;
 using nway.gameplay.ai;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Playables;
+using Random = System.Random;
 
 namespace GrimbaHack;
 
@@ -79,18 +79,18 @@ public class TrainingModeDummy : MonoBehaviour
                 _ExTriggered = false;
             }
 
-            if (DummyIsStunned && !DummyCharacter.InBlockStun && !DummyCharacter.InHitStun)
-            {
-                RecordController.StopPlayback();
-                DummyRecorder.Rewind();
-                DummyRecorder.PrepareRecording();
-                DummyRecorder.RecordInput(5243152); //EX
-                DummyRecorder.FinishRecording();
-                RecordController.StartPlayback();
-
-                DummyIsStunned = false;
-                _ExTriggered = true;
-            }
+            // if (DummyIsStunned && !DummyCharacter.InBlockStun && !DummyCharacter.InHitStun)
+            // {
+            //     RecordController.StopPlayback();
+            //     DummyRecorder.Rewind();
+            //     DummyRecorder.PrepareRecording();
+            //     DummyRecorder.RecordInput(5243152); //EX
+            //     DummyRecorder.FinishRecording();
+            //     RecordController.StartPlayback();
+            //
+            //     DummyIsStunned = false;
+            //     _ExTriggered = true;
+            // }
 
             if (!DummyIsStunned && (DummyCharacter.InBlockStun || DummyCharacter.InHitStun))
             {
@@ -98,25 +98,25 @@ public class TrainingModeDummy : MonoBehaviour
             }
         }
 
-        // if (EnableVariablePushblock)
-        // {
-        //     if (DummyIsStunned && !DummyCharacter.InBlockStun && !DummyCharacter.InHitStun)
-        //     {
-        //         // RecordController.StopPlayback();
-        //     }
-        // }
-        //
-        // if (Keyboard.current.f5Key.isPressed)
-        // {
-        //     EnableVariablePushblock = true;
-        //     // Ready = false;
-        // }
-        //
-        // if (Keyboard.current.f6Key.isPressed)
-        // {
-        //     EnableVariablePushblock = false;
-        //     // Ready = true;
-        // }
+        if (EnableVariablePushblock)
+        {
+            if (DummyIsStunned && !DummyCharacter.InBlockStun && !DummyCharacter.InHitStun)
+            {
+                RecordController.StopPlayback();
+            }
+        }
+        
+        if (Keyboard.current.f5Key.isPressed)
+        {
+            EnableVariablePushblock = true;
+            // Ready = false;
+        }
+        
+        if (Keyboard.current.f6Key.isPressed)
+        {
+            EnableVariablePushblock = false;
+            // Ready = true;
+        }
 
         if (Keyboard.current.f7Key.isPressed)
         {
@@ -164,75 +164,78 @@ public class TrainingModeDummy : MonoBehaviour
         // }
     }
 
-    // [HarmonyPatch(typeof(Character), nameof(Character.ApplyBlockAndHitStun))]
-    // public class PatchApplyBlockAndHitStun
-    // {
-    //     public static void Prefix(bool isHitStun, int originalFrames)
-    //     {
-    //         if (!isHitStun && EnableVariablePushblock && originalFrames > 0)
-    //             // {
-    //             //     DummyIsStunned = true;
-    //             // var random = new Random();
-    //             //     
-    //             //     DummyRecorder.PrepareRecording();
-    //             // var pushblockFrame = random.Next(0, originalFrames -2); // Compensate for delay
-    //             //     while (DummyRecorder.IncrementFrame(pushblockFrame, false))
-    //             //     {
-    //             //     }
-    //             //
-    //             //     DummyRecorder.RecordInput(1048832); // 5S
-    //             //     DummyRecorder.IncrementFrame(10000, false);
-    //             //     DummyRecorder.RecordInput(4194304); // Let go of 5S
-    //             //     DummyRecorder.FinishRecording();
-    //             //     RecordController.Reset();
-    //             //     RecordController.StartPlayback();
-    //             // }
-    //         {
-    //             DummyIsStunned = true;
-    //             // var random = new Random();
-    //             // RecordController.StopPlayback();
-    //             DummyRecorder.inputs = _nextInputs;
-    //             RecordController.StartPlayback();
-    //             // _startingNumber += 1;
-    //             _nextInputs =
-    //                 new List<CommandRecordingDriver.InputChange>();
-    //             DummyRecorder.inputs.Add(new CommandRecordingDriver.InputChange(_startingNumber, 1048832));
-    //             DummyRecorder.inputs.Add(new CommandRecordingDriver.InputChange(_startingNumber + 1, 0));
-    //             DummyRecorder.inputs.Add(new CommandRecordingDriver.InputChange(_startingNumber + _exDelay, 272));
-    //             DummyRecorder.inputs.Add(new CommandRecordingDriver.InputChange(_startingNumber + 500, 0));
-    //             _log.LogInfo($"_startingNumber: {_startingNumber}");
-    //             _log.LogInfo($"_exDelay: {_exDelay}");
-    //         }
-    //         // DummyRecorder.Rewind();
-    //         // DummyRecorder.PrepareRecording();
-    //         // var pushblockFrame = random.Next(1, originalFrames -5); // Compensate for delay
-    //         // while (DummyRecorder.IncrementFrame(_startingNumber, false))
-    //         // {
-    //         // }
-    //         // DummyRecorder.RecordInput(1048836); // 5S
-    //         // DummyRecorder.IncrementFrame(_startingNumber +2, false);
-    //         // DummyRecorder.RecordInput(4);
-    //         // while (DummyRecorder.IncrementFrame(_startingNumber + 6, false))
-    //         // {
-    //         // }
-    //         // DummyRecorder.RecordInput(4194304); // Let go of 5S
-    //         // DummyRecorder.IncrementFrame(_startingNumber +8, false);
-    //         // DummyRecorder.RecordInput(4194304); // Let go of 5S
-    //         // DummyRecorder.IncrementFrame(_startingNumber +8, false);
-    //         // DummyRecorder.RecordInput(4);
-    //         // while (DummyRecorder.IncrementFrame(_startingNumber +11, false))
-    //         // {
-    //         // }
-    //         // DummyRecorder.RecordInput(276); //EX
-    //         // DummyRecorder.IncrementFrame(_startingNumber +100, false);
-    //         // DummyRecorder.RecordInput(4);
-    //         // DummyRecorder.FinishRecording();
-    //         // RecordController.StartPlayback();
-    //         // foreach (var input in DummyRecorder.inputs)
-    //         // {
-    //         // _log.LogInfo($"frame: {input.frame} input: {input.input}");
-    //         // }
-    //         // _log.LogInfo($"original: {originalFrames}, pushblock: {_startingNumber}");
-    //     }
-    // }
+    [HarmonyPatch(typeof(Character), nameof(Character.ApplyBlockAndHitStun))]
+    public class PatchApplyBlockAndHitStun
+    {
+        public static void Prefix(bool isHitStun, int originalFrames)
+        {
+            if (!isHitStun && EnableVariablePushblock && originalFrames > 0)
+                {
+                    DummyIsStunned = true;
+                var random = new Random();
+                    
+                    // DummyRecorder.PrepareRecording();
+                var pushblockFrame = random.Next(0, originalFrames -2); // Compensate for delay
+                    // while (DummyRecorder.IncrementFrame(pushblockFrame, false))
+                    // {
+                    // }
+                    Plugin.Log.LogInfo(pushblockFrame);
+                    DummyRecorder.inputs = new List<CommandRecordingDriver.InputChange>();
+                    DummyRecorder.inputs.Add(new CommandRecordingDriver.InputChange(pushblockFrame,1048832));
+                    // DummyRecorder.inputs.Add(new CommandRecordingDriver.InputChange(0, 1048832));
+                    // DummyRecorder.RecordInput(1048832); // 5S
+                    // DummyRecorder.IncrementFrame(10000, false);
+                    // DummyRecorder.RecordInput(4194304); // Let go of 5S
+                    // DummyRecorder.FinishRecording();
+                    RecordController.Reset();
+                    RecordController.StartPlayback();
+                }
+            // {
+            //     DummyIsStunned = true;
+            //     // var random = new Random();
+            //     // RecordController.StopPlayback();
+            //     DummyRecorder.inputs = _nextInputs;
+            //     RecordController.StartPlayback();
+            //     // _startingNumber += 1;
+            //     _nextInputs =
+            //         new List<CommandRecordingDriver.InputChange>();
+            //     DummyRecorder.inputs.Add(new CommandRecordingDriver.InputChange(_startingNumber, 1048832));
+            //     DummyRecorder.inputs.Add(new CommandRecordingDriver.InputChange(_startingNumber + 1, 0));
+            //     DummyRecorder.inputs.Add(new CommandRecordingDriver.InputChange(_startingNumber + _exDelay, 272));
+            //     DummyRecorder.inputs.Add(new CommandRecordingDriver.InputChange(_startingNumber + 500, 0));
+            //     _log.LogInfo($"_startingNumber: {_startingNumber}");
+            //     _log.LogInfo($"_exDelay: {_exDelay}");
+            // }
+            // DummyRecorder.Rewind();
+            // DummyRecorder.PrepareRecording();
+            // var pushblockFrame = random.Next(1, originalFrames -5); // Compensate for delay
+            // while (DummyRecorder.IncrementFrame(_startingNumber, false))
+            // {
+            // }
+            // DummyRecorder.RecordInput(1048836); // 5S
+            // DummyRecorder.IncrementFrame(_startingNumber +2, false);
+            // DummyRecorder.RecordInput(4);
+            // while (DummyRecorder.IncrementFrame(_startingNumber + 6, false))
+            // {
+            // }
+            // DummyRecorder.RecordInput(4194304); // Let go of 5S
+            // DummyRecorder.IncrementFrame(_startingNumber +8, false);
+            // DummyRecorder.RecordInput(4194304); // Let go of 5S
+            // DummyRecorder.IncrementFrame(_startingNumber +8, false);
+            // DummyRecorder.RecordInput(4);
+            // while (DummyRecorder.IncrementFrame(_startingNumber +11, false))
+            // {
+            // }
+            // DummyRecorder.RecordInput(276); //EX
+            // DummyRecorder.IncrementFrame(_startingNumber +100, false);
+            // DummyRecorder.RecordInput(4);
+            // DummyRecorder.FinishRecording();
+            // RecordController.StartPlayback();
+            // foreach (var input in DummyRecorder.inputs)
+            // {
+            // _log.LogInfo($"frame: {input.frame} input: {input.input}");
+            // }
+            // _log.LogInfo($"original: {originalFrames}, pushblock: {_startingNumber}");
+        }
+    }
 }

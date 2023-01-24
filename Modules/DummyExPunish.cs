@@ -18,6 +18,7 @@ public sealed class DummyExPunish : ModuleBase
     }
 
     public static DummyExPunish Instance { get; private set; }
+    public DummyExPunishBehaviour Behaviour { get; set; }
 
     static DummyExPunish()
     {
@@ -46,9 +47,7 @@ public sealed class DummyExPunish : ModuleBase
             Behaviour.enabled = value;
         }
     }
-
-    public DummyExPunishBehaviour Behaviour { get; set; }
-
+    
     public static void CreateUIControls(GameObject contentRoot)
     {
         var dummyExPunishGroup = UIFactory.CreateUIObject("DummyExPunishGroup", contentRoot);

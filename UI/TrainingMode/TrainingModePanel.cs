@@ -14,9 +14,9 @@ public class TrainingModePanel : MenuPanelBase
 
     public override string Name => "Training Mode";
 
-    public override int MinWidth => 400;
+    public override int MinWidth => 500;
 
-    public override int MinHeight => 200;
+    public override int MinHeight => 300;
 
     public override Vector2 DefaultAnchorMin => new Vector2(0.5f, 0.5f);
 
@@ -31,6 +31,7 @@ public class TrainingModePanel : MenuPanelBase
         CollisionBoxViewer.CreateUIControls(ContentRoot);
         SimulationSpeed.CreateUIControls(ContentRoot);
         DummyExPunish.CreateUIControls(ContentRoot);
+        ExtraPushblockOptions.CreateUIControls(ContentRoot);
         UnlimitedInstall.CreateUIControls(ContentRoot);
     }
 }
