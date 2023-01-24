@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using HarmonyLib;
+using nway.gameplay;
 using nway.gameplay.match;
+using Action = System.Action;
 
 namespace GrimbaHack.Utility;
 
@@ -16,19 +18,22 @@ public class OnMatchManagerSetupGamePlay
     {
         Instance = new OnMatchManagerSetupGamePlay();
     }
-    public static OnMatchManagerSetupGamePlay Instance { get; set; }
-    private List<Action> callbacks = new();
 
-    public void AddCallback(Action callback)
+    public static OnMatchManagerSetupGamePlay Instance { get; set; }
+    private List<Action<Match, string, PlayerControllerMapping>> callbacks = new();
+
+    public void AddCallback(Action<Match, string, PlayerControllerMapping> callback)
     {
         Instance.callbacks.Add(callback);
     }
-    
-    public static void Prefix()
+
+    public static void Prefix(Match match,
+        string pid,
+        PlayerControllerMapping controllerMapping)
     {
-        foreach (var callback in Instance.callbacks)
+        foreach (Action<Match, string, PlayerControllerMapping> callback in Instance.callbacks)
         {
-            callback();
+            callback(match, pid, controllerMapping);
         }
     }
 }

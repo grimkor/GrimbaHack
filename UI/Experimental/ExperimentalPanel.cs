@@ -5,16 +5,16 @@ using GrimbaHack.Modules;
 using UnityEngine;
 using UniverseLib.UI;
 
-namespace GrimbaHack.UI.Global;
+namespace GrimbaHack.UI.Experimental;
 
-public class GlobalPanel : MenuPanelBase
+public class ExperimentalPanel : MenuPanelBase
 {
-    public GlobalPanel(UIBase owner) : base(owner)
+    public ExperimentalPanel(UIBase owner) : base(owner)
     {
     }
 
-    public override PanelTypes PanelType => PanelTypes.Global;
-    public override string Name { get; } = "Global";
+    public override PanelTypes PanelType => PanelTypes.Experimental;
+    public override string Name { get; } = "EXPERIMENTAL";
     public override int MinWidth { get; } = 500;
     public override int MinHeight { get; } = 200;
 
@@ -26,11 +26,7 @@ public class GlobalPanel : MenuPanelBase
     protected override void ConstructPanelContent()
     {
         SetActive(false);
-        StageSelectOverride.CreateUIControls(ContentRoot, out Action callback);
-        _updateCallbacks.Add(callback);
-        PickSameCharacter.CreateUIControls(ContentRoot);
-        CameraControl.CreateUIControls(ContentRoot);
-        TextureLoader.CreateUIControls(ContentRoot);
+        MemoryLeakFix.CreateUIControls(ContentRoot);
     }
 
     public override void Update()
