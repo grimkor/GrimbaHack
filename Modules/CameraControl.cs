@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UniverseLib.UI;
+using Object = UnityEngine.Object;
 
 namespace GrimbaHack;
 
@@ -17,21 +18,24 @@ public sealed class CameraControl : ModuleBase
     }
 
     public static CameraControl Instance { get; private set; }
+    private CameraControlBehaviour Behaviour;
 
     static CameraControl()
     {
         Instance = new CameraControl();
+        ClassInjector.RegisterTypeInIl2Cpp<CameraControlBehaviour>();
+        GameObject go = new GameObject("CameraControlBehaviour");
+        Object.DontDestroyOnLoad(go);
+        go.hideFlags = HideFlags.HideAndDontSave;
+        Instance.Behaviour = go.AddComponent<CameraControlBehaviour>();
+        Instance.Enabled = false;
     }
 
-    public static void Init()
-    {
-        CameraControlBehaviour.Setup();
-    }
 
-    public static bool Enabled
+    public bool Enabled
     {
-        get => CameraControlBehaviour.Instance.enabled;
-        set => CameraControlBehaviour.Instance.SetEnabled(value);
+        get => Behaviour.enabled;
+        set => Behaviour.SetEnabled(value);
     }
 
     public static CameraControlHelpWindow HelpWindow;
@@ -48,10 +52,11 @@ public sealed class CameraControl : ModuleBase
         UIFactory.CreateToggle(cameraControlGroup, "CameraControlToggle", out Toggle CameraControlToggle,
             out Text CameraControlToggleText, checkHeight: 20, checkWidth: 20);
         CameraControlToggle.enabled = true;
-        CameraControlToggle.onValueChanged.AddListener(new Action<bool>(enabled => { Enabled = enabled; }));
+        CameraControlToggle.isOn = false;
+        CameraControlToggle.onValueChanged.AddListener(new Action<bool>(enabled => { Instance.Enabled = enabled; }));
 
         // Toggle Text
-        CameraControlToggleText.text = "Enable Camera Control";
+        CameraControlToggleText.text = "Enable Freecam";
 
         // Help Button
         var button = UIFactory.CreateButton(cameraControlGroup, "CameraControlHelpButton", "?");
@@ -67,15 +72,6 @@ public class CameraControlBehaviour : MonoBehaviour
 {
     static Camera _camera;
     internal static CameraControlBehaviour Instance { get; private set; }
-
-    internal static void Setup()
-    {
-        ClassInjector.RegisterTypeInIl2Cpp<CameraControlBehaviour>();
-        GameObject go = new GameObject("CameraControlBehaviour");
-        DontDestroyOnLoad(go);
-        go.hideFlags = HideFlags.HideAndDontSave;
-        Instance = go.AddComponent<CameraControlBehaviour>();
-    }
 
     public void SetEnabled(bool enable)
     {

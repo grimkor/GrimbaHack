@@ -42,7 +42,7 @@ public sealed class PickSameCharacter : CheatPrevention
         UIFactory.CreateToggle(pickSameCharacterGroup, "PickSameCharacterToggle", out var pickSameCharacterToggle,
             out var pickSameCharacterToggleLabel);
         pickSameCharacterToggle.isOn = Enabled;
-        pickSameCharacterToggleLabel.text = "Enable Picking Same Character Multiple Times";
+        pickSameCharacterToggleLabel.text = "Allow Duplicate Characters";
         pickSameCharacterToggle.onValueChanged.AddListener(new Action<bool>((value) => { Enabled = value; }));
 
         UIFactory.SetLayoutElement(pickSameCharacterToggle.gameObject, minHeight: 25, minWidth: 50);

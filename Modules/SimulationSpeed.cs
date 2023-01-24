@@ -67,6 +67,8 @@ public class SimulationSpeed
         var simulationSpeedButton = UIFactory.CreateButton(simulationSpeedGroup, "SimulationSpeedToggle", "Set Speed");
         simulationSpeedButton.OnClick = delegate { SetSpeed(Instance.Speed); };
 
+        var simulationLabel = UIFactory.CreateLabel(simulationSpeedGroup, "SimulationSpeedLabel", "Game Speed:");
+
         simulationSpeedValue =
             UIFactory.CreateInputField(simulationSpeedGroup, "SimulationSpeedValue", Instance.ToString());
         simulationSpeedValue.Text = Instance.Speed.ToString();
@@ -96,6 +98,7 @@ public class SimulationSpeed
             simulationSpeedValue.Text = Instance.Speed.ToString();
         };
 
+        UIFactory.SetLayoutElement(simulationLabel.gameObject, minHeight: 25, minWidth: 50);
         UIFactory.SetLayoutElement(simulationSpeedButton.GameObject, minHeight: 25, minWidth: 50);
         UIFactory.SetLayoutElement(minusButton.GameObject, minHeight: 25, minWidth: 50);
         UIFactory.SetLayoutElement(simulationSpeedValue.GameObject, minHeight: 25, minWidth: 50);
