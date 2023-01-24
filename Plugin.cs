@@ -1,17 +1,9 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
-using GrimbaHack.Modules;
 using GrimbaHack.UI;
 using HarmonyLib;
-using nway.collision;
-using nway.gameplay;
-using nway.gameplay.match;
-using nway.gameplay.simulation;
-using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UniverseLib.UI;
 using UniverseLib.UI.Panels;
 
