@@ -22,6 +22,5 @@ public class Plugin : BasePlugin
         UISetup.Init(this);
         var harmony = new Harmony("Base.Grimbakor.Mod");
         harmony.PatchAll(Assembly.GetExecutingAssembly());
-        CameraControl.Init();
     }
 }

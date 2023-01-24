@@ -82,7 +82,7 @@ public sealed class ExtraPushblockOptions : ModuleBase
             Instance.Enabled = canEnable;
         }));
 
-        extraPushblockToggleText.text = "Enable Dummy Variable Pushblock";
+        extraPushblockToggleText.text = "Enable Enhanced Pushblock";
 
         // CREATE DROPDOWN
         UIFactory.CreateDropdown(extraPushblockGroup, "ExtraPushblockOptionsDropdown",
