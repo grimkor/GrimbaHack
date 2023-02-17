@@ -30,13 +30,15 @@ public enum PanelTypes
 public enum DUMMY_INPUTS
 {
     EMPTY = 0,
+    RECORD = 4194304,
     EX = 5243152,
-    _5S = 1048832
+    _5S = 1048832,
+    _5L = 16,
 }
 
 public static class Global
 {
-    public static readonly string Version = "v0.3.0";
+    public static readonly string Version = "v0.4.0";
 
     public static readonly List<Stage> Stages = new()
     {
