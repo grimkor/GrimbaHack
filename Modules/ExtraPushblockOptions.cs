@@ -198,7 +198,7 @@ public class ExtraPushblockOptionsBehaviour : MonoBehaviour
                     : (int)(_originalFrames * (PercentToPushblock / 100f));
                 _dummyRecorder.inputs = new List<CommandRecordingDriver.InputChange>();
                 _dummyRecorder.inputs.Add(
-                    new CommandRecordingDriver.InputChange(pushblockFrame == 0 ? 1 : pushblockFrame, 1048832));
+                    new CommandRecordingDriver.InputChange(pushblockFrame == 0 ? 1 : pushblockFrame, (uint)DUMMY_INPUTS._5S));
                 _recordController.Reset();
                 _recordController.StartPlayback();
             }

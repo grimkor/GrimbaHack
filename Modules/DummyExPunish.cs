@@ -1,5 +1,6 @@
 using System;
 using epoch.db;
+using GrimbaHack.Data;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using nway.gameplay.ai;
@@ -144,7 +145,7 @@ public class DummyExPunishBehaviour : MonoBehaviour
             RecordController.StopPlayback();
             DummyRecorder.Rewind();
             DummyRecorder.PrepareRecording();
-            DummyRecorder.RecordInput(5243152); //EX
+            DummyRecorder.RecordInput((uint)DUMMY_INPUTS.EX); //EX
             DummyRecorder.FinishRecording();
             RecordController.StartPlayback();
 
