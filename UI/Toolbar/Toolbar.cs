@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using GrimbaHack.Data;
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
@@ -19,6 +21,16 @@ public sealed class Toolbar
         Instance = new Toolbar();
     }
 
+    public Dictionary<PanelTypes, MenuPanelBase> _panels = new();
+
+    public static void setButtonVisibility(PanelTypes panel, bool enabled)
+    {
+        var panelButton = Instance._panels[panel];
+        if (panelButton != null)
+        {
+            panelButton.setButtonVisible(enabled);
+        }
+    }
 
     public static void CreateUI(GameObject uiRoot)
     {

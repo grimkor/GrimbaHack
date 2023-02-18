@@ -1,5 +1,10 @@
+using epoch.db;
 using GrimbaHack.Data;
 using GrimbaHack.Modules;
+using GrimbaHack.UI.Global;
+using HarmonyLib;
+using nway.gameplay;
+using nway.gameplay.match;
 using UnityEngine;
 using UniverseLib.UI;
 
@@ -35,5 +40,24 @@ public class TrainingModePanel : MenuPanelBase
         ExtraPushblockOptions.CreateUIControls(ContentRoot);
         UnlimitedInstall.CreateUIControls(ContentRoot);
         MultipleRecordingSlots.CreateUIControls(ContentRoot);
+    }
+    
+    
+    [HarmonyPatch(typeof(MatchManager), nameof(MatchManager.CreateTrainingMatch))]
+    public class PatchCreateTrainingMatch
+    {
+        public static void Prefix()
+        {
+            Toolbar.setButtonVisibility(PanelTypes.TrainingMode, true);
+        }
+    }
+    
+    [HarmonyPatch(typeof(AppStateManager), nameof(AppStateManager.SetAppState))]
+    public class PatchSetAppState
+    {
+        public static void Prefix(AppState state)
+        {
+            Toolbar.setButtonVisibility(PanelTypes.TrainingMode,  state == AppState.Combat && MatchManager.instance.matchType == MatchType.Training);
+        }
     }
 }
