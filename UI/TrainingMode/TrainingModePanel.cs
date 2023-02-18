@@ -34,5 +34,6 @@ public class TrainingModePanel : MenuPanelBase
         DummyTrimRecording.CreateUIControls(ContentRoot);
         ExtraPushblockOptions.CreateUIControls(ContentRoot);
         UnlimitedInstall.CreateUIControls(ContentRoot);
+        MultipleRecordingSlots.CreateUIControls(ContentRoot);
     }
 }
