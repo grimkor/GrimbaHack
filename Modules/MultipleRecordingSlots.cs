@@ -43,8 +43,8 @@ public sealed class MultipleRecordingSlots : ModuleBase
                 spacing: 10, childAlignment: TextAnchor.MiddleLeft);
             UIFactory.SetLayoutElement(horizontalRecordingSlotGroup);
 
-            var loadOne = UIFactory.CreateButton(horizontalRecordingSlotGroup, $"multipleRecordingsLoad{slotLabel}", $"Load Slot {slotLabel}");
-            loadOne.OnClick = () =>
+            var LoadButton = UIFactory.CreateButton(horizontalRecordingSlotGroup, $"multipleRecordingsLoad{slotLabel}", $"Load Slot {slotLabel}");
+            LoadButton.OnClick = () =>
             {
                 var dummyRecorder = SceneStartup.instance.GamePlay?.recorder?.dummyRecorder;
                 if (dummyRecorder != null)
@@ -56,8 +56,8 @@ public sealed class MultipleRecordingSlots : ModuleBase
                     }
                 }
             };
-            var saveOne = UIFactory.CreateButton(horizontalRecordingSlotGroup, $"multipleRecordingsSave{slotLabel}", $"Save Slot {slotLabel}");
-            saveOne.OnClick = () =>
+            var saveButton = UIFactory.CreateButton(horizontalRecordingSlotGroup, $"multipleRecordingsSave{slotLabel}", $"Save Slot {slotLabel}");
+            saveButton.OnClick = () =>
             {
                 var dummyRecorder = SceneStartup.instance.GamePlay?.recorder?.dummyRecorder;
                 if (dummyRecorder != null)
@@ -69,8 +69,8 @@ public sealed class MultipleRecordingSlots : ModuleBase
                     }
                 }
             };
-            UIFactory.SetLayoutElement(loadOne.GameObject, minHeight: 25, minWidth: 100);
-            UIFactory.SetLayoutElement(saveOne.GameObject, minHeight: 25, minWidth: 100);
+            UIFactory.SetLayoutElement(LoadButton.GameObject, minHeight: 25, minWidth: 100);
+            UIFactory.SetLayoutElement(saveButton.GameObject, minHeight: 25, minWidth: 100);
             slotNumber++;
         }
     }

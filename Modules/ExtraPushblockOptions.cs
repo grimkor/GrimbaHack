@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using epoch.db;
 using GrimbaHack.Data;
+using GrimbaHack.Utility;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppSystem.Collections.Generic;
@@ -24,21 +25,31 @@ public sealed class ExtraPushblockOptions : ModuleBase
 
     public ExtraPushblockOptionsBehaviour Behaviour { get; set; }
 
-    private static Dropdown _extraPushblockDropdown;
-    private static Toggle _extraPushblockToggle;
+    private Dropdown _extraPushblockDropdown;
 
+    static ExtraPushblockOptions()
+    {
+        Instance = new ExtraPushblockOptions();
+        ClassInjector.RegisterTypeInIl2Cpp<ExtraPushblockOptionsBehaviour>();
+        var go = new GameObject("ExtraPushblockOptionsBehaviour");
+        go.hideFlags = HideFlags.HideAndDontSave;
+        GameObject.DontDestroyOnLoad(go);
+        Instance.Behaviour = go.AddComponent<ExtraPushblockOptionsBehaviour>();
+        Instance.Enabled = false;
+        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Behaviour.enabled = false);
+    }
+
+    private bool _enabled;
     public bool Enabled
     {
         get => Behaviour.enabled;
         set
         {
-            var valueToSet = value && MatchManager.instance.matchType == MatchType.TRAINING;
-
-            Behaviour.enabled = valueToSet;
-            if (_extraPushblockToggle)
-                _extraPushblockToggle.isOn = valueToSet;
-            if (valueToSet)
+            if (value)
                 Behaviour.Setup();
+            Behaviour.enabled = value;
+            _enabled = value;
         }
     }
 
@@ -54,16 +65,6 @@ public sealed class ExtraPushblockOptions : ModuleBase
         }
     }
 
-    static ExtraPushblockOptions()
-    {
-        Instance = new ExtraPushblockOptions();
-        ClassInjector.RegisterTypeInIl2Cpp<ExtraPushblockOptionsBehaviour>();
-        var go = new GameObject("ExtraPushblockOptionsBehaviour");
-        go.hideFlags = HideFlags.HideAndDontSave;
-        GameObject.DontDestroyOnLoad(go);
-        Instance.Behaviour = go.AddComponent<ExtraPushblockOptionsBehaviour>();
-        Instance.Enabled = false;
-    }
 
     public static void CreateUIControls(GameObject contentRoot)
     {
@@ -73,20 +74,20 @@ public sealed class ExtraPushblockOptions : ModuleBase
             padRight: 0, spacing: 10, childAlignment: TextAnchor.MiddleLeft);
 
         // CREATE TOGGLE
-        UIFactory.CreateToggle(extraPushblockGroup, "ExtraPushblockOptionsToggle", out _extraPushblockToggle,
+        UIFactory.CreateToggle(extraPushblockGroup, "ExtraPushblockOptionsToggle", out var _extraPushblockToggle,
             out Text extraPushblockToggleText, checkHeight: 20, checkWidth: 20);
         _extraPushblockToggle.onValueChanged.AddListener(new Action<bool>(enabled =>
         {
-            var canEnable = enabled && MatchManager.instance.matchType == MatchType.TRAINING;
-            _extraPushblockDropdown.gameObject.active = canEnable;
-            Instance.Enabled = canEnable;
+            // var canEnable = enabled && MatchManager.instance.matchType == MatchType.TRAINING;
+            Instance._extraPushblockDropdown.gameObject.active = enabled;
+            Instance.Enabled = enabled;
         }));
 
         extraPushblockToggleText.text = "Enable Enhanced Pushblock";
 
         // CREATE DROPDOWN
         UIFactory.CreateDropdown(extraPushblockGroup, "ExtraPushblockOptionsDropdown",
-            out _extraPushblockDropdown,
+            out Instance._extraPushblockDropdown,
             "Random",
             14,
             i => { Instance.SetPercentToPushblock(i); },
@@ -95,9 +96,9 @@ public sealed class ExtraPushblockOptions : ModuleBase
 
         // LAYOUT ELEMENTS
         UIFactory.SetLayoutElement(_extraPushblockToggle.gameObject, minWidth: 50, minHeight: 25);
-        UIFactory.SetLayoutElement(_extraPushblockDropdown.gameObject, minWidth: 120, minHeight: 25);
+        UIFactory.SetLayoutElement(Instance._extraPushblockDropdown.gameObject, minWidth: 120, minHeight: 25);
         _extraPushblockToggle.isOn = false;
-        _extraPushblockDropdown.gameObject.active = false;
+        Instance._extraPushblockDropdown.gameObject.active = false;
     }
 }
 
@@ -171,7 +172,6 @@ public class ExtraPushblockOptionsBehaviour : MonoBehaviour
                 ExtraPushblockOptions.Instance.Enabled = false;
                 return;
             }
-
             // Here to stop bugs where multiple hits can freeze the dummy
             _recordController?.Reset();
             _recordController?.StopPlayback();

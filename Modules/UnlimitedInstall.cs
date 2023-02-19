@@ -1,4 +1,5 @@
 using System;
+using GrimbaHack.Utility;
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
@@ -12,23 +13,35 @@ public class UnlimitedInstall : CheatPrevention
     }
 
     public static UnlimitedInstall Instance { get; private set; }
+    private bool _enabled;
+    private int _ericDefaultInstallLength;
+    private int _adamDefaultInstallLength;
 
     static UnlimitedInstall()
     {
         Instance = new UnlimitedInstall();
+        Instance._ericDefaultInstallLength = TableStatusEffect.instance.statusEffectMap["quantum_super_install"]
+            .staticDurationFrames;
+        Instance._adamDefaultInstallLength = TableStatusEffect.instance.statusEffectMap["adam_super_install"]
+            .staticDurationFrames;
+        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.SetUnlimitedInstall(Instance._enabled));
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.SetUnlimitedInstall(false));
     }
 
-    private void setEnabled(bool value)
+    public bool Enabled
     {
-        Enabled = value;
-        if (value)
+        get => _enabled;
+        set
         {
-            if (_ericDefaultInstallLength == 0)
-                _ericDefaultInstallLength = TableStatusEffect.instance.statusEffectMap["quantum_super_install"]
-                    .staticDurationFrames;
-            if (_adamDefaultInstallLength == 0)
-                _adamDefaultInstallLength = TableStatusEffect.instance.statusEffectMap["adam_super_install"]
-                    .staticDurationFrames;
+            SetUnlimitedInstall(value);
+            _enabled = value;
+        }
+    }
+
+    private void SetUnlimitedInstall(bool enable)
+    {
+        if (enable)
+        {
             TableStatusEffect.instance.statusEffectMap["quantum_super_install"].staticDurationFrames = -1;
             TableStatusEffect.instance.statusEffectMap["adam_super_install"].staticDurationFrames = -1;
         }
@@ -41,8 +54,6 @@ public class UnlimitedInstall : CheatPrevention
         }
     }
 
-    private int _ericDefaultInstallLength = 0;
-    private int _adamDefaultInstallLength = 0;
 
     public static void CreateUIControls(GameObject contentRoot)
     {
@@ -54,7 +65,7 @@ public class UnlimitedInstall : CheatPrevention
             out var unlimitedInstallToggleLabel);
         unlimitedInstallToggle.isOn = false;
         unlimitedInstallToggleLabel.text = "Unlimited Install Time (Eric/Adam)";
-        unlimitedInstallToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.setEnabled(value); }));
+        unlimitedInstallToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
 
         UIFactory.SetLayoutElement(unlimitedInstallToggle.gameObject, minHeight: 25, minWidth: 50);
     }

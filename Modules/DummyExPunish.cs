@@ -1,6 +1,7 @@
 using System;
 using epoch.db;
 using GrimbaHack.Data;
+using GrimbaHack.Utility;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using nway.gameplay.ai;
@@ -30,22 +31,21 @@ public sealed class DummyExPunish : ModuleBase
         GameObject.DontDestroyOnLoad(go);
         Instance.Behaviour = go.AddComponent<DummyExPunishBehaviour>();
         Instance.Enabled = false;
+        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Behaviour.enabled = false);
     }
 
+    private bool _enabled;
+    
     public bool Enabled
     {
         get => Behaviour.enabled;
         set
         {
-            if (MatchManager.instance.matchType != MatchType.TRAINING)
-            {
-                Debug.LogWarning("DummyExPunish can only be used in Training Mode");
-                Behaviour.enabled = false;
-                return;
-            }
-
-            Behaviour.Setup();
+            if (value)
+                Behaviour.Setup();
             Behaviour.enabled = value;
+            _enabled = value;
         }
     }
     
@@ -59,7 +59,10 @@ public sealed class DummyExPunish : ModuleBase
             out var dummyExPunishToggleLabel);
         dummyExPunishToggle.isOn = false;
         dummyExPunishToggleLabel.text = "Set Dummy to EX when Hit/Block stun expires";
-        dummyExPunishToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
+        dummyExPunishToggle.onValueChanged.AddListener(new Action<bool>((value) =>
+        {
+            Instance.Enabled = value;
+        }));
 
         UIFactory.SetLayoutElement(dummyExPunishToggle.gameObject, minHeight: 25, minWidth: 50);
     }

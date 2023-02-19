@@ -1,6 +1,7 @@
 using System;
 using epoch.db;
 using GrimbaHack.Data;
+using GrimbaHack.Utility;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppSystem.Collections.Generic;
 using nway.gameplay.ai;
@@ -13,7 +14,7 @@ namespace GrimbaHack.Modules;
 
 public sealed class DummyTrimRecording : ModuleBase
 {
-    private DummyTrimRecording() {}
+    private DummyTrimRecording( ) {}
     
     public static DummyTrimRecording Instance { get; private set; }
     
@@ -28,22 +29,21 @@ public sealed class DummyTrimRecording : ModuleBase
         go.hideFlags = HideFlags.HideAndDontSave;
         GameObject.DontDestroyOnLoad(go);
         Instance.Behaviour = go.AddComponent<DummyTrimRecordingBehaviour>();
-        Instance.Enabled = false;
+        Instance.Behaviour.enabled = false;
+        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Behaviour.enabled = false);
     }
+
+    private bool _enabled;
     public bool Enabled
     {
         get => Behaviour.enabled;
         set
         {
-            if (MatchManager.instance.matchType != MatchType.TRAINING)
-            {
-                Debug.LogWarning("DummyTrimRecordingBehaviour can only be used in Training Mode");
-                Behaviour.enabled = false;
-                return;
-            }
-            
-            Behaviour.Setup();
+            if (value)
+                Behaviour.Setup();
             Behaviour.enabled = value;
+            _enabled = value;
         }
     }
     
