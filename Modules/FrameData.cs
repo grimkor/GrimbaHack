@@ -1,11 +1,8 @@
 using System;
 using System.Diagnostics;
-using epoch.db;
 using GrimbaHack.Utility;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
-using nway.gameplay.match;
-using nway.gameplay.simulation;
 using UnityEngine;
 using UniverseLib.UI;
 
@@ -35,7 +32,7 @@ public class FrameDataManager : ModuleBase
 
     public static FrameDataManager Instance { get; private set; }
     public FrameDataBehaviour Behaviour { get; set; }
-    
+
     static FrameDataManager()
     {
         Instance = new FrameDataManager();
@@ -47,9 +44,15 @@ public class FrameDataManager : ModuleBase
         Instance.Behaviour.enabled = false;
         OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Behaviour.SetEnable(false));
+        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        {
+            if (Instance.Enabled)
+                Instance.Behaviour.SetupUpdateOverlayTargets();
+        });
     }
 
     private bool _enabled;
+
     public bool Enabled
     {
         get => Behaviour.enabled;
@@ -69,20 +72,39 @@ public class FrameDataManager : ModuleBase
         frameDataToggleLabel.text = "Show frame data for attacks";
         UIFactory.SetLayoutElement(frameDataToggle.gameObject, minHeight: 25, minWidth: 50);
     }
-    
-    [HarmonyPatch(typeof(SimulationManager), nameof(SimulationManager.Initialize))]
-    public class PatchSimulationInitialize
-    {
-        public static void Postfix()
-        {
-            if (Instance.Enabled)
-                Instance.Behaviour.SetupUpdateOverlayTargets();
-        }
-    }
 }
 
 public class FrameDataBehaviour : MonoBehaviour
 {
+    public FrameDataBehaviour()
+    {
+        OnApplyBlockAndHitStunActionHandler.Instance.AddCallback((bool isHitStun, int originalFrames) =>
+        {
+            if (!TimeAnimation.IsRunning) return;
+
+            if (_currentFrameData != null)
+            {
+                var startup = (int)Math.Round(TimeAnimation.ElapsedMilliseconds / 16.67);
+                _currentFrameData.StartupFrames = startup;
+            }
+        });
+
+        OnCharacterGetOffenseInfoActionHandler.Instance.AddCallback((OffenseInfo result) =>
+        {
+            if (_currentFrameData?.AttackName != result.attackName && _currentFrameData.StartupFrames == 0)
+            {
+                _currentFrameData = new FrameData
+                {
+                    AttackName = result.attackName,
+                    HitstunFrames = result.hitStunFrames,
+                    BlockstunFrames = result.blockStunFrames,
+                    BaseDamage = result.baseDamage,
+                    BlockedDamagePercent = result.blockedDamagePercent,
+                    LaunchHeight = result.launchHeight
+                };
+            }
+        });
+    }
 
     public void SetEnable(bool value)
     {
@@ -223,41 +245,6 @@ public class FrameDataBehaviour : MonoBehaviour
                     _startupOverlay.Value = $"{_currentFrameData.StartupFrames}";
                     ResetTracker();
                 }
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(Character), nameof(Character.GetOffenseInfo))]
-    public class PatchGetOffenseInfo
-    {
-        public static void Postfix(ref OffenseInfo __result)
-        {
-            if (_currentFrameData?.AttackName != __result.attackName && _currentFrameData.StartupFrames == 0)
-            {
-                _currentFrameData = new FrameData
-                {
-                    AttackName = __result.attackName,
-                    HitstunFrames = __result.hitStunFrames,
-                    BlockstunFrames = __result.blockStunFrames,
-                    BaseDamage = __result.baseDamage,
-                    BlockedDamagePercent = __result.blockedDamagePercent,
-                    LaunchHeight = __result.launchHeight
-                };
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(Character), nameof(Character.ApplyBlockAndHitStun))]
-    public class ApplyBlockAndHitStun
-    {
-        public static void Prefix(bool isHitStun, int originalFrames)
-        {
-            if (!TimeAnimation.IsRunning) return;
-
-            if (_currentFrameData != null)
-            {
-                var startup = (int)Math.Round(TimeAnimation.ElapsedMilliseconds / 16.67);
-                _currentFrameData.StartupFrames = startup;
             }
         }
     }

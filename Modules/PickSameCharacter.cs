@@ -1,4 +1,5 @@
 using System;
+using GrimbaHack.Utility;
 using HarmonyLib;
 using nway.gameplay.ui;
 using UnityEngine;
@@ -18,19 +19,14 @@ public sealed class PickSameCharacter : CheatPrevention
     static PickSameCharacter()
     {
         Instance = new PickSameCharacter();
-    }
-
-
-    [HarmonyPatch(typeof(UIHeroSelect), nameof(UIHeroSelect.SelectNext))]
-    private class PatchSelectNext
-    {
-        private static void Prefix(ref UIHeroSelect.UIHeroCard heroCard, UIHeroSelect.Team team)
-        {
-            if (Enabled)
+        OnUIHeroSelectSelectNextActionHandler.Instance.AddCallback(
+            (heroCard, team) =>
             {
-                heroCard.EnableFor(team, true);
-            }
-        }
+                if (Enabled)
+                {
+                    heroCard.EnableFor(team, true);
+                }
+            });
     }
 
     public static void CreateUIControls(GameObject contentRoot)

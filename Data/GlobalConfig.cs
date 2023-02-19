@@ -102,9 +102,17 @@ public static class Global
         new LabelValue() { Label = "100%", Value = 100 },
     };
 
+    public static List<MatchType> BannedGameModes = new List<MatchType>
+        { MatchType.RANKED, MatchType.CASUAL, MatchType.LOBBY };
+
     static public bool IsTrainingMatch()
     {
         return GameManager.instance.appStateManager.state == AppState.Combat &&
                MatchManager.instance.matchType == MatchType.Training;
+    }
+
+    static public bool IsBannedGameMode(MatchType matchType)
+    {
+        return BannedGameModes.Contains(matchType);
     }
 }

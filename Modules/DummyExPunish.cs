@@ -36,7 +36,7 @@ public sealed class DummyExPunish : ModuleBase
     }
 
     private bool _enabled;
-    
+
     public bool Enabled
     {
         get => Behaviour.enabled;
@@ -48,7 +48,7 @@ public sealed class DummyExPunish : ModuleBase
             _enabled = value;
         }
     }
-    
+
     public static void CreateUIControls(GameObject contentRoot)
     {
         var dummyExPunishGroup = UIFactory.CreateUIObject("DummyExPunishGroup", contentRoot);
@@ -59,10 +59,7 @@ public sealed class DummyExPunish : ModuleBase
             out var dummyExPunishToggleLabel);
         dummyExPunishToggle.isOn = false;
         dummyExPunishToggleLabel.text = "Set Dummy to EX when Hit/Block stun expires";
-        dummyExPunishToggle.onValueChanged.AddListener(new Action<bool>((value) =>
-        {
-            Instance.Enabled = value;
-        }));
+        dummyExPunishToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
 
         UIFactory.SetLayoutElement(dummyExPunishToggle.gameObject, minHeight: 25, minWidth: 50);
     }
@@ -76,34 +73,9 @@ public class DummyExPunishBehaviour : MonoBehaviour
     private static bool DummyIsStunned = false;
     private static bool _ExTriggered = false;
 
-    public void Setup()
+    public DummyExPunishBehaviour()
     {
-        var sceneStartup = FindObjectOfType<SceneStartup>();
-
-        var characters = FindObjectsOfType<Character>();
-
-        foreach (var character in characters)
-        {
-            if (character.IsActiveCharacter)
-            {
-                if (character.team != 0)
-                {
-                    DummyCharacter = character;
-                }
-            }
-        }
-
-        if (sceneStartup && DummyCharacter)
-        {
-            RecordController = sceneStartup.GamePlay?.recorder;
-            DummyRecorder = RecordController?.dummyRecorder;
-        }
-    }
-
-    [HarmonyPatch(typeof(SimulationManager), nameof(SimulationManager.Initialize))]
-    public static class SimulationManagerInitializePatch
-    {
-        public static void Postfix()
+        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
         {
             if (DummyExPunish.Instance.Enabled)
             {
@@ -128,6 +100,30 @@ public class DummyExPunishBehaviour : MonoBehaviour
                     DummyRecorder = RecordController?.dummyRecorder;
                 }
             }
+        });
+    }
+
+    public void Setup()
+    {
+        var sceneStartup = FindObjectOfType<SceneStartup>();
+
+        var characters = FindObjectsOfType<Character>();
+
+        foreach (var character in characters)
+        {
+            if (character.IsActiveCharacter)
+            {
+                if (character.team != 0)
+                {
+                    DummyCharacter = character;
+                }
+            }
+        }
+
+        if (sceneStartup && DummyCharacter)
+        {
+            RecordController = sceneStartup.GamePlay?.recorder;
+            DummyRecorder = RecordController?.dummyRecorder;
         }
     }
 

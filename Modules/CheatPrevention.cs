@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using epoch.db;
+using GrimbaHack.Data;
+using GrimbaHack.Utility;
 using HarmonyLib;
 using nway.gameplay.match;
 using nway.gameplay.online;
@@ -12,42 +14,43 @@ public class CheatPrevention
 {
     public static bool Enabled { get; set; } = false;
 
-    private static List<MatchType> bannedModes = new List<MatchType>
-        { MatchType.RANKED, MatchType.CASUAL, MatchType.LOBBY };
-
     // Cancel ranked/casual matchmaking
-    [HarmonyPatch(typeof(OnlineMatchManager), nameof(OnlineMatchManager.FindMatch))]
     private class PatchFindMatch
     {
-        private static bool Prefix(
-            TeamHeroSelection team,
-            epoch.db.MatchType matchType,
-            bool rematch,
-            string selectedStage,
-            string joinCode,
-            MatchRule matchRule,
-            IFindMatchListener finshMatchListener,
-            IMatchConnectListener matchConnectListener,
-            IPremadeMatchMakingListener codeListener
-        )
+        private PatchFindMatch()
         {
-            if (Enabled && bannedModes.Contains(matchType))
+            OnOnlineMatchManagerFindMatchActionHandler.Instance.AddCallback((
+                TeamHeroSelection team,
+                epoch.db.MatchType matchType,
+                bool rematch,
+                string selectedStage,
+                string joinCode,
+                MatchRule matchRule,
+                IFindMatchListener finshMatchListener,
+                IMatchConnectListener matchConnectListener,
+                IPremadeMatchMakingListener codeListener
+            ) =>
             {
-                var hasDuplicatesinReferenceArray = team.heroes.GroupBy(x => x).Any(g => g.Count() > 1);
-                // If the player has duplicates in their hero selection prevent the match from starting
-                if (hasDuplicatesinReferenceArray)
+                if (Enabled && Global.IsBannedGameMode(matchType))
                 {
-                    // Allow passworded lobbies
-                    if (matchType == MatchType.LOBBY &&
-                        GameManager.instance.onlineServices.Lobby.CurrentLobby.HasPassword)
+                    var hasDuplicatesinReferenceArray = team.heroes.GroupBy(x => x).Any(g => g.Count() > 1);
+                    // If the player has duplicates in their hero selection prevent the match from starting
+                    if (hasDuplicatesinReferenceArray)
                     {
-                        return true;
+                        // Allow passworded lobbies
+                        if (matchType == MatchType.LOBBY &&
+                            GameManager.instance.onlineServices.Lobby.CurrentLobby.HasPassword)
+                        {
+                            return true;
+                        }
+
+                        GameManager.instance.onlineServices.OnlineMatch.CancelFindingMatch(true);
+                        return false;
                     }
-                    GameManager.instance.onlineServices.OnlineMatch.CancelFindingMatch(true);
-                    return false;
                 }
-            }
-            return true;
+
+                return true;
+            });
         }
     }
 }

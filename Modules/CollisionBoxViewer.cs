@@ -55,6 +55,29 @@ public class CollisionBoxViewer : ModuleBase
 
 public static class CollisionBoxViewerController
 {
+    static CollisionBoxViewerController()
+    {
+        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        {
+            if (Enabled)
+            {
+                InitCamera();
+                MapColliders();
+            }
+            else
+            {
+                ClearColliders();
+            }
+        });
+
+        OnMatchManagerSetupGamePlay.Instance.AddCallback(() =>
+        {
+            _cameraInitialised = false;
+            if (Enabled)
+                InitCamera();
+        });
+    }
+
     private static bool _enabled;
 
     public static bool Enabled
@@ -102,7 +125,7 @@ public static class CollisionBoxViewerController
 
     public static void ClearColliders()
     {
-        if (SceneStartup.instance == null) return; 
+        if (SceneStartup.instance == null) return;
         SceneStartup.instance.GamePlay._playerList[0].characterTeam.members
             .ForEach(new Action<Character>(new Action<Character>(member => { member.renderColliderList.Clear(); })));
     }
@@ -111,33 +134,5 @@ public static class CollisionBoxViewerController
     {
         ClearColliders();
         SceneStartup.instance.GamePlay._playerList[0].renderColliderList = ColliderManager.instance.core.colliders;
-    }
-
-    [HarmonyPatch(typeof(SimulationManager), nameof(SimulationManager.Initialize))]
-    public class PatchCollisionShit
-    {
-        public static void Postfix()
-        {
-            if (Enabled)
-            {
-                InitCamera();
-                MapColliders();
-            }
-            else
-            {
-                ClearColliders();
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(MatchManager), nameof(MatchManager.SetupGamePlay))]
-    public class PatchSetupGamePlay
-    {
-        public static void Postfix()
-        {
-            _cameraInitialised = false;
-            if (Enabled)
-                InitCamera();
-        }
     }
 }

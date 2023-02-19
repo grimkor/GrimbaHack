@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GrimbaHack.Data;
+using GrimbaHack.Utility;
 using HarmonyLib;
 using nway.gameplay.level;
 using nway.gameplay.ui;

@@ -1,5 +1,6 @@
 using System;
 using epoch.db;
+using GrimbaHack.Utility;
 using HarmonyLib;
 using nway.gameplay;
 using nway.gameplay.match;
@@ -18,6 +19,14 @@ public class SimulationSpeed
     static SimulationSpeed()
     {
         Instance = new();
+        OnSceneStartupOnDestroyActionHandler.Instance.AddCallback(() =>
+        {
+            if (MatchManager.instance.MatchIsOnline()) return;
+
+            Instance.Speed = 100;
+            SetSpeed(100);
+            GameManager.instance.InitializeSimulation();
+        });
     }
 
     private int _speed = 100;
@@ -42,19 +51,6 @@ public class SimulationSpeed
         {
             SceneStartup.gamePlay._simulationManager.currentTimeScalePercent = 100;
             simulationSpeedValue.Text = "100";
-        }
-    }
-
-    [HarmonyPatch(typeof(SceneStartup), nameof(SceneStartup.OnDestroy))]
-    private class PatchOnDestroy
-    {
-        private static void Prefix()
-        {
-            if (MatchManager.instance.MatchIsOnline()) return;
-
-            Instance.Speed = 100;
-            SetSpeed(100);
-            GameManager.instance.InitializeSimulation();
         }
     }
 
