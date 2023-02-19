@@ -102,7 +102,7 @@ public static class Global
         new LabelValue() { Label = "100%", Value = 100 },
     };
 
-    static public bool isTrainingMatch()
+    static public bool IsTrainingMatch()
     {
         return GameManager.instance.appStateManager.state == AppState.Combat &&
                MatchManager.instance.matchType == MatchType.Training;

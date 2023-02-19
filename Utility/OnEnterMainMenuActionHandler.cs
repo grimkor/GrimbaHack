@@ -7,30 +7,31 @@ using Action = System.Action;
 namespace GrimbaHack.Utility;
 
 [HarmonyPatch(typeof(AppStateManager), nameof(AppStateManager.SetAppState))]
-public class StartMainMenuActionHandler
+public class OnEnterMainMenuActionHandler
 {
-    private StartMainMenuActionHandler()
+    private OnEnterMainMenuActionHandler()
     {
     }
 
-    static StartMainMenuActionHandler()
+    static OnEnterMainMenuActionHandler()
     {
-        Instance = new StartMainMenuActionHandler();
+        Instance = new OnEnterMainMenuActionHandler();
     }
-    public static StartMainMenuActionHandler Instance { get; set; }
+
+    public static OnEnterMainMenuActionHandler Instance { get; set; }
     private List<Action> callbacks = new();
 
     public void AddCallback(Action callback)
     {
         Instance.callbacks.Add(callback);
     }
-    
+
     public static void Postfix(AppState state)
     {
-        if (state == AppState.Menu)
-        foreach (var callback in Instance.callbacks)
-        {
-            callback();
-        }
+        if (state == AppState.Menu && SceneStartup.instance == null)
+            foreach (var callback in Instance.callbacks)
+            {
+                callback();
+            }
     }
 }

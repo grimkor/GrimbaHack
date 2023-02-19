@@ -28,7 +28,6 @@ public static class UIManager
     {
         UIBase = UniversalUI.RegisterUI("UI.Grimbakor.UI", Update);
         Toolbar.CreateUI(UIBase.RootObject);
-        // var globalPanel = new GlobalPanel(UIBase);
         _panels.Add(PanelTypes.Global, new GlobalPanel(UIBase));
         _panels.Add(PanelTypes.BGMPlayer, new BGMPlayerPanel(UIBase));
         _panels.Add(PanelTypes.TrainingMode, new TrainingModePanel(UIBase));
@@ -44,13 +43,13 @@ public static class UIManager
     {
         _panels[panelType]?.Toggle();
     }
-    public static void ShowPanel(PanelTypes panelType)
+
+    public static void RefreshUI()
     {
-        _panels[panelType]?.SetActive(true);
-    }
-    public static void HidePanel(PanelTypes panelType)
-    {
-        Plugin.Log.LogInfo($"_panels[panelType] {_panels[panelType]}");
-        _panels[panelType].SetActive(false);
+        if (ShowUI)
+        {
+            ShowUI = false;
+            ShowUI = true;
+        }
     }
 }

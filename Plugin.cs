@@ -4,8 +4,6 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using GrimbaHack.UI;
 using HarmonyLib;
-using UniverseLib.UI;
-using UniverseLib.UI.Panels;
 
 namespace GrimbaHack;
 
@@ -13,8 +11,6 @@ namespace GrimbaHack;
 public class Plugin : BasePlugin
 {
     internal static new ManualLogSource Log;
-    public static UIBase UiBase { get; private set; }
-    private static PanelBase _panel;
 
     public override void Load()
     {

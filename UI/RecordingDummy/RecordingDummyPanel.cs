@@ -15,16 +15,11 @@ public class RecordingDummyPanel : MenuPanelBase
 {
     public RecordingDummyPanel(UIBase owner) : base(owner)
     {
-        StartTrainingMatchActionHandler.Instance.AddCallback(() => SetButtonVisible(true));
-        StartMainMenuActionHandler.Instance.AddCallback(() =>
-        {
-            UIManager.HidePanel(PanelTypes.RecordingDummy);
-            SetButtonVisible(false);
-        });
+        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => SetButtonVisible(true));
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => { SetButtonVisible(false); });
         SetButtonVisible(false);
     }
-    
-    
+
 
     public override string Name => "Recording Dummy";
 
@@ -44,13 +39,4 @@ public class RecordingDummyPanel : MenuPanelBase
         DummyTrimRecording.CreateUIControls(ContentRoot);
         MultipleRecordingSlots.CreateUIControls(ContentRoot);
     }
-    
-    // [HarmonyPatch(typeof(AppStateManager), nameof(AppStateManager.SetAppState))]
-    // public class PatchSetAppState
-    // {
-    //     public static void Postfix(AppState state)
-    //     {
-    //         Toolbar.setButtonVisibility(PanelTypes.TrainingMode,  Data.Global.isTrainingMatch());
-    //     }
-    // }
 }

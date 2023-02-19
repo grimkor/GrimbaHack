@@ -1,10 +1,5 @@
-using System;
-using epoch.db;
-using GrimbaHack.Data;
-using Il2CppInterop.Runtime.Injection;
 using Il2CppSystem.Collections.Generic;
 using nway.gameplay.ai;
-using nway.gameplay.match;
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
@@ -18,8 +13,7 @@ public sealed class MultipleRecordingSlots : ModuleBase
     public static MultipleRecordingSlots Instance { get; private set; }
     
     // public MultipleRecordingSlotsBehaviour Behaviour { get; set; }
-    private static CommandRecordingDriver.RecordingState DummyRecorder;
-    private List<List<CommandRecordingDriver.InputChange>> recordingSlots = new List<List<CommandRecordingDriver.InputChange>>();
+    private List<List<CommandRecordingDriver.InputChange>> _recordingSlots = new List<List<CommandRecordingDriver.InputChange>>();
     
     static MultipleRecordingSlots()
     {
@@ -27,7 +21,7 @@ public sealed class MultipleRecordingSlots : ModuleBase
         var i = 0;
         while (i ++ < 5)
         {
-            Instance.recordingSlots.Add(new List<CommandRecordingDriver.InputChange>());
+            Instance._recordingSlots.Add(new List<CommandRecordingDriver.InputChange>());
         }
     }
     
@@ -40,7 +34,7 @@ public sealed class MultipleRecordingSlots : ModuleBase
 
         
         var slotNumber = 0;
-        foreach (var recordingSlot in Instance.recordingSlots)
+        foreach (var recordingSlot in Instance._recordingSlots)
         {
             var slotNo = slotNumber;
             var slotLabel = slotNo + 1;
@@ -56,7 +50,7 @@ public sealed class MultipleRecordingSlots : ModuleBase
                 if (dummyRecorder != null)
                 {
                     dummyRecorder.inputs = new List<CommandRecordingDriver.InputChange>();
-                    foreach (var input in Instance.recordingSlots[slotNo])
+                    foreach (var input in Instance._recordingSlots[slotNo])
                     {
                         dummyRecorder.inputs.Add(new CommandRecordingDriver.InputChange(input.frame, input.input));
                     }
@@ -68,10 +62,10 @@ public sealed class MultipleRecordingSlots : ModuleBase
                 var dummyRecorder = SceneStartup.instance.GamePlay?.recorder?.dummyRecorder;
                 if (dummyRecorder != null)
                 {
-                    Instance.recordingSlots[slotNo] = new List<CommandRecordingDriver.InputChange>();
+                    Instance._recordingSlots[slotNo] = new List<CommandRecordingDriver.InputChange>();
                     foreach (var input in dummyRecorder.inputs)
                     {
-                        Instance.recordingSlots[slotNo].Add(new CommandRecordingDriver.InputChange(input.frame, input.input));
+                        Instance._recordingSlots[slotNo].Add(new CommandRecordingDriver.InputChange(input.frame, input.input));
                     }
                 }
             };

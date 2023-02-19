@@ -7,17 +7,17 @@ using Action = System.Action;
 namespace GrimbaHack.Utility;
 
 [HarmonyPatch(typeof(AppStateManager), nameof(AppStateManager.SetAppState))]
-public class StartTrainingMatchActionHandler
+public class OnEnterTrainingMatchActionHandler
 {
-    private StartTrainingMatchActionHandler()
+    private OnEnterTrainingMatchActionHandler()
     {
     }
 
-    static StartTrainingMatchActionHandler()
+    static OnEnterTrainingMatchActionHandler()
     {
-        Instance = new StartTrainingMatchActionHandler();
+        Instance = new OnEnterTrainingMatchActionHandler();
     }
-    public static StartTrainingMatchActionHandler Instance { get; set; }
+    public static OnEnterTrainingMatchActionHandler Instance { get; set; }
     private List<Action> callbacks = new();
 
     public void AddCallback(Action callback)
@@ -27,7 +27,7 @@ public class StartTrainingMatchActionHandler
     
     public static void Postfix(AppState state)
     {
-        if (!Data.Global.isTrainingMatch()) return;
+        if (!Data.Global.IsTrainingMatch()) return;
         foreach (var callback in Instance.callbacks)
         {
             callback();

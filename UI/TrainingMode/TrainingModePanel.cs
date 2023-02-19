@@ -10,17 +10,11 @@ public class TrainingModePanel : MenuPanelBase
 {
     public TrainingModePanel(UIBase owner) : base(owner)
     {
-        StartTrainingMatchActionHandler.Instance.AddCallback(() => SetButtonVisible(true));
-        StartMainMenuActionHandler.Instance.AddCallback(() =>
-        {
-            SetActive(false);
-            SetButtonVisible(false);
-            
-        });
+        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => SetButtonVisible(true));
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => { SetButtonVisible(false); });
         SetButtonVisible(false);
     }
-    
-    
+
 
     public override string Name => "Training Mode";
 
@@ -44,13 +38,4 @@ public class TrainingModePanel : MenuPanelBase
         ExtraPushblockOptions.CreateUIControls(ContentRoot);
         UnlimitedInstall.CreateUIControls(ContentRoot);
     }
-    
-    // [HarmonyPatch(typeof(AppStateManager), nameof(AppStateManager.SetAppState))]
-    // public class PatchSetAppState
-    // {
-    //     public static void Postfix(AppState state)
-    //     {
-    //         Toolbar.setButtonVisibility(PanelTypes.TrainingMode,  Data.Global.isTrainingMatch());
-    //     }
-    // }
 }
