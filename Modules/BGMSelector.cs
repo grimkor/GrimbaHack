@@ -24,10 +24,10 @@ public sealed class BGMSelector : ModuleBase
 
     public static bool Enabled { get; set; } = false;
     public static List<string> BGMList { get; set; } = Global.BGMTracks.ToArray().Select(x => x.Value).ToList();
-    public static string selectedBGM { get; set; } = BGMList[0];
+    public static string SelectedBGM { get; set; } = BGMList[0];
     static Dropdown _bgmDropdown;
     static Stopwatch _stopwatch = new();
-    static float trackLength;
+    static float _trackLength;
 
 
     public static void CreateUIControls(GameObject contentRoot, out Action updateCallback)
@@ -73,12 +73,10 @@ public sealed class BGMSelector : ModuleBase
         // DROPDOWN
         UIFactory.CreateDropdown(bgmParentVerticalGroup, "BGMDropdown",
             out _bgmDropdown,
-            selectedBGM,
+            SelectedBGM,
             14,
             i =>
             {
-                Plugin.Log.LogInfo($"i: {i}");
-                Plugin.Log.LogInfo($"BGMList[i]: {BGMList?[i]}");
                 SelectBGM(BGMList?[i]);
             },
             Global.BGMTracks.ToArray().Select(x => x.Label).ToArray()
@@ -89,7 +87,7 @@ public sealed class BGMSelector : ModuleBase
         {
             if (_stopwatch.IsRunning)
             {
-                if (_stopwatch.Elapsed.TotalSeconds >= trackLength)
+                if (_stopwatch.Elapsed.TotalSeconds >= _trackLength)
                 {
                     NextTrack();
                 }
@@ -98,15 +96,15 @@ public sealed class BGMSelector : ModuleBase
             {
                 try
                 {
-                    var trackTime = AudioManager.instance.bgmManager.bgmAssetList[$"BGM/{selectedBGM}"].audioClip
+                    var trackTime = AudioManager.instance.bgmManager.bgmAssetList[$"BGM/{SelectedBGM}"].audioClip
                         .length;
-                    trackLength = trackTime;
+                    _trackLength = trackTime;
                     if (trackTime > 0)
                     {
                         _stopwatch.Start();
                     }
                 }
-                catch (Exception e)
+                catch
                 {
                     // ignored
                 }
@@ -116,15 +114,13 @@ public sealed class BGMSelector : ModuleBase
 
     private static void SelectBGM(string trackName)
     {
-        selectedBGM = trackName;
+        SelectedBGM = trackName;
     }
 
     private static void PlayBGM()
     {
-        Plugin.Log.LogInfo("PlayBGM");
-        
         AudioManager.instance.StopBGM();
-        AudioManager.instance.PlayBGM(selectedBGM);
+        AudioManager.instance.PlayBGM(SelectedBGM);
 
         _stopwatch.Stop();
         _stopwatch.Reset();
@@ -135,7 +131,7 @@ public sealed class BGMSelector : ModuleBase
         var audioManagerInstance = AudioManager.instance;
         if (audioManagerInstance != null)
         {
-            var currentBGMIndex = BGMList.IndexOf(selectedBGM);
+            var currentBGMIndex = BGMList.IndexOf(SelectedBGM);
             if (currentBGMIndex == BGMList.Count - 1)
             {
                 currentBGMIndex = 0;
@@ -145,9 +141,9 @@ public sealed class BGMSelector : ModuleBase
                 currentBGMIndex++;
             }
 
-            selectedBGM = BGMList[currentBGMIndex];
+            SelectedBGM = BGMList[currentBGMIndex];
             _bgmDropdown.value = currentBGMIndex;
-            SelectBGM(selectedBGM);
+            SelectBGM(SelectedBGM);
             PlayBGM();
         }
     }
@@ -156,7 +152,7 @@ public sealed class BGMSelector : ModuleBase
     {
         var audioManagerInstance = AudioManager.instance;
         if (audioManagerInstance != null)
-            if (trackLength > 0 && _stopwatch.Elapsed.TotalSeconds > 5)
+            if (_trackLength > 0 && _stopwatch.Elapsed.TotalSeconds > 5)
             {
                 _stopwatch.Stop();
                 _stopwatch.Reset();
@@ -164,7 +160,7 @@ public sealed class BGMSelector : ModuleBase
             }
             else
             {
-                var currentBGMIndex = BGMList.IndexOf(selectedBGM);
+                var currentBGMIndex = BGMList.IndexOf(SelectedBGM);
                 if (currentBGMIndex == 0)
                 {
                     currentBGMIndex = BGMList.Count - 1;
@@ -174,9 +170,9 @@ public sealed class BGMSelector : ModuleBase
                     currentBGMIndex--;
                 }
 
-                selectedBGM = BGMList[currentBGMIndex];
+                SelectedBGM = BGMList[currentBGMIndex];
                 _bgmDropdown.value = currentBGMIndex;
-                SelectBGM(selectedBGM);
+                SelectBGM(SelectedBGM);
                 PlayBGM();
             }
     }

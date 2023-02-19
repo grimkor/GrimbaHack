@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using epoch.db;
+using nway.gameplay.match;
 
 namespace GrimbaHack.Data;
 
@@ -24,7 +26,8 @@ public enum PanelTypes
 {
     Global,
     BGMPlayer,
-    TrainingMode
+    TrainingMode,
+    RecordingDummy
 }
 
 public enum DUMMY_INPUTS
@@ -98,4 +101,10 @@ public static class Global
         new LabelValue() { Label = "95%", Value = 95 },
         new LabelValue() { Label = "100%", Value = 100 },
     };
+
+    static public bool IsTrainingMatch()
+    {
+        return GameManager.instance.appStateManager.state == AppState.Combat &&
+               MatchManager.instance.matchType == MatchType.Training;
+    }
 }
