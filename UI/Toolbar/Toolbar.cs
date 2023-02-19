@@ -23,15 +23,6 @@ public sealed class Toolbar
 
     public Dictionary<PanelTypes, MenuPanelBase> _panels = new();
 
-    public static void setButtonVisibility(PanelTypes panel, bool enabled)
-    {
-        var panelButton = Instance._panels[panel];
-        if (panelButton != null)
-        {
-            panelButton.setButtonVisible(enabled);
-        }
-    }
-
     public static void CreateUI(GameObject uiRoot)
     {
         var toolbarPanel = UIFactory.CreateUIObject("ToolbarPanel", uiRoot);

@@ -30,8 +30,9 @@ public static class UIManager
         Toolbar.CreateUI(UIBase.RootObject);
         // var globalPanel = new GlobalPanel(UIBase);
         _panels.Add(PanelTypes.Global, new GlobalPanel(UIBase));
-        _panels.Add(PanelTypes.TrainingMode, new TrainingModePanel(UIBase));
         _panels.Add(PanelTypes.BGMPlayer, new BGMPlayerPanel(UIBase));
+        _panels.Add(PanelTypes.TrainingMode, new TrainingModePanel(UIBase));
+        _panels.Add(PanelTypes.RecordingDummy, new RecordingDummyPanel(UIBase));
         UIBase.Enabled = false;
     }
 
@@ -42,5 +43,14 @@ public static class UIManager
     public static void TogglePanel(PanelTypes panelType)
     {
         _panels[panelType]?.Toggle();
+    }
+    public static void ShowPanel(PanelTypes panelType)
+    {
+        _panels[panelType]?.SetActive(true);
+    }
+    public static void HidePanel(PanelTypes panelType)
+    {
+        Plugin.Log.LogInfo($"_panels[panelType] {_panels[panelType]}");
+        _panels[panelType].SetActive(false);
     }
 }

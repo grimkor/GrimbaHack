@@ -17,10 +17,10 @@ public abstract class MenuPanelBase : PanelBase
     public ButtonRef MenuButton;
     public LayoutElement layoutElement { get; set; }
     
-    public void setButtonVisible(bool visible)
+    public void SetButtonVisible(bool visible)
     {
-        MenuButton.ButtonText.enabled = visible;
         layoutElement.enabled = visible;
+        MenuButton.ButtonText.enabled = visible;
     }
     public override void ConstructUI()
     {

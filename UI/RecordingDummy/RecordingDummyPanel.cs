@@ -1,28 +1,32 @@
+using epoch.db;
 using GrimbaHack.Data;
 using GrimbaHack.Modules;
+using GrimbaHack.UI.Global;
 using GrimbaHack.Utility;
+using HarmonyLib;
+using nway.gameplay;
+using nway.gameplay.match;
 using UnityEngine;
 using UniverseLib.UI;
 
 namespace GrimbaHack.UI.TrainingMode;
 
-public class TrainingModePanel : MenuPanelBase
+public class RecordingDummyPanel : MenuPanelBase
 {
-    public TrainingModePanel(UIBase owner) : base(owner)
+    public RecordingDummyPanel(UIBase owner) : base(owner)
     {
         StartTrainingMatchActionHandler.Instance.AddCallback(() => SetButtonVisible(true));
         StartMainMenuActionHandler.Instance.AddCallback(() =>
         {
-            SetActive(false);
+            UIManager.HidePanel(PanelTypes.RecordingDummy);
             SetButtonVisible(false);
-            
         });
         SetButtonVisible(false);
     }
     
     
 
-    public override string Name => "Training Mode";
+    public override string Name => "Recording Dummy";
 
     public override int MinWidth => 500;
 
@@ -32,17 +36,13 @@ public class TrainingModePanel : MenuPanelBase
 
     public override Vector2 DefaultAnchorMax => new Vector2(0.5f, 0.5f);
 
-    public override PanelTypes PanelType => PanelTypes.TrainingMode;
+    public override PanelTypes PanelType => PanelTypes.RecordingDummy;
 
     protected override void ConstructPanelContent()
     {
         SetActive(false);
-        FrameDataManager.CreateUIControls(ContentRoot);
-        CollisionBoxViewer.CreateUIControls(ContentRoot);
-        SimulationSpeed.CreateUIControls(ContentRoot);
-        DummyExPunish.CreateUIControls(ContentRoot);
-        ExtraPushblockOptions.CreateUIControls(ContentRoot);
-        UnlimitedInstall.CreateUIControls(ContentRoot);
+        DummyTrimRecording.CreateUIControls(ContentRoot);
+        MultipleRecordingSlots.CreateUIControls(ContentRoot);
     }
     
     // [HarmonyPatch(typeof(AppStateManager), nameof(AppStateManager.SetAppState))]
