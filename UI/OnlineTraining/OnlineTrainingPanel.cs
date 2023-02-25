@@ -6,17 +6,18 @@ using UniverseLib.UI;
 
 namespace GrimbaHack.UI.TrainingMode;
 
-public class TrainingModePanel : MenuPanelBase
+public class OnlineTrainingPanel : MenuPanelBase
 {
-    public TrainingModePanel(UIBase owner) : base(owner)
+    public OnlineTrainingPanel(UIBase owner) : base(owner)
     {
-        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => SetButtonVisible(true));
+        OnEnterPremadeMatchActionHandler.Instance.AddCallback(() =>
+            SetButtonVisible(true));
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => { SetButtonVisible(false); });
         SetButtonVisible(false);
     }
 
 
-    public override string Name => "Training Mode";
+    public override string Name => "Online Training";
 
     public override int MinWidth => 500;
 
@@ -26,16 +27,12 @@ public class TrainingModePanel : MenuPanelBase
 
     public override Vector2 DefaultAnchorMax => new Vector2(0.5f, 0.5f);
 
-    public override PanelTypes PanelType => PanelTypes.TrainingMode;
+    public override PanelTypes PanelType => PanelTypes.OnlineTrainingMode;
 
     protected override void ConstructPanelContent()
     {
         SetActive(false);
-        FrameDataManager.CreateUIControls(ContentRoot);
         CollisionBoxViewer.CreateUIControls(ContentRoot);
-        SimulationSpeed.CreateUIControls(ContentRoot);
-        DummyExPunish.CreateUIControls(ContentRoot);
-        ExtraPushblockOptions.CreateUIControls(ContentRoot);
-        UnlimitedInstall.CreateUIControls(ContentRoot);
+        OnlineTrainingMode.CreateUIControls(ContentRoot);
     }
 }

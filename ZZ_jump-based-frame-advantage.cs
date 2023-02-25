@@ -253,3 +253,11 @@ public class Exploration : MonoBehaviour
     //     }
     // }
 }
+
+/* 
+
+See game state:
+AppStateManager.state == Combat/Menu
+
+MatchManager.createXMatch to see what match is being made to enable/disable stuff
+*/

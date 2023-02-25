@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using GrimbaHack.Data;
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
@@ -19,6 +21,7 @@ public sealed class Toolbar
         Instance = new Toolbar();
     }
 
+    public Dictionary<PanelTypes, MenuPanelBase> _panels = new();
 
     public static void CreateUI(GameObject uiRoot)
     {

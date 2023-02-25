@@ -1,11 +1,8 @@
 using System.IO;
 using BepInEx;
-using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UniverseLib;
-using UniverseLib.UI;
 
 namespace GrimbaHack.UI;
 

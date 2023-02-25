@@ -1,10 +1,8 @@
 using System;
 using System.Diagnostics;
-using epoch.db;
+using GrimbaHack.Utility;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
-using nway.gameplay.match;
-using nway.gameplay.simulation;
 using UnityEngine;
 using UniverseLib.UI;
 
@@ -33,22 +31,36 @@ public class FrameDataManager : ModuleBase
     }
 
     public static FrameDataManager Instance { get; private set; }
+    public FrameDataBehaviour Behaviour { get; set; }
 
     static FrameDataManager()
     {
         Instance = new FrameDataManager();
-        Instance.Init();
+        ClassInjector.RegisterTypeInIl2Cpp<FrameDataBehaviour>();
+        GameObject go = new GameObject("FrameDataBehaviour");
+        go.hideFlags = HideFlags.HideAndDontSave;
+        GameObject.DontDestroyOnLoad(go);
+        Instance.Behaviour = go.AddComponent<FrameDataBehaviour>();
+        Instance.Behaviour.enabled = false;
+        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Behaviour.SetEnable(false));
+        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        {
+            if (Instance.Enabled)
+                Instance.Behaviour.SetupUpdateOverlayTargets();
+        });
     }
 
-    private void Init()
-    {
-        FrameDataBehaviour.Setup();
-    }
+    private bool _enabled;
 
     public bool Enabled
     {
-        get => FrameDataBehaviour.Instance.enabled;
-        set => FrameDataBehaviour.Instance.SetEnable(value);
+        get => Behaviour.enabled;
+        set
+        {
+            Behaviour.SetEnable(value);
+            _enabled = value;
+        }
     }
 
     public static void CreateUIControls(GameObject contentRoot)
@@ -60,22 +72,40 @@ public class FrameDataManager : ModuleBase
         frameDataToggleLabel.text = "Show frame data for attacks";
         UIFactory.SetLayoutElement(frameDataToggle.gameObject, minHeight: 25, minWidth: 50);
     }
-    
-    [HarmonyPatch(typeof(SimulationManager), nameof(SimulationManager.Initialize))]
-    public class PatchSimulationInitialize
-    {
-        public static void Postfix()
-        {
-            if (Instance.Enabled)
-                FrameDataBehaviour.Instance.SetupUpdateOverlayTargets();
-        }
-    }
 }
 
 public class FrameDataBehaviour : MonoBehaviour
 {
-    internal static FrameDataBehaviour Instance { get; private set; }
+    public FrameDataBehaviour()
+    {
+        OnApplyBlockAndHitStunActionHandler.Instance.AddCallback((bool isHitStun, int originalFrames) =>
+        {
+            if (!TimeAnimation.IsRunning) return;
 
+            if (_currentFrameData != null)
+            {
+                var startup = (int)Math.Round(TimeAnimation.ElapsedMilliseconds / 16.67);
+                _currentFrameData.StartupFrames = startup;
+            }
+        });
+
+        OnCharacterGetOffenseInfoActionHandler.Instance.AddCallback((OffenseInfo result) =>
+        {
+            if (!enabled) return;
+            if (_currentFrameData?.AttackName != result.attackName && _currentFrameData.StartupFrames == 0)
+            {
+                _currentFrameData = new FrameData
+                {
+                    AttackName = result.attackName,
+                    HitstunFrames = result.hitStunFrames,
+                    BlockstunFrames = result.blockStunFrames,
+                    BaseDamage = result.baseDamage,
+                    BlockedDamagePercent = result.blockedDamagePercent,
+                    LaunchHeight = result.launchHeight
+                };
+            }
+        });
+    }
 
     public void SetEnable(bool value)
     {
@@ -84,16 +114,8 @@ public class FrameDataBehaviour : MonoBehaviour
         if (_frameAdvantageOverlay != null)
             _frameAdvantageOverlay.Enable = value;
         enabled = value;
-    }
-
-    internal static void Setup()
-    {
-        ClassInjector.RegisterTypeInIl2Cpp<FrameDataBehaviour>();
-        GameObject gameObject = new GameObject("FrameDataBehaviour");
-        DontDestroyOnLoad(gameObject);
-        gameObject.hideFlags = HideFlags.HideAndDontSave;
-        Instance = gameObject.AddComponent<FrameDataBehaviour>();
-        Instance.enabled = false;
+        if (enabled)
+            SetupUpdateOverlayTargets();
     }
 
     private LabelValueOverlayText _frameAdvantageOverlay;
@@ -176,9 +198,6 @@ public class FrameDataBehaviour : MonoBehaviour
 
     private void Update()
     {
-        // Only work in training mode
-        if (MatchManager.instance?.matchType != MatchType.Training) return;
-
         if (_dummyCharacter)
         {
             if (!_testStateBool && _dummyCharacter.InHitStun || _dummyCharacter.InBlockStun)
@@ -227,41 +246,6 @@ public class FrameDataBehaviour : MonoBehaviour
                     _startupOverlay.Value = $"{_currentFrameData.StartupFrames}";
                     ResetTracker();
                 }
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(Character), nameof(Character.GetOffenseInfo))]
-    public class PatchGetOffenseInfo
-    {
-        public static void Postfix(ref OffenseInfo __result)
-        {
-            if (_currentFrameData?.AttackName != __result.attackName && _currentFrameData.StartupFrames == 0)
-            {
-                _currentFrameData = new FrameData
-                {
-                    AttackName = __result.attackName,
-                    HitstunFrames = __result.hitStunFrames,
-                    BlockstunFrames = __result.blockStunFrames,
-                    BaseDamage = __result.baseDamage,
-                    BlockedDamagePercent = __result.blockedDamagePercent,
-                    LaunchHeight = __result.launchHeight
-                };
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(Character), nameof(Character.ApplyBlockAndHitStun))]
-    public class ApplyBlockAndHitStun
-    {
-        public static void Prefix(bool isHitStun, int originalFrames)
-        {
-            if (!TimeAnimation.IsRunning) return;
-
-            if (_currentFrameData != null)
-            {
-                var startup = (int)Math.Round(TimeAnimation.ElapsedMilliseconds / 16.67);
-                _currentFrameData.StartupFrames = startup;
             }
         }
     }

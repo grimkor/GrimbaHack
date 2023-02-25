@@ -1,7 +1,10 @@
 using System;
 using epoch.db;
+using GrimbaHack.Data;
+using GrimbaHack.Utility;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using nway.gameplay.ai;
 using nway.gameplay.match;
 using nway.gameplay.simulation;
@@ -29,25 +32,24 @@ public sealed class DummyExPunish : ModuleBase
         GameObject.DontDestroyOnLoad(go);
         Instance.Behaviour = go.AddComponent<DummyExPunishBehaviour>();
         Instance.Enabled = false;
+        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Behaviour.enabled = false);
     }
+
+    private bool _enabled;
 
     public bool Enabled
     {
         get => Behaviour.enabled;
         set
         {
-            if (MatchManager.instance.matchType != MatchType.TRAINING)
-            {
-                Debug.LogWarning("DummyExPunish can only be used in Training Mode");
-                Behaviour.enabled = false;
-                return;
-            }
-
-            Behaviour.Setup();
+            if (value)
+                Behaviour.Setup();
             Behaviour.enabled = value;
+            _enabled = value;
         }
     }
-    
+
     public static void CreateUIControls(GameObject contentRoot)
     {
         var dummyExPunishGroup = UIFactory.CreateUIObject("DummyExPunishGroup", contentRoot);
@@ -71,6 +73,37 @@ public class DummyExPunishBehaviour : MonoBehaviour
     private static CommandRecordingDriver.RecordingState DummyRecorder;
     private static bool DummyIsStunned = false;
     private static bool _ExTriggered = false;
+    private Il2CppArrayBase<Character> _characters;
+
+    public DummyExPunishBehaviour()
+    {
+        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        {
+            if (DummyExPunish.Instance.Enabled)
+            {
+                var sceneStartup = FindObjectOfType<SceneStartup>();
+
+                var characters = FindObjectsOfType<Character>();
+
+                foreach (var character in characters)
+                {
+                    if (character.IsActiveCharacter)
+                    {
+                        if (character.team != 0)
+                        {
+                            DummyCharacter = character;
+                        }
+                    }
+                }
+
+                if (sceneStartup && DummyCharacter)
+                {
+                    RecordController = sceneStartup.GamePlay?.recorder;
+                    DummyRecorder = RecordController?.dummyRecorder;
+                }
+            }
+        });
+    }
 
     public void Setup()
     {
@@ -96,37 +129,6 @@ public class DummyExPunishBehaviour : MonoBehaviour
         }
     }
 
-    [HarmonyPatch(typeof(SimulationManager), nameof(SimulationManager.Initialize))]
-    public static class SimulationManagerInitializePatch
-    {
-        public static void Postfix()
-        {
-            if (DummyExPunish.Instance.Enabled)
-            {
-                var sceneStartup = FindObjectOfType<SceneStartup>();
-
-                var characters = FindObjectsOfType<Character>();
-
-                foreach (var character in characters)
-                {
-                    if (character.IsActiveCharacter)
-                    {
-                        if (character.team != 0)
-                        {
-                            DummyCharacter = character;
-                        }
-                    }
-                }
-
-                if (sceneStartup && DummyCharacter)
-                {
-                    RecordController = sceneStartup.GamePlay?.recorder;
-                    DummyRecorder = RecordController?.dummyRecorder;
-                }
-            }
-        }
-    }
-
     private void Update()
     {
         if (!DummyCharacter || DummyRecorder == null || RecordController == null)
@@ -144,7 +146,7 @@ public class DummyExPunishBehaviour : MonoBehaviour
             RecordController.StopPlayback();
             DummyRecorder.Rewind();
             DummyRecorder.PrepareRecording();
-            DummyRecorder.RecordInput(5243152); //EX
+            DummyRecorder.RecordInput((uint)DUMMY_INPUTS.EX); //EX
             DummyRecorder.FinishRecording();
             RecordController.StartPlayback();
 

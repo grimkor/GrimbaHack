@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using epoch.db;
+using nway.gameplay.match;
 
 namespace GrimbaHack.Data;
 
@@ -24,19 +26,23 @@ public enum PanelTypes
 {
     Global,
     BGMPlayer,
-    TrainingMode
+    TrainingMode,
+    RecordingDummy,
+    OnlineTrainingMode
 }
 
 public enum DUMMY_INPUTS
 {
     EMPTY = 0,
+    RECORD = 4194304,
     EX = 5243152,
-    _5S = 1048832
+    _5S = 1048832,
+    _5L = 16,
 }
 
 public static class Global
 {
-    public static readonly string Version = "v0.3.0";
+    public static readonly string Version = "v0.4.0";
 
     public static readonly List<Stage> Stages = new()
     {
@@ -96,4 +102,23 @@ public static class Global
         new LabelValue() { Label = "95%", Value = 95 },
         new LabelValue() { Label = "100%", Value = 100 },
     };
+
+    public static List<MatchType> BannedGameModes = new()
+        { MatchType.RANKED, MatchType.CASUAL, MatchType.LOBBY };
+
+    static public bool IsTrainingMatch()
+    {
+        return GameManager.instance.appStateManager.state == AppState.Combat &&
+               MatchManager.instance.matchType == MatchType.Training;
+    }
+    static public bool IsPremadeMatch()
+    {
+        return GameManager.instance.appStateManager.state == AppState.Combat &&
+        MatchManager.instance.matchType == MatchType.PREMADE;
+    }
+
+    static public bool IsBannedGameMode(MatchType matchType)
+    {
+        return BannedGameModes.Contains(matchType);
+    }
 }
