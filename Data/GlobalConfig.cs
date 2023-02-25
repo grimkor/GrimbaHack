@@ -27,7 +27,8 @@ public enum PanelTypes
     Global,
     BGMPlayer,
     TrainingMode,
-    RecordingDummy
+    RecordingDummy,
+    OnlineTrainingMode
 }
 
 public enum DUMMY_INPUTS
@@ -41,7 +42,7 @@ public enum DUMMY_INPUTS
 
 public static class Global
 {
-    public static readonly string Version = "v0.4.0";
+    public static readonly string Version = "v0.4.0-alpha-8";
 
     public static readonly List<Stage> Stages = new()
     {
@@ -102,13 +103,18 @@ public static class Global
         new LabelValue() { Label = "100%", Value = 100 },
     };
 
-    public static List<MatchType> BannedGameModes = new List<MatchType>
+    public static List<MatchType> BannedGameModes = new()
         { MatchType.RANKED, MatchType.CASUAL, MatchType.LOBBY };
 
     static public bool IsTrainingMatch()
     {
         return GameManager.instance.appStateManager.state == AppState.Combat &&
                MatchManager.instance.matchType == MatchType.Training;
+    }
+    static public bool IsPremadeMatch()
+    {
+        return GameManager.instance.appStateManager.state == AppState.Combat &&
+        MatchManager.instance.matchType == MatchType.PREMADE;
     }
 
     static public bool IsBannedGameMode(MatchType matchType)

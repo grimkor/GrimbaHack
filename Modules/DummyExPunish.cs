@@ -4,6 +4,7 @@ using GrimbaHack.Data;
 using GrimbaHack.Utility;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using nway.gameplay.ai;
 using nway.gameplay.match;
 using nway.gameplay.simulation;
@@ -72,6 +73,7 @@ public class DummyExPunishBehaviour : MonoBehaviour
     private static CommandRecordingDriver.RecordingState DummyRecorder;
     private static bool DummyIsStunned = false;
     private static bool _ExTriggered = false;
+    private Il2CppArrayBase<Character> _characters;
 
     public DummyExPunishBehaviour()
     {

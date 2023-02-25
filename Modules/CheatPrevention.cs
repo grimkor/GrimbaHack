@@ -1,18 +1,15 @@
-using System.Collections.Generic;
 using System.Linq;
 using epoch.db;
 using GrimbaHack.Data;
 using GrimbaHack.Utility;
-using HarmonyLib;
 using nway.gameplay.match;
 using nway.gameplay.online;
-using nway.gameplay.ui;
 
 namespace GrimbaHack.Modules;
 
 public class CheatPrevention
 {
-    public static bool Enabled { get; set; } = false;
+    public static bool Enabled { get; set; }
 
     // Cancel ranked/casual matchmaking
     private class PatchFindMatch
@@ -21,7 +18,7 @@ public class CheatPrevention
         {
             OnOnlineMatchManagerFindMatchActionHandler.Instance.AddCallback((
                 TeamHeroSelection team,
-                epoch.db.MatchType matchType,
+                MatchType matchType,
                 bool rematch,
                 string selectedStage,
                 string joinCode,
@@ -33,7 +30,7 @@ public class CheatPrevention
             {
                 if (Enabled && Global.IsBannedGameMode(matchType))
                 {
-                    var hasDuplicatesinReferenceArray = team.heroes.GroupBy(x => x).Any(g => g.Count() > 1);
+                    var hasDuplicatesinReferenceArray = team.heroes.GroupBy(x => x.index).Any(g => g.Count() > 1);
                     // If the player has duplicates in their hero selection prevent the match from starting
                     if (hasDuplicatesinReferenceArray)
                     {
@@ -48,7 +45,6 @@ public class CheatPrevention
                         return false;
                     }
                 }
-
                 return true;
             });
         }

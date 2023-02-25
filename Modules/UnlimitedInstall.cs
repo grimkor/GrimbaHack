@@ -28,14 +28,11 @@ public class UnlimitedInstall : CheatPrevention
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.SetUnlimitedInstall(false));
     }
 
-    public bool Enabled
+    public void SetEnabled(bool enable)
     {
-        get => _enabled;
-        set
-        {
-            SetUnlimitedInstall(value);
-            _enabled = value;
-        }
+        SetUnlimitedInstall(enable);
+        Enabled = enable;
+        _enabled = enable;
     }
 
     private void SetUnlimitedInstall(bool enable)
@@ -65,7 +62,7 @@ public class UnlimitedInstall : CheatPrevention
             out var unlimitedInstallToggleLabel);
         unlimitedInstallToggle.isOn = false;
         unlimitedInstallToggleLabel.text = "Unlimited Install Time (Eric/Adam)";
-        unlimitedInstallToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
+        unlimitedInstallToggle.onValueChanged.AddListener(new Action<bool>((value) => Instance.SetEnabled(value)));
 
         UIFactory.SetLayoutElement(unlimitedInstallToggle.gameObject, minHeight: 25, minWidth: 50);
     }

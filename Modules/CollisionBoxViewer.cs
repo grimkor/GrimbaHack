@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GrimbaHack.Utility;
 using HarmonyLib;
 using nway.collision;
@@ -14,11 +15,13 @@ namespace GrimbaHack.Modules;
 public class CollisionBoxViewer : ModuleBase
 {
     public static CollisionBoxViewer Instance { get; private set; }
+    private static List<Toggle> toggleInstances = new();
 
     static CollisionBoxViewer()
     {
         Instance = new();
         OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
+        OnEnterPremadeMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => CollisionBoxViewerController.Enabled = false);
     }
 
@@ -33,6 +36,7 @@ public class CollisionBoxViewer : ModuleBase
         {
             CollisionBoxViewerController.Enabled = value;
             _enabled = value;
+            toggleInstances.ForEach((toggle => toggle.isOn = value));
         }
     }
 
@@ -43,12 +47,13 @@ public class CollisionBoxViewer : ModuleBase
         UIFactory.SetLayoutElement(collisionBoxViewerGroup);
         UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(collisionBoxViewerGroup, false, false, true, true, padLeft: 25,
             spacing: 10, childAlignment: TextAnchor.MiddleLeft);
-        UIFactory.CreateToggle(collisionBoxViewerGroup, "CollisionBoxViewerToggle", out var collisionBoxViewerToggle,
+        UIFactory.CreateToggle(collisionBoxViewerGroup, "CollisionBoxViewerToggle",
+            out var collisionBoxViewerToggle,
             out var collisionBoxViewerToggleLabel);
-        collisionBoxViewerToggle.isOn = false;
+        collisionBoxViewerToggle.isOn = Instance._enabled;
         collisionBoxViewerToggleLabel.text = "Enable Collision Box Viewer";
         collisionBoxViewerToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
-
+        toggleInstances.Add(collisionBoxViewerToggle);
         UIFactory.SetLayoutElement(collisionBoxViewerToggle.gameObject, minHeight: 25, minWidth: 50);
     }
 }

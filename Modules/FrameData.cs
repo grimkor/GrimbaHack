@@ -91,6 +91,7 @@ public class FrameDataBehaviour : MonoBehaviour
 
         OnCharacterGetOffenseInfoActionHandler.Instance.AddCallback((OffenseInfo result) =>
         {
+            if (!enabled) return;
             if (_currentFrameData?.AttackName != result.attackName && _currentFrameData.StartupFrames == 0)
             {
                 _currentFrameData = new FrameData
