@@ -28,7 +28,8 @@ public enum PanelTypes
     BGMPlayer,
     TrainingMode,
     RecordingDummy,
-    OnlineTrainingMode
+    OnlineTrainingMode,
+    Twitch
 }
 
 public enum DUMMY_INPUTS
