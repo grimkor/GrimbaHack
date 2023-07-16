@@ -1,5 +1,7 @@
 using System;
 using ArenaProtocol;
+using GrimbaHack.UI;
+using GrimbaHack.UI.Twitch;
 using GrimbaHack.Utility;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,7 +26,7 @@ public class MatchPrediction : ModuleBase
         set
         {
             _enabled = value;
-            setUIColours();
+            SetUIColours();
         }
     }
 
@@ -66,13 +68,13 @@ public class MatchPrediction : ModuleBase
                 Instance.winsNeeded = match.matchRule.minWinCount;
                 Instance.playerOneWins = 0;
                 Instance.playerTwoWins = 0;
-                    TwitchApi.Instance.StartPrediction("Who Wins?", match.GetMatchUserList()[0].userName,
+                    TwitchApi.Instance.StartPrediction(match.GetMatchUserList()[0].userName,
                         match.GetMatchUserList()[1].userName);
             }
         });
     }
 
-    private static void setUIColours()
+    private static void SetUIColours()
     {
             matchPredictionEnableToggleLabel.color = Instance.Enabled ? Color.white : Color.grey;
     }
@@ -93,8 +95,17 @@ public class MatchPrediction : ModuleBase
         {
             Instance.Enabled = value;
         }));
-        setUIColours();
-        UIFactory.SetLayoutElement(matchPredictionViewerGroup.gameObject, minHeight: 25, minWidth: 50);
+        var predictionMessageButton =
+            UIFactory.CreateButton(matchPredictionViewerGroup, "predictionMessageButton", "Set Message");
+        predictionMessageButton.OnClick += () =>
+        {
+            var panel = new TwitchBotPredictionMessagePanel(UIManager.UIBase);
+            panel.Toggle();
+        };
+        
+        UIFactory.SetLayoutElement(MatchPredictionToggle.gameObject, minHeight: 25, minWidth: 220);
+        UIFactory.SetLayoutElement(predictionMessageButton.GameObject, minHeight: 25, minWidth: 100);
+        SetUIColours();
     }
 
 }

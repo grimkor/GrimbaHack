@@ -8,3 +8,4 @@ Folder.DotSettings.user
 
 deps/interop/**
 !**/.gitkeep
+*.zip

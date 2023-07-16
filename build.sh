@@ -2,7 +2,10 @@
 
 export PLUGIN_DIR=/home/david/.local/share/Steam/steamapps/common/Power\ Rangers\ Battle\ for\ the\ Grid/BepInEx/plugins
 #PLUGIN_DIR=/mnt/storage/SteamLibrary/steamapps/common/Power\ Rangers\ Battle\ for\ the\ Grid/BepInEx/plugins
+
 rm -rf bin/Debug
+rm -rf "$PLUGIN_DIR/*"
+
 dotnet publish && \
 cp bin/Debug/net6.0/publish/GrimbaHack.dll "$PLUGIN_DIR" -v && \
 cp bin/Debug/net6.0/publish/Twitch* "$PLUGIN_DIR" -v && \

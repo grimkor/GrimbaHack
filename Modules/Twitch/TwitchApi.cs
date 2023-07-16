@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
+using GrimbaHack.UI;
+using GrimbaHack.UI.Twitch;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Helix.Models.Predictions.CreatePrediction;
@@ -37,6 +39,7 @@ public class TwitchApi : ModuleBase
         set
         {
             _enabled = value;
+            MatchPrediction.Instance.Enabled = value;
             if (value)
             {
                 Instance.Initialize();
@@ -50,7 +53,7 @@ public class TwitchApi : ModuleBase
 
     private void Initialize()
     {
-        if (Plugin.TwitchClientID.Value.IsNullOrWhiteSpace() || Plugin.TwitchAccessKey.Value.IsNullOrWhiteSpace())
+        if (Plugin.TwitchClientID.Value.IsNullOrWhiteSpace() || Plugin.TwitchAccessToken.Value.IsNullOrWhiteSpace())
         {
             TwitchEnableToggle.isOn = false;
             Plugin.Log.LogError("Twitch Access Key or Client ID is missing, cannot initialize API.");
@@ -90,7 +93,7 @@ public class TwitchApi : ModuleBase
 
     private void InitializeApi()
     {
-        if (Plugin.TwitchClientID.Value.IsNullOrWhiteSpace() || Plugin.TwitchAccessKey.Value.IsNullOrWhiteSpace())
+        if (Plugin.TwitchClientID.Value.IsNullOrWhiteSpace() || Plugin.TwitchAccessToken.Value.IsNullOrWhiteSpace())
         {
             TwitchEnableToggle.isOn = false;
             Plugin.Log.LogError("Twitch Access Key or Client ID is missing, cannot initialize API.");
@@ -101,7 +104,7 @@ public class TwitchApi : ModuleBase
         {
             Settings =
             {
-                ClientId = Plugin.TwitchClientID.Value, AccessToken = Plugin.TwitchAccessKey.Value,
+                ClientId = Plugin.TwitchClientID.Value, AccessToken = Plugin.TwitchAccessToken.Value,
             }
         };
     }
@@ -118,7 +121,7 @@ public class TwitchApi : ModuleBase
             }
 
             var credentials =
-                new ConnectionCredentials("grimbakor", Plugin.TwitchAccessKey.Value);
+                new ConnectionCredentials(Plugin.TwitchUsername.Value, Plugin.TwitchAccessToken.Value);
             var clientOptions = new ClientOptions
             {
                 MessagesAllowedInPeriod = 750,
@@ -131,11 +134,11 @@ public class TwitchApi : ModuleBase
         }
         catch (Exception e)
         {
-            Plugin.Log.LogError($"INIT CLIENT: {e}");
+            Plugin.Log.LogError($"Twitch InitializeClient Error: {e}");
         }
     }
 
-    public async void StartPrediction(string title, string choiceOne, string choiceTwo)
+    public async void StartPrediction(string choiceOne, string choiceTwo)
     {
         if (!_enabled)
         {
@@ -144,10 +147,11 @@ public class TwitchApi : ModuleBase
 
         try
         {
-            _client.SendMessage(Plugin.TwitchUsername.Value, "Place your bets! grimba2GoldarHeh");
+            _client.SendMessage(Plugin.TwitchUsername.Value,
+                Plugin.TwitchPredictionMessage.Value.Replace("{P1}", choiceOne).Replace("{P2}", choiceTwo));
             var pred = new CreatePredictionRequest
             {
-                Title = title,
+                Title = Plugin.TwitchPredictionTitle.Value.Replace("{P1}", choiceOne).Replace("{P2}", choiceTwo),
                 Outcomes = new[] { new Outcome() { Title = choiceOne }, new Outcome() { Title = choiceTwo } },
                 PredictionWindowSeconds = 30,
                 BroadcasterId = Plugin.TwitchBroadcasterID.Value
@@ -207,11 +211,12 @@ public class TwitchApi : ModuleBase
         TwitchEnableToggle = toggle;
         twitchEnableToggleLabel.text = "Enable Twitch Integration";
         TwitchEnableToggle.isOn = false;
-        TwitchEnableToggle.onValueChanged.AddListener(new Action<bool>((value) =>
-        {
-            Instance.Enabled = value;
-            MatchPrediction.Instance.Enabled = value;
-        }));
-        UIFactory.SetLayoutElement(twitchViewerGroup.gameObject, minHeight: 25, minWidth: 50);
+        TwitchEnableToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
+
+        var button = UIFactory.CreateButton(twitchViewerGroup, "TwitchLoginButton", "Login");
+        var loginWindow = new TwitchLoginPanel(UIManager.UIBase);
+        button.OnClick += () => { loginWindow.Toggle(); };
+        UIFactory.SetLayoutElement(TwitchEnableToggle.gameObject, minHeight: 25, minWidth: 220);
+        UIFactory.SetLayoutElement(button.GameObject, minHeight: 25, minWidth: 100);
     }
 }

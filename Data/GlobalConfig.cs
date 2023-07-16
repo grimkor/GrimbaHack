@@ -43,7 +43,7 @@ public enum DUMMY_INPUTS
 
 public static class Global
 {
-    public static readonly string Version = "v0.4.0";
+    public static readonly string Version = "v1.1.0";
 
     public static readonly List<Stage> Stages = new()
     {

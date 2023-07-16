@@ -24,7 +24,7 @@ public class OnCharacterGetOffenseInfoActionHandler
         Instance.callbacks.Add(callback);
     }
     
-    public static void Prefix(OffenseInfo __result)
+    public static void Postfix(OffenseInfo __result)
     {
         foreach (var callback in Instance.callbacks)
         {
