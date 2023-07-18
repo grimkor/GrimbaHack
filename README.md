@@ -55,3 +55,12 @@ To enable select the option in the training menu from the mod and you may need t
 ### Simulation Speed Modifier
 Modify the speed of the game, use the input field or the +/- buttons to change to the desired % and then press the "Set Speed" button to apply that speed. To turn it off either quick reset in training or delete the number in the field and it will auto-fill back to "100" for you to apply.
 
+### Twitch Integration
+All features here are accessible once logging in through the mod, follow the link in the mod to generate a login token.
+#### Match Predictions
+Starts a match prediction when a match starts and automatically resolves it after the match ends. Lets you modify the messages from the chat bot and title of the prediction.
+##### Tournament Mode
+Changes the match resolution from the end of a single match to the typical "first to X wins" format. Will keep track of matches as individual rounds until a given number of wins is reached.
+
+
+
