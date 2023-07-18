@@ -53,16 +53,23 @@ public class TwitchApi : ModuleBase
 
     private void Initialize()
     {
-        if (Plugin.TwitchClientID.Value.IsNullOrWhiteSpace() || Plugin.TwitchAccessToken.Value.IsNullOrWhiteSpace())
+        try
         {
-            TwitchEnableToggle.isOn = false;
-            Plugin.Log.LogError("Twitch Access Key or Client ID is missing, cannot initialize API.");
-            return;
-        }
+            if (Plugin.TwitchClientID.Value.IsNullOrWhiteSpace() || Plugin.TwitchAccessToken.Value.IsNullOrWhiteSpace())
+            {
+                TwitchEnableToggle.isOn = false;
+                Plugin.Log.LogError("Twitch Access Key or Client ID is missing, cannot initialize API.");
+                return;
+            }
 
-        InitializeApi();
-        GetUserDetails();
-        InitializeClient();
+            InitializeApi();
+            GetUserDetails();
+            InitializeClient();
+        }
+        catch (Exception e)
+        {
+            Plugin.Log.LogError(e);
+        }
     }
 
     private void Disconnect()
@@ -104,7 +111,8 @@ public class TwitchApi : ModuleBase
         {
             Settings =
             {
-                ClientId = Plugin.TwitchClientID.Value, AccessToken = Plugin.TwitchAccessToken.Value,
+                ClientId = Plugin.TwitchClientID.Value,
+                AccessToken = Plugin.TwitchAccessToken.Value,
             }
         };
     }
@@ -158,7 +166,7 @@ public class TwitchApi : ModuleBase
             };
 
             var response = await _api.Helix.Predictions.GetPredictionsAsync(Plugin.TwitchBroadcasterID.Value);
-            if (response.Data[0].EndedAt == null)
+            if (response.Data.Length > 0 && response.Data[0].EndedAt == null)
             {
                 Plugin.Log.LogInfo("Cancelling previous prediction that was unfinished.");
                 await _api.Helix.Predictions.EndPredictionAsync(Plugin.TwitchBroadcasterID.Value, response.Data[0].Id,

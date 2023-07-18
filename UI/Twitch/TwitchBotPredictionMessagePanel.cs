@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
@@ -7,6 +8,10 @@ namespace GrimbaHack.UI.Twitch;
 
 public class TwitchBotPredictionMessagePanel : PanelBase
 {
+    public bool tournamentModeValue { get; set; } = Plugin.TwitchPredictionTournamentMode.Value;
+    public int winsNeededValue { get; set; } = Plugin.TwitchPredictionWinsRequired.Value;
+    public GameObject winsNeededLayout { get; set; }
+
     public TwitchBotPredictionMessagePanel(UIBase owner) : base(owner)
     {
     }
@@ -23,32 +28,68 @@ public class TwitchBotPredictionMessagePanel : PanelBase
         predictionMessageLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
 
         var titleLayout = UIFactory.CreateUIObject("titleLayout", mainVerticalGroup);
-        UIFactory.SetLayoutGroup<VerticalLayoutGroup>(titleLayout, false, false, true, true );
+        UIFactory.SetLayoutGroup<VerticalLayoutGroup>(titleLayout, false, false, true, true, spacing: 1);
         var titleLabel = UIFactory.CreateLabel(titleLayout, "titleLabel", "Title", TextAnchor.LowerLeft);
         var predictionTitleField = UIFactory.CreateInputField(titleLayout, "PredictionTitleInput", "Title Message");
         predictionTitleField.Text = Plugin.TwitchPredictionTitle.Value;
 
         var messageLayout = UIFactory.CreateUIObject("messageLayout", mainVerticalGroup);
-        UIFactory.SetLayoutGroup<VerticalLayoutGroup>(messageLayout, false, false, true, true, padBottom: 15);
+        UIFactory.SetLayoutGroup<VerticalLayoutGroup>(messageLayout, false, false, true, true, padBottom: 15, spacing: 1);
         var messageLabel = UIFactory.CreateLabel(messageLayout, "messageLabel", "Message (leave empty for no message)", TextAnchor.LowerLeft);
         var predictionMessageField = UIFactory.CreateInputField(messageLayout, "PredictionMessageInput", "Bot Message");
         predictionMessageField.Text = Plugin.TwitchPredictionMessage.Value;
 
-        var saveButton = UIFactory.CreateButton(mainVerticalGroup, "SaveMessagesButton", "Save");
+        var tournamentLayout = UIFactory.CreateUIObject("tournament layout", mainVerticalGroup);
+        UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(tournamentLayout, false, false, true, true, spacing: 10, padBottom: 15);
+        UIFactory.CreateToggle(tournamentLayout, "tournamentModeToggle", out var tournamentModeToggle,
+            out var tournamentModeLabel);
+        tournamentModeToggle.isOn = Plugin.TwitchPredictionTournamentMode.Value;
+        tournamentModeLabel.text = "Tournament Mode";
+        tournamentModeToggle.onValueChanged.AddListener(new Action<bool>((value) =>
+        {
+            tournamentModeValue = value;
+            winsNeededLayout.active = value;
+        }));
+
+        winsNeededLayout = UIFactory.CreateUIObject("winsNeededLayout", tournamentLayout);
+        winsNeededLayout.active = Plugin.TwitchPredictionTournamentMode.Value;
+        UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(winsNeededLayout, false, true, true, true,  spacing: 5); 
+        var winsNeeded = UIFactory.CreateInputField(winsNeededLayout, "winsNeededInput", "");
+        winsNeeded.Text = Plugin.TwitchPredictionWinsRequired.Value.ToString();
+        winsNeeded.OnValueChanged += s =>
+        {
+            if (int.TryParse(s, out var value))
+            {
+                winsNeededValue = value;
+                winsNeeded.Text = value.ToString();
+            }
+            else
+            {
+                winsNeeded.Text = winsNeededValue.ToString();
+            }
+        };
+        var winsNeededLabel = UIFactory.CreateLabel(winsNeededLayout, "winsNeededLabel", "Wins");
+
+
+        var saveButton = UIFactory.CreateButton(mainVerticalGroup, "SaveMessagesButton", "Save"); 
         saveButton.OnClick = () =>
         {
             Plugin.TwitchPredictionTitle.Value = predictionTitleField.Text;
             Plugin.TwitchPredictionMessage.Value = predictionMessageField.Text;
+            Plugin.TwitchPredictionTournamentMode.Value = tournamentModeValue;
+            Plugin.TwitchPredictionWinsRequired.Value = winsNeededValue;
+            
             Enabled = false;
         };
-        
-        
         
         UIFactory.SetLayoutElement(predictionMessageLabel.gameObject, minHeight: 30, minWidth: 90);
         UIFactory.SetLayoutElement(titleLabel.gameObject, minHeight: 30, minWidth: 90);
         UIFactory.SetLayoutElement(predictionTitleField.GameObject, minHeight: 30, minWidth: 450);
         UIFactory.SetLayoutElement(messageLabel.gameObject, minHeight: 30, minWidth: 90);
         UIFactory.SetLayoutElement(predictionMessageField.GameObject, minHeight: 30, minWidth: 450);
+        UIFactory.SetLayoutElement(tournamentModeToggle.gameObject, minHeight: 30);
+        UIFactory.SetLayoutElement(winsNeeded.GameObject, minWidth: 30);
+        UIFactory.SetLayoutElement(winsNeededLabel.gameObject);
         UIFactory.SetLayoutElement(saveButton.GameObject, minHeight: 30, minWidth: 100);
     }
 

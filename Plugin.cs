@@ -19,6 +19,8 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<string> TwitchBroadcasterID;
     internal static ConfigEntry<string> TwitchPredictionTitle;
     internal static ConfigEntry<string> TwitchPredictionMessage;
+    internal static ConfigEntry<bool> TwitchPredictionTournamentMode;
+    internal static ConfigEntry<int> TwitchPredictionWinsRequired;
     public override void Load()
     {
         TwitchClientID = Config.Bind("Twitch", "ClientId", "", "Client ID for Twitch API");
@@ -27,6 +29,8 @@ public class Plugin : BasePlugin
         TwitchBroadcasterID = Config.Bind("Twitch", "TwitchBroadcasterID", "", "Broadcaster ID for twitch channel");
         TwitchPredictionTitle = Config.Bind("Twitch", "TwitchPredictionTitle", "Who wins?", "Title for the Prediction");
         TwitchPredictionMessage = Config.Bind("Twitch", "TwitchPredictionMessage", "{P1} vs {P2}, who wins? Bet now!", "Message the chat bot will say when a prediction starts, empty message will not send a message");
+        TwitchPredictionTournamentMode = Config.Bind("Twitch", "TwitchPredictionTournamentMode", false, "Tournament mode changes to a FT format expecting 1 round matches instead of multi-round matches.");
+        TwitchPredictionWinsRequired = Config.Bind("Twitch", "TwitchPredictionWinsRequired", 3, "Wins required when in tournament mode");
         
         Log = base.Log;
         UISetup.Init(this);
