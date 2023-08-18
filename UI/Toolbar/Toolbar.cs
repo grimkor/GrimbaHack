@@ -36,7 +36,7 @@ public sealed class Toolbar
         toolbarRect.anchorMin = new Vector2(0.5f, 1f);
         toolbarRect.anchorMax = new Vector2(0.5f, 1f);
         toolbarRect.anchoredPosition = new Vector2(0f, 0f);
-        toolbarRect.sizeDelta = new Vector2(1000f, 50f);
+        toolbarRect.sizeDelta = new Vector2(1280f, 50f);
 
         ButtonContainer = UIFactory.CreateUIObject("ButtonFlex", toolbarPanel);
         UIFactory.SetLayoutElement(ButtonContainer.gameObject, 25, flexibleHeight: 1000, flexibleWidth: 1000);

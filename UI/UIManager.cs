@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using GrimbaHack.Data;
 using GrimbaHack.UI.Global;
 using GrimbaHack.UI.BGMPlayer;
+using GrimbaHack.UI.Experimental;
 using GrimbaHack.UI.TrainingMode;
 using GrimbaHack.UI.Twitch;
 using UniverseLib.UI;
@@ -35,6 +36,7 @@ public static class UIManager
         _panels.Add(PanelTypes.RecordingDummy, new RecordingDummyPanel(UIBase));
         _panels.Add(PanelTypes.OnlineTrainingMode, new OnlineTrainingPanel(UIBase));
         _panels.Add(PanelTypes.Twitch, new TwitchPanel(UIBase));
+        _panels.Add(PanelTypes.Experimental, new ExperimentalPanel(UIBase));
         UIBase.Enabled = false;
     }
 

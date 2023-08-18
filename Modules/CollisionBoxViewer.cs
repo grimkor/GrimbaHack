@@ -72,7 +72,7 @@ public static class CollisionBoxViewerController
             }
         });
 
-        OnMatchManagerSetupGamePlay.Instance.AddCallback(() =>
+        OnMatchManagerSetupGamePlay.Instance.AddCallback((match, pc, x) =>
         {
             _cameraInitialised = false;
             if (Enabled)
