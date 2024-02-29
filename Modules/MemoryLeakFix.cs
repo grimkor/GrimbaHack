@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using GrimbaHack.Utility;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,31 +11,36 @@ namespace GrimbaHack.Modules;
 public class MemoryLeakFix
 {
     public bool Enabled { get; set; }
+
     private MemoryLeakFix()
     {
     }
-    
+
     public static MemoryLeakFix Instance { get; private set; }
 
     static MemoryLeakFix()
     {
         Instance = new MemoryLeakFix();
         Instance.Enabled = Plugin.EXPERIMENTAL_MemoryFix.Value;
-        OnEnterTrainingMatchActionHandler.Instance.AddPrefixCallback(() =>
+        OnEnterMatchActionHandler.Instance.AddPrefixCallback((AppState state) =>
         {
             if (!Instance.Enabled)
             {
                 return;
             }
+            Plugin.Log.LogInfo("Running Memory Leak Fix");
             var go = Object.FindObjectsOfType<Material>();
-            foreach (var material in go)
-            {
-                if (!material.name.Contains("vfx_m"))
+            go
+                .GroupBy(x => x.name)
+                .Where(grouping => grouping.Count() > 20)
+                .ToList()
+                .ForEach(duplicate =>
                 {
-                    continue;
-                }
-                Object.Destroy(material);
-            }
+                    foreach (var material in duplicate)
+                    {
+                        Object.Destroy(material);
+                    }
+                });
         });
     }
 
