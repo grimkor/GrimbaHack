@@ -134,6 +134,7 @@ public sealed class ComboTracker
                 Instance.SetCompare();
                 break;
             case ComboTrackerState.Idle:
+                UIComboTracker.Instance.SetStatusText("Idle");
                 _state = ComboTrackerState.Idle;
                 break;
             default:
@@ -154,6 +155,9 @@ public sealed class ComboTracker
         {
             _stepInCombo = 0;
             _state = ComboTrackerState.Comparing;
+            UIComboTracker.Instance.SetStatusText("Trial mode");
+            UIComboTracker.Instance.SetNextStepText(
+                UIComboTracker.StripCharacterName(Instance.GetCombo()[0], _playerCharacter));
         }
         else
         {
@@ -173,8 +177,8 @@ public sealed class ComboTracker
             _comboRecorded = _comboTracker;
             _comboTracker = new();
         }
-
     }
+
     public void OnNextStep(Action<string, DamageInfo> callback)
     {
         Instance._onNextStepCallbacks.Add(callback);

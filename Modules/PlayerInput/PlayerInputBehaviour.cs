@@ -16,6 +16,10 @@ public class PlayerInputBehaviour : MonoBehaviour
 
     public void SetEnable(bool value)
     {
+        if (enabled == value)
+        {
+            return;
+        }
         Plugin.Log.LogInfo($"PlayerInputBehaviour.SetEnable({value})");
         enabled = value;
         if (enabled)
@@ -63,7 +67,7 @@ public class PlayerInputBehaviour : MonoBehaviour
                     }
 
                     Inputs.Add(_inputSystem.GetInput());
-                    PlayerInputController.Instance.SetState(PlayerInputBehaviourState.Recording);
+                    PlayerInputController.Instance.Record();
                     break;
                 case PlayerInputBehaviourState.Recording:
                     Inputs.Add(_inputSystem.GetCharacterInput());
@@ -75,7 +79,7 @@ public class PlayerInputBehaviour : MonoBehaviour
                     }
                     else
                     {
-                        PlayerInputController.Instance.SetState(PlayerInputBehaviourState.Idle);
+                        PlayerInputController.Instance.Idle();
                     }
 
                     break;

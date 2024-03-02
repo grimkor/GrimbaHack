@@ -42,45 +42,29 @@ public sealed class PlayerInputController : ModuleBase
         });
     }
 
-    public void SetState(PlayerInputBehaviourState state)
+
+    public void Idle()
     {
-        switch (state)
-        {
-            case PlayerInputBehaviourState.Idle:
-                SetIdle();
-                break;
-            case PlayerInputBehaviourState.PreRecord:
-                Record();
-                break;
-            case PlayerInputBehaviourState.Recording:
-                _state = PlayerInputBehaviourState.Recording;
-                break;
-            case PlayerInputBehaviourState.Playback:
-                Playback();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(state), state, null);
-        }
+        _state = PlayerInputBehaviourState.Idle;
+        Instance.Behaviour.SetEnable(false);
     }
 
-    private void SetIdle()
+    public void Record()
     {
-        Instance.Behaviour.SetEnable(false);
-        _state = PlayerInputBehaviourState.Idle;
+        _state = PlayerInputBehaviourState.Recording;
     }
 
     public void Reset()
     {
+        _state = PlayerInputBehaviourState.Idle;
         Instance.Behaviour.SetEnable(false);
         Instance.Behaviour.PlaybackCount = 0;
-        _state = PlayerInputBehaviourState.Idle;
     }
-    public static void Record()
+    public static void PreRecord()
     {
         _state = PlayerInputBehaviourState.PreRecord;
-        Instance.Behaviour.Setup();
-        Instance.Behaviour.SetEnable(true);
         Instance.Behaviour.Inputs = new();
+        Instance.Behaviour.SetEnable(true);
     }
 
     public static List<uint> GetInputs()
@@ -90,7 +74,6 @@ public sealed class PlayerInputController : ModuleBase
 
     public static void Playback()
     {
-        Instance.Behaviour.Setup();
         Instance.Behaviour.SetEnable(true);
         _state = PlayerInputBehaviourState.Playback;
         Instance.Behaviour.PlaybackCount = 0;

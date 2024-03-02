@@ -20,14 +20,16 @@ public class ComboRecorderControls : ModuleBase
 
     private static void OnPressRecordButton()
     {
-        PlayerInputController.Record();
+        PlayerInputController.PreRecord();
         ComboTracker.Instance.SetState(ComboTrackerState.Recording);
+        UIComboTracker.Instance.SetStatusText("Recording");
     }
 
     private static void OnPressPlaybackButton()
     {
         PlayerInputController.Playback();
         ComboTracker.Instance.SetState(ComboTrackerState.Idle);
+        UIComboTracker.Instance.SetStatusText("Playback");
     }
 
     private static void OnPressExportButton()
