@@ -20,7 +20,7 @@ public class ComboRecorderControls : ModuleBase
 
     private static void OnPressRecordButton()
     {
-        // PlayerInputController.Record();
+        PlayerInputController.Record();
         ComboTracker.Instance.SetState(ComboTrackerState.Recording);
     }
 

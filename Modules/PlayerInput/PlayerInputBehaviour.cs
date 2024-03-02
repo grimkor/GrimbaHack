@@ -2,20 +2,21 @@ using System;
 using System.Collections.Generic;
 using nway.gameplay;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace GrimbaHack.Modules.PlayerInput;
 
 public class PlayerInputBehaviour : MonoBehaviour
 {
     private static InputSystem _inputSystem;
-    public List<uint> inputs = new();
-    private int _playbackCount;
+    public List<uint> Inputs = new();
+    public int PlaybackCount;
     private static Character _playerCharacter;
     private static Character _dummyCharacter;
-    private PlayerInputBehaviourState _state;
 
     public void SetEnable(bool value)
     {
+        Plugin.Log.LogInfo($"PlayerInputBehaviour.SetEnable({value})");
         enabled = value;
         if (enabled)
         {
@@ -23,36 +24,10 @@ public class PlayerInputBehaviour : MonoBehaviour
         }
     }
 
-    public void SetState(PlayerInputBehaviourState state)
-    {
-        switch (state)
-        {
-            case PlayerInputBehaviourState.Idle:
-                Reset();
-                break;
-            case PlayerInputBehaviourState.PreRecord:
-                Record();
-                break;
-            case PlayerInputBehaviourState.Recording:
-                _state = PlayerInputBehaviourState.Recording;
-                break;
-            case PlayerInputBehaviourState.Playback:
-                Playback();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(state), state, null);
-        }
-    }
-
-    public void Reset()
-    {
-        _playbackCount = 0;
-        _state = PlayerInputBehaviourState.Idle;
-    }
 
     public void Setup()
     {
-        Reset();
+        Plugin.Log.LogInfo($"PlayerInputBehaviour.Setup()");
         var characters = FindObjectsOfType<Character>();
 
         foreach (var character in characters)
@@ -63,7 +38,7 @@ public class PlayerInputBehaviour : MonoBehaviour
                 {
                     _playerCharacter = character;
                     _inputSystem = character.GetCharacterTeam().GetInputSystem();
-                    _playbackCount = 0;
+                    PlaybackCount = 0;
                 }
                 else
                 {
@@ -77,40 +52,36 @@ public class PlayerInputBehaviour : MonoBehaviour
     {
         if (_playerCharacter && _dummyCharacter)
         {
-            if (_state == PlayerInputBehaviourState.Playback)
+            switch (PlayerInputController.Instance.GetState())
             {
-                if (inputs.Count > 0 && _playbackCount <= inputs.Count - 1)
-                {
-                    _inputSystem.SetInput(inputs[_playbackCount++]);
-                }
-                else
-                {
-                    SetState(PlayerInputBehaviourState.Idle);
-                }
-            }
+                case PlayerInputBehaviourState.Idle:
+                    break;
+                case PlayerInputBehaviourState.PreRecord:
+                    if (_inputSystem.GetInput() == 0)
+                    {
+                        return;
+                    }
 
-            else if (_state == PlayerInputBehaviourState.Recording)
-            {
-                inputs.Add(_inputSystem.GetCharacterInput());
-            }
+                    Inputs.Add(_inputSystem.GetInput());
+                    PlayerInputController.Instance.SetState(PlayerInputBehaviourState.Recording);
+                    break;
+                case PlayerInputBehaviourState.Recording:
+                    Inputs.Add(_inputSystem.GetCharacterInput());
+                    break;
+                case PlayerInputBehaviourState.Playback:
+                    if (Inputs.Count > 0 && PlaybackCount <= Inputs.Count - 1)
+                    {
+                        _inputSystem.SetInput(Inputs[PlaybackCount++]);
+                    }
+                    else
+                    {
+                        PlayerInputController.Instance.SetState(PlayerInputBehaviourState.Idle);
+                    }
 
-            if (_state == PlayerInputBehaviourState.PreRecord && _inputSystem.GetInput() != 0)
-            {
-                inputs.Add(_inputSystem.GetInput());
-                SetState(PlayerInputBehaviourState.Recording);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
-    }
-
-    public void Record()
-    {
-        inputs = new();
-        _state = PlayerInputBehaviourState.PreRecord;
-    }
-
-    public void Playback()
-    {
-        _playbackCount = 0;
-        _state = PlayerInputBehaviourState.Playback;
     }
 }
