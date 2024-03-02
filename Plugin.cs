@@ -50,4 +50,3 @@ public class Plugin : BasePlugin
         TextureLoader.Instance.CreateFolders();
     }
 }
-

@@ -1,6 +1,7 @@
 #!/bin/sh
 
-export PLUGIN_DIR=/home/david/.local/share/Steam/steamapps/common/Power\ Rangers\ Battle\ for\ the\ Grid/BepInEx/plugins
+export PLUGIN_DIR=/var/home/david/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/Power\ Rangers\ Battle\ for\ the\ Grid/BepInEx/plugins/
+#export PLUGIN_DIR=/home/david/.local/share/Steam/steamapps/common/Power\ Rangers\ Battle\ for\ the\ Grid/BepInEx/plugins
 #PLUGIN_DIR=/mnt/storage/SteamLibrary/steamapps/common/Power\ Rangers\ Battle\ for\ the\ Grid/BepInEx/plugins
 
 rm -rf bin/Debug

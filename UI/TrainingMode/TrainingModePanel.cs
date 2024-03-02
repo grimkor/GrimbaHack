@@ -1,5 +1,7 @@
 using GrimbaHack.Data;
 using GrimbaHack.Modules;
+using GrimbaHack.Modules.Combo;
+using GrimbaHack.Modules.PlayerInput;
 using GrimbaHack.Utility;
 using UnityEngine;
 using UniverseLib.UI;
@@ -31,6 +33,8 @@ public class TrainingModePanel : MenuPanelBase
     protected override void ConstructPanelContent()
     {
         SetActive(false);
+        PlayerInputController.CreateUIControls(ContentRoot);
+        ComboTracker.CreateUIControls(ContentRoot);
         FrameDataManager.CreateUIControls(ContentRoot);
         CollisionBoxViewer.CreateUIControls(ContentRoot);
         SimulationSpeed.CreateUIControls(ContentRoot);

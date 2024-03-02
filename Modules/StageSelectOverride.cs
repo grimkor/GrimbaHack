@@ -29,7 +29,7 @@ public sealed class StageSelectOverride
     {
     }
 
-    public static bool Enabled { get; set; } = true;
+    public static bool Enabled { get; set; }
     public static string Stage = Global.Stages[0]?.Value;
     public static List<Stage> RandomStages = Global.Stages.FindAll(x => x.Value != "RANDOM");
     public static ButtonRef RandomStageSelectButton;
