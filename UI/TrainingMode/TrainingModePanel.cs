@@ -33,8 +33,7 @@ public class TrainingModePanel : MenuPanelBase
     protected override void ConstructPanelContent()
     {
         SetActive(false);
-        PlayerInputController.CreateUIControls(ContentRoot);
-        ComboTracker.CreateUIControls(ContentRoot);
+        ComboRecorderControls.CreateUIControls(ContentRoot);
         FrameDataManager.CreateUIControls(ContentRoot);
         CollisionBoxViewer.CreateUIControls(ContentRoot);
         SimulationSpeed.CreateUIControls(ContentRoot);

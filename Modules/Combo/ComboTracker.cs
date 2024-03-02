@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using GrimbaHack.Utility;
-using UnityEngine;
-using UniverseLib.UI;
 using Object = UnityEngine.Object;
 
 namespace GrimbaHack.Modules.Combo;
 
-public sealed class ComboTracker : ModuleBase
+public sealed class ComboTracker
 {
     private ComboTracker()
     {
@@ -22,8 +20,6 @@ public sealed class ComboTracker : ModuleBase
         set
         {
             Instance._enabled = value;
-            Status.Enable = value;
-            NextStep.Enable = value;
             if (value)
             {
                 Setup();
@@ -35,19 +31,17 @@ public sealed class ComboTracker : ModuleBase
         }
     }
 
-    private static List<string> _comboTracker = new List<string>();
-    private static List<string> _comboRecorded = new List<string>();
-    private static int _stepInCombo = 0;
+    private static List<string> _comboTracker = new();
+    private static List<string> _comboRecorded = new();
+    private static int _stepInCombo;
     private static Character _playerCharacter;
     private static Character _dummyCharacter;
-    private static LabelValueOverlayText Status = new("Status", "Ready", new Vector3(240, 240, 1));
-    private static LabelValueOverlayText NextStep = new("Next Step", "-", new Vector3(240, 210, 1));
     private static ComboTrackerState _state;
+    private List<Action> _onCompleteCallbacks = new();
+    private List<Action<string, DamageInfo>> _onNextStepCallbacks = new();
 
     static ComboTracker()
     {
-        Status.Enable = false;
-        NextStep.Enable = false;
         Instance = new ComboTracker();
         OnSimulationInitializeActionHandler.Instance.AddCallback(() => { Instance.Setup(); });
         OnArmorTakeDamageCallbackHandler.Instance.AddCallback(info =>
@@ -73,12 +67,11 @@ public sealed class ComboTracker : ModuleBase
                         _stepInCombo++;
                         if (_stepInCombo < _comboRecorded.Count)
                         {
-                            NextStep.Value = _comboRecorded[_stepInCombo]
-                                .Replace(info.attacker.GetCharacterName() + "_combat_", "");
+                            Instance.OnNextStepActionHandler(_comboRecorded[_stepInCombo], info);
                         }
                         else
                         {
-                            NextStep.Value = "COMPLETED!";
+                            Instance.OnCompleteActionHandler();
                         }
                     }
                 }
@@ -89,9 +82,11 @@ public sealed class ComboTracker : ModuleBase
         {
             if (_state == ComboTrackerState.Recording)
             {
+                Instance.SaveCombo();
                 Instance.SetState(ComboTrackerState.Comparing);
                 return;
             }
+
             if (_state == ComboTrackerState.Comparing && _stepInCombo == _comboRecorded.Count)
             {
                 Instance.SetState(ComboTrackerState.Idle);
@@ -130,7 +125,6 @@ public sealed class ComboTracker : ModuleBase
     public void SetState(ComboTrackerState state)
     {
         Plugin.Log.LogInfo($"SetState: {state}");
-        _state = state;
         switch (state)
         {
             case ComboTrackerState.Recording:
@@ -140,7 +134,6 @@ public sealed class ComboTracker : ModuleBase
                 Instance.SetCompare();
                 break;
             case ComboTrackerState.Idle:
-                Status.Value = "Idle";
                 _state = ComboTrackerState.Idle;
                 break;
             default:
@@ -153,22 +146,14 @@ public sealed class ComboTracker : ModuleBase
         _comboTracker = new();
         _comboRecorded = new();
         _state = ComboTrackerState.Recording;
-        Status.Value = "Recording";
     }
 
     private void SetCompare()
     {
-        if (_comboTracker.Count > 0)
-        {
-            _comboRecorded = _comboTracker;
-        }
-
         if (_comboRecorded.Count > 0)
         {
-            Status.Value = "Comparing";
             _stepInCombo = 0;
-            NextStep.Value = _comboRecorded[0].Replace(_playerCharacter.GetCharacterName() + "_combat_", "");
-            _comboTracker = new();
+            _state = ComboTrackerState.Comparing;
         }
         else
         {
@@ -181,13 +166,38 @@ public sealed class ComboTracker : ModuleBase
         return _comboRecorded;
     }
 
-    public static void CreateUIControls(GameObject contentRoot)
+    private void SaveCombo()
     {
-        var toggle = UIFactory.CreateToggle(contentRoot, "ComboTrackerToggle", out var comboTrackerToggle,
-            out var comboTrackerToggleLabel);
-        comboTrackerToggle.isOn = false;
-        comboTrackerToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
-        comboTrackerToggleLabel.text = "Track Combos";
-        UIFactory.SetLayoutElement(comboTrackerToggle.gameObject, minHeight: 25, minWidth: 50);
+        if (_comboTracker.Count > 0)
+        {
+            _comboRecorded = _comboTracker;
+            _comboTracker = new();
+        }
+
+    }
+    public void OnNextStep(Action<string, DamageInfo> callback)
+    {
+        Instance._onNextStepCallbacks.Add(callback);
+    }
+
+    private void OnNextStepActionHandler(string nextStep, DamageInfo info)
+    {
+        foreach (Action<string, DamageInfo> callback in Instance._onNextStepCallbacks)
+        {
+            callback(nextStep, info);
+        }
+    }
+
+    public void OnComplete(Action callback)
+    {
+        Instance._onCompleteCallbacks.Add(callback);
+    }
+
+    private void OnCompleteActionHandler()
+    {
+        foreach (var callback in Instance._onCompleteCallbacks)
+        {
+            callback();
+        }
     }
 }

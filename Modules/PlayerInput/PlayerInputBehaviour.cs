@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using nway.gameplay;
 using UnityEngine;
@@ -6,18 +7,12 @@ namespace GrimbaHack.Modules.PlayerInput;
 
 public class PlayerInputBehaviour : MonoBehaviour
 {
-    public PlayerInputBehaviour()
-    {
-    }
-
     private static InputSystem _inputSystem;
-    public List<uint> _inputs = new();
+    public List<uint> inputs = new();
     private int _playbackCount;
     private static Character _playerCharacter;
     private static Character _dummyCharacter;
-    private bool recording;
-    private bool playback;
-    private bool prepareRecording;
+    private PlayerInputBehaviourState _state;
 
     public void SetEnable(bool value)
     {
@@ -28,13 +23,31 @@ public class PlayerInputBehaviour : MonoBehaviour
         }
     }
 
+    public void SetState(PlayerInputBehaviourState state)
+    {
+        switch (state)
+        {
+            case PlayerInputBehaviourState.Idle:
+                Reset();
+                break;
+            case PlayerInputBehaviourState.PreRecord:
+                Record();
+                break;
+            case PlayerInputBehaviourState.Recording:
+                _state = PlayerInputBehaviourState.Recording;
+                break;
+            case PlayerInputBehaviourState.Playback:
+                Playback();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(state), state, null);
+        }
+    }
 
     public void Reset()
     {
         _playbackCount = 0;
-        prepareRecording = false;
-        recording = false;
-        playback = false;
+        _state = PlayerInputBehaviourState.Idle;
     }
 
     public void Setup()
@@ -64,46 +77,40 @@ public class PlayerInputBehaviour : MonoBehaviour
     {
         if (_playerCharacter && _dummyCharacter)
         {
-            if (playback)
+            if (_state == PlayerInputBehaviourState.Playback)
             {
-                //playback
-                if (_inputs.Count > 0 && _playbackCount <= _inputs.Count - 1)
+                if (inputs.Count > 0 && _playbackCount <= inputs.Count - 1)
                 {
-                    _inputSystem.SetInput(_inputs[_playbackCount++]);
+                    _inputSystem.SetInput(inputs[_playbackCount++]);
                 }
                 else
                 {
-                    playback = false;
+                    SetState(PlayerInputBehaviourState.Idle);
                 }
             }
 
-            else if (recording)
+            else if (_state == PlayerInputBehaviourState.Recording)
             {
-                _inputs.Add(_inputSystem.GetCharacterInput());
+                inputs.Add(_inputSystem.GetCharacterInput());
             }
 
-            if (prepareRecording && _inputSystem.GetInput() != 0 && _inputs.Count == 0)
+            if (_state == PlayerInputBehaviourState.PreRecord && _inputSystem.GetInput() != 0)
             {
-                prepareRecording = false;
-                recording = true;
-                _inputs.Add(_inputSystem.GetInput());
+                inputs.Add(_inputSystem.GetInput());
+                SetState(PlayerInputBehaviourState.Recording);
             }
         }
     }
 
     public void Record()
     {
-        _inputs = new();
-        prepareRecording = true;
-        recording = false;
-        playback = false;
+        inputs = new();
+        _state = PlayerInputBehaviourState.PreRecord;
     }
 
     public void Playback()
     {
         _playbackCount = 0;
-        prepareRecording = false;
-        recording = false;
-        playback = true;
+        _state = PlayerInputBehaviourState.Playback;
     }
 }
