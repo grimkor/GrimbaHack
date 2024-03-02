@@ -32,7 +32,11 @@ public sealed class PlayerInputController : ModuleBase
         Instance.Behaviour = go.AddComponent<PlayerInputBehaviour>();
         Instance.Behaviour.SetEnable(false);
         OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => { Instance.Behaviour.SetEnable(true); });
-        OnSimulationInitializeActionHandler.Instance.AddCallback(() => { Instance.Behaviour.Setup(); });
+        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        {
+            Instance.Reset();
+            Instance.Behaviour.Setup();
+        });
         OnUIComboCounterOnBreakComboCallbackHandler.Instance.AddCallback((playerId, comboCount) =>
         {
             if (Instance.Behaviour.enabled)
@@ -72,6 +76,16 @@ public sealed class PlayerInputController : ModuleBase
         return Instance.Behaviour.Inputs;
     }
 
+    public static Vector3F GetPlayerStartPosition()
+    {
+        return Instance.Behaviour.playerPosition;
+    }
+
+    public static Vector3F GetDummyStartPosition()
+    {
+        return Instance.Behaviour.dummyPosition;
+    }
+
     public static void Playback()
     {
         Instance.Behaviour.SetEnable(true);
@@ -87,5 +101,11 @@ public sealed class PlayerInputController : ModuleBase
     public static void SetInputs(List<uint> inputs)
     {
         Instance.Behaviour.Inputs = inputs;
+    }
+
+    public static void SetCharacterPositions(Vector3F player, Vector3F dummy)
+    {
+        Instance.Behaviour.playerPosition = player;
+        Instance.Behaviour.dummyPosition = dummy;
     }
 }

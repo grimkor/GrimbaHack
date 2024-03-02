@@ -17,3 +17,7 @@ Please see the [Wiki](https://github.com/grimkor/GrimbaHack/wiki) for instructio
 [x] Restrict combos to relevant character
 [] Split out from Training UI Pane to Combo Trial one
 [] Disable Frame Advantage mod while using Combo Recorder
+
+### I hate that I get ideas
+[] Playback takeover by listening to controller inputs like how I do the camera control
+[x] Remember restart positions for combo trials

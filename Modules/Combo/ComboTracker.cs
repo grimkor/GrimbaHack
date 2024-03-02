@@ -96,6 +96,10 @@ public sealed class ComboTracker
 
     public void Setup()
     {
+        if (!Instance.Enabled)
+        {
+            return;
+        }
         var characters = Object.FindObjectsOfType<Character>();
         foreach (var character in characters)
         {
@@ -213,5 +217,10 @@ public sealed class ComboTracker
     public void SetCombo(List<string> combo)
     {
         _comboRecorded = combo;
+    }
+
+    public ComboTrackerState GetState()
+    {
+        return _state;
     }
 }

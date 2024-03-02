@@ -42,6 +42,10 @@ public sealed class ComboTrackerController
                 ComboTracker.Instance.SetState(ComboTrackerState.Idle);
             }
         }
+        else
+        {
+            ComboTracker.Instance.SetState(ComboTrackerState.Idle);
+        }
     }
 
     public List<string> GetCombo()
@@ -52,5 +56,10 @@ public sealed class ComboTrackerController
     public static Character GetPlayerCharacter()
     {
         return ComboTracker.GetPlayerCharacter();
+    }
+
+    public static ComboTrackerState GetState()
+    {
+        return ComboTracker.Instance.GetState();
     }
 }

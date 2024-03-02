@@ -43,11 +43,16 @@ public class ComboRecorderControls : ModuleBase
         {
             return;
         }
+
+        var PlayerPosition = PlayerInputController.GetPlayerStartPosition();
+        var DummyPosition = PlayerInputController.GetDummyStartPosition();
         var exportClass = new ComboExport()
         {
             Combo = combo,
             Inputs = inputs,
             Character = character.GetCharacterName(),
+            PlayerPosition = [PlayerPosition.x, PlayerPosition.y, PlayerPosition.z],
+            DummyPosition = [DummyPosition.x, DummyPosition.y, DummyPosition.z],
         };
         var options = new JsonSerializerOptions { IncludeFields = true, WriteIndented = true };
         File.WriteAllText(Path.Join(BepInEx.Paths.GameRootPath, "output", "combo.json"),
@@ -72,8 +77,14 @@ public class ComboRecorderControls : ModuleBase
             Plugin.Log.LogInfo(
                 $"Combo is not for this character. ({ComboTracker.GetPlayerCharacter().GetCharacterName()} vs {contents.Character})");
         }
+
         ComboTracker.Instance.SetCombo(contents.Combo);
         PlayerInputController.SetInputs(contents.Inputs);
+        var playerPosition = new Vector3F()
+            { x = contents.PlayerPosition[0], y = contents.PlayerPosition[1], z = contents.PlayerPosition[2] };
+        var dummyPosition = new Vector3F()
+            { x = contents.DummyPosition[0], y = contents.DummyPosition[1], z = contents.DummyPosition[2] };
+        PlayerInputController.SetCharacterPositions(playerPosition, dummyPosition);
     }
 
     public static void CreateUIControls(GameObject contentRoot)
@@ -141,4 +152,6 @@ public class ComboExport
     public List<string> Combo;
     public List<uint> Inputs;
     public string Character;
+    public List<FixedPoint> PlayerPosition;
+    public List<FixedPoint> DummyPosition;
 }

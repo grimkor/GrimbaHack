@@ -1,18 +1,20 @@
 using System;
 using System.Collections.Generic;
+using GrimbaHack.Modules.Combo;
 using nway.gameplay;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace GrimbaHack.Modules.PlayerInput;
 
 public class PlayerInputBehaviour : MonoBehaviour
 {
+    private static Character _playerCharacter;
+    private static Character _dummyCharacter;
     private static InputSystem _inputSystem;
     public List<uint> Inputs = new();
     public int PlaybackCount;
-    private static Character _playerCharacter;
-    private static Character _dummyCharacter;
+    public Vector3F playerPosition;
+    public Vector3F dummyPosition;
 
     public void SetEnable(bool value)
     {
@@ -33,7 +35,6 @@ public class PlayerInputBehaviour : MonoBehaviour
     {
         Plugin.Log.LogInfo($"PlayerInputBehaviour.Setup()");
         var characters = FindObjectsOfType<Character>();
-
         foreach (var character in characters)
         {
             if (character.IsActiveCharacter)
@@ -50,6 +51,12 @@ public class PlayerInputBehaviour : MonoBehaviour
                 }
             }
         }
+
+        if (ComboTrackerController.GetState() == ComboTrackerState.Comparing)
+        {
+            _playerCharacter.SetPosition(playerPosition);
+            _dummyCharacter.SetPosition(dummyPosition);
+        }
     }
 
     private void Update()
@@ -65,8 +72,9 @@ public class PlayerInputBehaviour : MonoBehaviour
                     {
                         return;
                     }
-
                     Inputs.Add(_inputSystem.GetInput());
+                    playerPosition = _playerCharacter.GetPosition();
+                    dummyPosition = _dummyCharacter.GetPosition();
                     PlayerInputController.Instance.Record();
                     break;
                 case PlayerInputBehaviourState.Recording:
