@@ -48,4 +48,9 @@ public sealed class ComboTrackerController
     {
         return ComboTracker.Instance.GetCombo();
     }
+
+    public static Character GetPlayerCharacter()
+    {
+        return ComboTracker.GetPlayerCharacter();
+    }
 }

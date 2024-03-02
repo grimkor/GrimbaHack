@@ -170,6 +170,11 @@ public sealed class ComboTracker
         return _comboRecorded;
     }
 
+    public static Character GetPlayerCharacter()
+    {
+        return _playerCharacter;
+    }
+
     private void SaveCombo()
     {
         if (_comboTracker.Count > 0)

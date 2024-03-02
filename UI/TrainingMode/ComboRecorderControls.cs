@@ -36,14 +36,20 @@ public class ComboRecorderControls : ModuleBase
     {
         var combo = ComboTrackerController.Instance.GetCombo();
         var inputs = PlayerInputController.GetInputs();
+        var character = ComboTrackerController.GetPlayerCharacter();
+        if (combo == null || inputs == null || character == null)
+        {
+            return;
+        }
         var exportClass = new ComboExport()
         {
             Combo = combo,
             Inputs = inputs,
+            Character = character.GetCharacterName(),
         };
-        var options = new JsonSerializerOptions { IncludeFields = true, WriteIndented = true};
+        var options = new JsonSerializerOptions { IncludeFields = true, WriteIndented = true };
         File.WriteAllText(Path.Join(BepInEx.Paths.GameRootPath, "output", "combo.json"),
-        JsonSerializer.Serialize(exportClass, options));
+            JsonSerializer.Serialize(exportClass, options));
     }
 
     public static void CreateUIControls(GameObject contentRoot)
@@ -102,4 +108,5 @@ public class ComboExport
 {
     public List<string> Combo;
     public List<uint> Inputs;
+    public string Character;
 }
