@@ -13,6 +13,8 @@ namespace GrimbaHack.UI.TrainingMode;
 
 public class ComboRecorderControls : ModuleBase
 {
+    private static Toggle comboTrackerToggle;
+
     private static void OnToggleComboTracker(bool value)
     {
         ComboTrackerController.Instance.SetEnabled(value);
@@ -52,6 +54,28 @@ public class ComboRecorderControls : ModuleBase
             JsonSerializer.Serialize(exportClass, options));
     }
 
+    private static void OnPressImportButton()
+    {
+        var filepath = Path.Join(BepInEx.Paths.GameRootPath, "output", "combo.json");
+        if (!File.Exists(filepath))
+        {
+            return;
+        }
+
+        ComboTrackerController.Instance.SetEnabled(true);
+        comboTrackerToggle.isOn = true;
+        var fileContents = File.ReadAllText(filepath);
+        var options = new JsonSerializerOptions { IncludeFields = true };
+        var contents = JsonSerializer.Deserialize<ComboExport>(fileContents, options);
+        if (ComboTracker.GetPlayerCharacter().GetCharacterName() != contents.Character)
+        {
+            Plugin.Log.LogInfo(
+                $"Combo is not for this character. ({ComboTracker.GetPlayerCharacter().GetCharacterName()} vs {contents.Character})");
+        }
+        ComboTracker.Instance.SetCombo(contents.Combo);
+        PlayerInputController.SetInputs(contents.Inputs);
+    }
+
     public static void CreateUIControls(GameObject contentRoot)
     {
         var buttonGroup = UIFactory.CreateUIObject("PlayerInputButtonGroup", contentRoot);
@@ -63,20 +87,28 @@ public class ComboRecorderControls : ModuleBase
         CreateUIRecordButton(buttonGroup);
         CreateUIPlaybackButton(buttonGroup);
         CreateUIExportButton(buttonGroup);
+        CreateUIImportButton(buttonGroup);
 
         UIFactory.SetLayoutElement(buttonGroup.gameObject, minHeight: 25, minWidth: 50);
     }
 
+    private static void CreateUIImportButton(GameObject contentRoot)
+    {
+        var exportButton = UIFactory.CreateButton(contentRoot, "ImportComboButton", "Import");
+        exportButton.OnClick += OnPressImportButton;
+        UIFactory.SetLayoutElement(exportButton.GameObject, minHeight: 25, minWidth: 50);
+    }
+
     private static void CreateUIExportButton(GameObject buttonGroup)
     {
-        var exportButton = UIFactory.CreateButton(buttonGroup, "PlayerButtonExport", "Export");
+        var exportButton = UIFactory.CreateButton(buttonGroup, "ExportComboButton", "Export");
         exportButton.OnClick += OnPressExportButton;
         UIFactory.SetLayoutElement(exportButton.GameObject, minHeight: 25, minWidth: 50);
     }
 
     private static void CreateUIPlaybackButton(GameObject contentRoot)
     {
-        var playbackButton = UIFactory.CreateButton(contentRoot, "PlayerButtonPlaybackButton", "Playback");
+        var playbackButton = UIFactory.CreateButton(contentRoot, "PlaybackComboButton", "Playback");
         playbackButton.OnClick += OnPressPlaybackButton;
         UIFactory.SetLayoutElement(playbackButton.GameObject, minHeight: 25, minWidth: 50);
     }
@@ -88,7 +120,7 @@ public class ComboRecorderControls : ModuleBase
         UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(comboTrackerGroup, false, false, true, true, padLeft: 25,
             spacing: 10, childAlignment: TextAnchor.MiddleLeft);
         UIFactory.CreateToggle(comboTrackerGroup, "comboTrackerToggle",
-            out var comboTrackerToggle,
+            out comboTrackerToggle,
             out var comboTrackerToggleLabel);
         comboTrackerToggle.isOn = false;
         comboTrackerToggleLabel.text = "Enable Combo Tracker";
@@ -98,7 +130,7 @@ public class ComboRecorderControls : ModuleBase
 
     private static void CreateUIRecordButton(GameObject contentRoot)
     {
-        var recordButton = UIFactory.CreateButton(contentRoot, "PlayerButtonRecordButton", "Record");
+        var recordButton = UIFactory.CreateButton(contentRoot, "RecordComboButton", "Record");
         recordButton.OnClick += OnPressRecordButton;
         UIFactory.SetLayoutElement(recordButton.GameObject, minHeight: 25, minWidth: 75);
     }

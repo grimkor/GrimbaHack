@@ -94,7 +94,7 @@ public sealed class ComboTracker
         });
     }
 
-    private void Setup()
+    public void Setup()
     {
         var characters = Object.FindObjectsOfType<Character>();
         foreach (var character in characters)
@@ -208,5 +208,10 @@ public sealed class ComboTracker
         {
             callback();
         }
+    }
+
+    public void SetCombo(List<string> combo)
+    {
+        _comboRecorded = combo;
     }
 }

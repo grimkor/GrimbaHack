@@ -5,13 +5,15 @@ Please see the [Wiki](https://github.com/grimkor/GrimbaHack/wiki) for instructio
 ## TODO:
 ### JSON
 [x] Export character used in combo
-[] Import combo (will need numpad notation breakdown)
+[x] Import combo
+[] Add combo notation to import/export
+[] Auto-split combo based on combo states?
 [] See about auto-translating combo into numpad notation
 
 ### UI
 [] Display whole combo notation on screen
 [] Provide feedback for completed parts of combo
 [] Combo selection/import interface
-[] Restrict combos to relevant character
+[x] Restrict combos to relevant character
 [] Split out from Training UI Pane to Combo Trial one
 [] Disable Frame Advantage mod while using Combo Recorder

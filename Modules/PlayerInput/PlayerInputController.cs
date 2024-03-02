@@ -42,7 +42,6 @@ public sealed class PlayerInputController : ModuleBase
         });
     }
 
-
     public void Idle()
     {
         _state = PlayerInputBehaviourState.Idle;
@@ -60,6 +59,7 @@ public sealed class PlayerInputController : ModuleBase
         Instance.Behaviour.SetEnable(false);
         Instance.Behaviour.PlaybackCount = 0;
     }
+
     public static void PreRecord()
     {
         _state = PlayerInputBehaviourState.PreRecord;
@@ -82,5 +82,10 @@ public sealed class PlayerInputController : ModuleBase
     public PlayerInputBehaviourState GetState()
     {
         return _state;
+    }
+
+    public static void SetInputs(List<uint> inputs)
+    {
+        Instance.Behaviour.Inputs = inputs;
     }
 }
