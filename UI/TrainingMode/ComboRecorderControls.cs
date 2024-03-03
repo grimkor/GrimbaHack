@@ -79,6 +79,7 @@ public class ComboRecorderControls : ModuleBase
         }
 
         ComboTracker.Instance.SetCombo(contents.Combo);
+        UIComboTracker.Instance.SetCombo(contents.Combo);
         PlayerInputController.SetInputs(contents.Inputs);
         var playerPosition = new Vector3F()
             { x = contents.PlayerPosition[0], y = contents.PlayerPosition[1], z = contents.PlayerPosition[2] };

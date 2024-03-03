@@ -36,6 +36,7 @@ public sealed class ComboTrackerController
             if (ComboTracker.Instance.GetCombo().Count > 0)
             {
                 ComboTracker.Instance.SetState(ComboTrackerState.Comparing);
+                UIComboTracker.Instance.SetCombo(GetCombo());
             }
             else
             {

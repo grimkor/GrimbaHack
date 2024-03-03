@@ -21,3 +21,4 @@ Please see the [Wiki](https://github.com/grimkor/GrimbaHack/wiki) for instructio
 ### I hate that I get ideas
 [] Playback takeover by listening to controller inputs like how I do the camera control
 [x] Remember restart positions for combo trials
+[] Figure out how to activate mouse control without F1, could be useful for better UI options
