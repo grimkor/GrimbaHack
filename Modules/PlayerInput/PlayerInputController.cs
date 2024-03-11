@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using GrimbaHack.Utility;
-using Il2CppInterop.Runtime.Injection;
+using nway.gameplay.ui;
+using nway.ui;
 using UnityEngine;
-using UniverseLib.UI.Models;
 using Object = UnityEngine.Object;
 
 namespace GrimbaHack.Modules.PlayerInput;
@@ -11,11 +10,12 @@ namespace GrimbaHack.Modules.PlayerInput;
 public sealed class PlayerInputController : ModuleBase
 {
     private PlayerInputBehaviour Behaviour;
-    private static GameObject playerInputButtonGroup;
-    private static ButtonRef recordButton;
-    private static ButtonRef playbackButton;
-    private static ButtonRef exportButton;
-    private static PlayerInputBehaviourState _state;
+    private GameObject playerInputButtonGroup;
+    private PlayerInputBehaviourState _state;
+    private Character _playerCharacter;
+    private Character _dummyCharacter;
+    public Vector3F playerPosition;
+    public Vector3F dummyPosition;
 
     private PlayerInputController()
     {
@@ -66,7 +66,7 @@ public sealed class PlayerInputController : ModuleBase
 
     public static void PreRecord()
     {
-        _state = PlayerInputBehaviourState.PreRecord;
+        Instance._state = PlayerInputBehaviourState.PreRecord;
         Instance.Behaviour.Inputs = new();
         Instance.Behaviour.SetEnable(true);
     }
@@ -78,18 +78,18 @@ public sealed class PlayerInputController : ModuleBase
 
     public static Vector3F GetPlayerStartPosition()
     {
-        return Instance.Behaviour.playerPosition;
+        return Instance.playerPosition;
     }
 
     public static Vector3F GetDummyStartPosition()
     {
-        return Instance.Behaviour.dummyPosition;
+        return Instance.dummyPosition;
     }
 
     public static void Playback()
     {
         Instance.Behaviour.SetEnable(true);
-        _state = PlayerInputBehaviourState.Playback;
+        Instance._state = PlayerInputBehaviourState.Playback;
         Instance.Behaviour.PlaybackCount = 0;
     }
 
@@ -105,7 +105,35 @@ public sealed class PlayerInputController : ModuleBase
 
     public static void SetCharacterPositions(Vector3F player, Vector3F dummy)
     {
-        Instance.Behaviour.playerPosition = player;
-        Instance.Behaviour.dummyPosition = dummy;
+        Instance.playerPosition = player;
+        Instance.dummyPosition = dummy;
+    }
+
+    public static void RecordCharacterPositions()
+    {
+        Instance.playerPosition = GetPlayerCharacter().GetPosition();
+        Instance.dummyPosition = GetDummyCharacter().GetPosition();
+    }
+
+    public static void SetCharacters(Character player, Character dummy)
+    {
+        Instance._playerCharacter = player;
+        Instance._dummyCharacter = dummy;
+    }
+
+    public static Character GetPlayerCharacter()
+    {
+        return Instance._playerCharacter;
+    }
+
+    public static Character GetDummyCharacter()
+    {
+        return Instance._dummyCharacter;
+    }
+
+    public static void LoadSavedCharacterPositions()
+    {
+        GetPlayerCharacter().SetPosition(Instance.playerPosition);
+        GetDummyCharacter().SetPosition(Instance.dummyPosition);
     }
 }

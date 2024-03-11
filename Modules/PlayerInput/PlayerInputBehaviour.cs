@@ -8,13 +8,9 @@ namespace GrimbaHack.Modules.PlayerInput;
 
 public class PlayerInputBehaviour : MonoBehaviour
 {
-    private static Character _playerCharacter;
-    private static Character _dummyCharacter;
     private static InputSystem _inputSystem;
     public List<uint> Inputs = new();
     public int PlaybackCount;
-    public Vector3F playerPosition;
-    public Vector3F dummyPosition;
 
     public void SetEnable(bool value)
     {
@@ -22,7 +18,7 @@ public class PlayerInputBehaviour : MonoBehaviour
         {
             return;
         }
-        Plugin.Log.LogInfo($"PlayerInputBehaviour.SetEnable({value})");
+
         enabled = value;
         if (enabled)
         {
@@ -33,7 +29,7 @@ public class PlayerInputBehaviour : MonoBehaviour
 
     public void Setup()
     {
-        Plugin.Log.LogInfo($"PlayerInputBehaviour.Setup()");
+        Character player = null, dummy = null;
         var characters = FindObjectsOfType<Character>();
         foreach (var character in characters)
         {
@@ -41,27 +37,31 @@ public class PlayerInputBehaviour : MonoBehaviour
             {
                 if (character.team == 0)
                 {
-                    _playerCharacter = character;
+                    player = character;
                     _inputSystem = character.GetCharacterTeam().GetInputSystem();
                     PlaybackCount = 0;
                 }
                 else
                 {
-                    _dummyCharacter = character;
+                    dummy = character;
                 }
             }
         }
 
+        if (player != null && dummy != null)
+        {
+            PlayerInputController.SetCharacters(player, dummy);
+        }
+
         if (ComboTrackerController.GetState() == ComboTrackerState.Comparing)
         {
-            _playerCharacter.SetPosition(playerPosition);
-            _dummyCharacter.SetPosition(dummyPosition);
+            PlayerInputController.LoadSavedCharacterPositions();
         }
     }
 
     private void Update()
     {
-        if (_playerCharacter && _dummyCharacter)
+        if (PlayerInputController.GetPlayerCharacter() && PlayerInputController.GetDummyCharacter())
         {
             switch (PlayerInputController.Instance.GetState())
             {
@@ -72,9 +72,9 @@ public class PlayerInputBehaviour : MonoBehaviour
                     {
                         return;
                     }
+
                     Inputs.Add(_inputSystem.GetInput());
-                    playerPosition = _playerCharacter.GetPosition();
-                    dummyPosition = _dummyCharacter.GetPosition();
+                    PlayerInputController.RecordCharacterPositions();
                     PlayerInputController.Instance.Record();
                     break;
                 case PlayerInputBehaviourState.Recording:

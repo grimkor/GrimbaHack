@@ -33,7 +33,7 @@ public class CollisionBoxViewer : ModuleBase
         {
             CollisionBoxViewerController.Enabled = value;
             _enabled = value;
-            toggleInstances.ForEach((toggle => toggle.isOn = value));
+            // toggleInstances.ForEach((toggle => toggle.isOn = value));
         }
     }
 
