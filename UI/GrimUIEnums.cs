@@ -6,8 +6,8 @@ public enum DefaultMenuOptions
     Enabled
 }
 
-public enum StageSelectOverrideMenuOptions
+public enum TrainingModeSelectables
 {
-    Enabled,
-    Disabled
+    GameSpeed,
+    None
 }

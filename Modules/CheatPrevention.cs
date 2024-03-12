@@ -9,7 +9,7 @@ namespace GrimbaHack.Modules;
 
 public class CheatPrevention
 {
-    public static bool Enabled { get; set; }
+    public static bool Enabled;
 
     // Cancel ranked/casual matchmaking
     private class PatchFindMatch

@@ -14,15 +14,15 @@ public sealed class PickSameCharacter : CheatPrevention
     {
     }
 
-    public static PickSameCharacter Instance { get; private set; }
+    public static readonly PickSameCharacter Instance = new();
+    public new bool Enabled;
 
     static PickSameCharacter()
     {
-        Instance = new PickSameCharacter();
         OnUIHeroSelectSelectNextActionHandler.Instance.AddCallback(
             (heroCard, team) =>
             {
-                if (Enabled)
+                if (Instance.Enabled)
                 {
                     heroCard.EnableFor(team, true);
                 }
@@ -37,9 +37,9 @@ public sealed class PickSameCharacter : CheatPrevention
             spacing: 10, childAlignment: TextAnchor.MiddleLeft);
         UIFactory.CreateToggle(pickSameCharacterGroup, "PickSameCharacterToggle", out var pickSameCharacterToggle,
             out var pickSameCharacterToggleLabel);
-        pickSameCharacterToggle.isOn = Enabled;
+        pickSameCharacterToggle.isOn = Instance.Enabled;
         pickSameCharacterToggleLabel.text = "Allow Duplicate Characters";
-        pickSameCharacterToggle.onValueChanged.AddListener(new Action<bool>((value) => { Enabled = value; }));
+        pickSameCharacterToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
 
         UIFactory.SetLayoutElement(pickSameCharacterToggle.gameObject, minHeight: 25, minWidth: 50);
     }

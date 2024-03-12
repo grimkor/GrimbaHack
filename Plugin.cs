@@ -5,6 +5,9 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using GrimbaHack.Modules;
 using GrimbaHack.UI;
+using GrimbaHack.UI.Managers;
+using GrimbaHack.UI.MenuItems;
+using GrimbaHack.UI.Pages;
 using GrimbaHack.Utility;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
@@ -50,8 +53,15 @@ public class Plugin : BasePlugin
         var harmony = new Harmony("Base.Grimbakor.Mod");
         harmony.PatchAll(Assembly.GetExecutingAssembly());
         TextureLoader.Instance.CreateFolders();
-        EnumInjector.RegisterEnumInIl2Cpp<StageSelectOverrideMenuOptions>();
         EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
+        EnumInjector.RegisterEnumInIl2Cpp<TrainingModeSelectables>();
+        ClassInjector.RegisterTypeInIl2Cpp<BetterRangeSelector>();
+        ClassInjector.RegisterTypeInIl2Cpp<GrimUIPage>();
+        ClassInjector.RegisterTypeInIl2Cpp<GrimUITrainingModeSettings>();
+        ClassInjector.RegisterTypeInIl2Cpp<GrimUIMainSettings>();
+
+        GrimUITrainingModeController.Instance.Init();
+        GrimUIMainSettingsController.Instance.Init();
     }
 }
 
