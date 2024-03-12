@@ -5,7 +5,9 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using GrimbaHack.Modules;
 using GrimbaHack.UI;
+using GrimbaHack.Utility;
 using HarmonyLib;
+using Il2CppInterop.Runtime.Injection;
 
 namespace GrimbaHack;
 
@@ -48,6 +50,8 @@ public class Plugin : BasePlugin
         var harmony = new Harmony("Base.Grimbakor.Mod");
         harmony.PatchAll(Assembly.GetExecutingAssembly());
         TextureLoader.Instance.CreateFolders();
+        EnumInjector.RegisterEnumInIl2Cpp<StageSelectOverrideMenuOptions>();
+        EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
     }
 }
 

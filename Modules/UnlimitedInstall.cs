@@ -35,6 +35,11 @@ public class UnlimitedInstall : CheatPrevention
         _enabled = enable;
     }
 
+    public bool GetEnabled()
+    {
+        return Instance._enabled;
+    }
+
     private void SetUnlimitedInstall(bool enable)
     {
         if (enable)
