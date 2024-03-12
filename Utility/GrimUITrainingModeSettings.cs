@@ -6,6 +6,7 @@ using nway.gameplay.ui;
 using nway.ui;
 using UnityEngine;
 using UnityEngine.Events;
+using MenuRangeSelector = nway.ui.MenuRangeSelector;
 
 namespace GrimbaHack.Utility;
 
@@ -69,26 +70,7 @@ public class GrimUITrainingModeSettings
         Show_Internal(uiWindow, eventData, uiWindow.stack, () => uiWindow.GoBack());
     }
 
-    private static void Show_Internal(UIWindow uiWindow, ILayeredEventData eventData, UIStackedMenu stack,
-        Action goBackCallback = null)
-    {
-        var pageTemplateName = "templates/pages/pageTemplate";
-        var uiMenuGenerator =
-            new UIMenuComponentGenerator(uiWindow.transform.FindByName<Transform>("templates/menuComponents"));
-        _menuPage = MenuPage.Create(uiMenuGenerator, uiWindow.transform, "GrimUITrainingModeSettings", pageTemplateName,
-            uiWindow.transform);
-        if (goBackCallback != null)
-        {
-            Populate(uiWindow, stack, goBackCallback);
-        }
-
-        Page.CreateChain(true, true, eventData.Layer);
-        stack.PushPageWithSelection(Page, eventData.Layer,
-            Page.GetDefaultSelection().Selectable, eventData.Layer,
-            uiWindow.EventSystem.CurrentSelectedByLayer(eventData.Layer));
-    }
-
-    static void Populate(UIWindow uiWindow, UIStackedMenu stack, Action onBackCallback)
+    static void Populate(Action onBackCallback)
     {
         if (_menuPage != null)
         {
@@ -99,7 +81,41 @@ public class GrimUITrainingModeSettings
         AddCollisionBoxViewerSelector();
         AddShowFrameDataSelector();
         AddUnlimitedInstallTimeSelector();
+        AddGameSpeedSlider();
         AddBackButton(onBackCallback);
+    }
+
+    private static void AddGameSpeedSlider()
+    {
+        var rangeSelector =
+            Page.AddItem<MenuRangeSelector>("gameSpeedRangeSelector");
+        rangeSelector.LocalizedText = "Game Speed (%)";
+        rangeSelector.MinValue = 1;
+        rangeSelector.MaxValue = 100;
+        rangeSelector.CurrentValue = SimulationSpeed.GetSpeed();
+        rangeSelector.OnValueChanged = (Action<int, int>)((newValue, _) =>
+        {
+            SimulationSpeed.SetSpeed(newValue);
+        });
+    }
+
+    private static void Show_Internal(UIWindow uiWindow, ILayeredEventData eventData, UIStackedMenu stack,
+        Action goBackCallback = null)
+    {
+        var pageTemplateName = "templates/pages/pageTemplate";
+        var uiMenuGenerator =
+            new UIMenuComponentGenerator(uiWindow.transform.FindByName<Transform>("templates/menuComponents"));
+        _menuPage = MenuPage.Create(uiMenuGenerator, uiWindow.transform, "GrimUITrainingModeSettings", pageTemplateName,
+            uiWindow.transform);
+        if (goBackCallback != null)
+        {
+            Populate(goBackCallback);
+        }
+
+        Page.CreateChain(true, true, eventData.Layer);
+        stack.PushPageWithSelection(Page, eventData.Layer,
+            Page.GetDefaultSelection().Selectable, eventData.Layer,
+            uiWindow.EventSystem.CurrentSelectedByLayer(eventData.Layer));
     }
 
 
@@ -124,7 +140,9 @@ public class GrimUITrainingModeSettings
         selector.Items =
             items.TryCast<Il2CppSystem.Collections.Generic.IList<DefaultMenuOptions>>();
         selector.LocalizedText = "Unlimited Install (Adam/Eric)";
-        selector.CurrentItem = UnlimitedInstall.Instance.GetEnabled() ? DefaultMenuOptions.Enabled: DefaultMenuOptions.Disabled;
+        selector.CurrentItem = UnlimitedInstall.Instance.GetEnabled()
+            ? DefaultMenuOptions.Enabled
+            : DefaultMenuOptions.Disabled;
         selector.OnValueChanged = (Action<DefaultMenuOptions, DefaultMenuOptions>)((newValue, oldValue) =>
         {
             UnlimitedInstall.Instance.SetEnabled(newValue == DefaultMenuOptions.Enabled);
@@ -178,7 +196,6 @@ public class GrimUITrainingModeSettings
         selector.OnValueChanged =
             new Action<DefaultMenuOptions, DefaultMenuOptions>((newValue, oldValue) =>
             {
-                Plugin.Log.LogInfo($"{newValue} > {oldValue}");
                 CollisionBoxViewer.Instance.Enabled = newValue == DefaultMenuOptions.Enabled;
             });
     }

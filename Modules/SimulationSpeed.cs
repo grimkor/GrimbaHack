@@ -33,11 +33,11 @@ public class SimulationSpeed
 
     private int Speed
     {
-        get => _speed;
+        get => Instance._speed;
         set
         {
             simulationSpeedValue.Text = value.ToString();
-            _speed = value;
+            Instance._speed = value;
         }
     }
 
@@ -45,10 +45,12 @@ public class SimulationSpeed
     {
         if (!MatchManager.instance.MatchIsOnline())
         {
+            Instance._speed = speed;
             SceneStartup.gamePlay._simulationManager.currentTimeScalePercent = speed;
         }
         else
         {
+            Plugin.Log.LogInfo("Match is online, forcing speed to 100%");
             SceneStartup.gamePlay._simulationManager.currentTimeScalePercent = 100;
             simulationSpeedValue.Text = "100";
         }
@@ -102,4 +104,9 @@ public class SimulationSpeed
     }
 
     public static InputFieldRef simulationSpeedValue { get; set; }
+
+    public static int GetSpeed()
+    {
+        return Instance.Speed;
+    }
 }
