@@ -29,6 +29,9 @@
     <Reference Include="Il2Cppmscorlib">
       <HintPath>deps\interop\Il2Cppmscorlib.dll</HintPath>
     </Reference>
+    <Reference Include="Il2CppSystem">
+      <HintPath>deps\interop\Il2CppSystem.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.InputSystem">
       <HintPath>deps\interop\Unity.InputSystem.dll</HintPath>
     </Reference>

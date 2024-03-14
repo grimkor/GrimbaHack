@@ -1,7 +1,9 @@
+using System.Collections;
 using GrimbaHack.UI.Pages;
 using GrimbaHack.Utility;
 using nway.gameplay.ui;
 using nway.ui;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace GrimbaHack.UI.Managers;
@@ -38,24 +40,34 @@ public class GrimUITrainingModeController
                 uiTrainingOptions.AddButtonCallback(MenuButton.RightBumper, (UnityAction<ILayeredEventData>)(
                     (ILayeredEventData eventData) =>
                     {
-                        if (uiTrainingOptions.stack.Count > 1)
+                        // Command list and button configurations are modals and not part of the stack
+                        if (uiTrainingOptions.stack.Count <= 1 && nway.gameplay.ui.UIManager.instance.PopupManager
+                                .activeModalUINameStack.Count <= 1)
                         {
-                            uiTrainingOptions.stack.PopPage(uiTrainingOptions.EventSystem);
-                        }
+                            Instance?._trainingModePage.Show(eventData);
+                        } else if ((bool)uiTrainingOptions.stack.stack.Peek()?.page.Root.name?.StartsWith("GrimUI"))
+                        {
 
-                        Instance?._trainingModePage.Show(eventData);
+                            uiTrainingOptions.stack.PopPage(uiTrainingOptions.EventSystem);
+                            Instance?._trainingModePage.Show(eventData);
+                        }
                     }));
 
                 uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonLB, "GrimbaHack");
                 uiTrainingOptions.AddButtonCallback(MenuButton.LeftBumper, (UnityAction<ILayeredEventData>)(
                     (ILayeredEventData eventData) =>
                     {
-                        if (uiTrainingOptions.stack.Count > 1)
+                        // Command list and button configurations are modals and not part of the stack
+                        if (uiTrainingOptions.stack.Count <= 1 && nway.gameplay.ui.UIManager.instance.PopupManager
+                                .activeModalUINameStack.Count <= 1)
                         {
-                            uiTrainingOptions.stack.PopPage(uiTrainingOptions.EventSystem);
-                        }
+                            Instance?._mainSettingsPage.Show(eventData);
+                        } else if ((bool)uiTrainingOptions.stack.stack.Peek()?.page.Root.name?.StartsWith("GrimUI"))
+                        {
 
-                        _mainSettingsPage.Show(eventData);
+                            uiTrainingOptions.stack.PopPage(uiTrainingOptions.EventSystem);
+                            Instance?._mainSettingsPage.Show(eventData);
+                        }
                     }));
             }
         );
