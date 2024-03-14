@@ -2,17 +2,17 @@ using GrimbaHack.UI.Pages;
 using GrimbaHack.Utility;
 using nway.gameplay.ui;
 using nway.ui;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace GrimbaHack.UI.Managers;
 
-public class GrimUITrainingModeController : MonoBehaviour
+public class GrimUITrainingModeController
 {
     public static readonly GrimUITrainingModeController Instance = new();
     private GrimUITrainingModeSettings _trainingModePage;
     private GrimUIMainSettings _mainSettingsPage;
     private UITrainingOptions _uiTrainingOptions;
+    private bool _enabled;
 
     private GrimUITrainingModeController()
     {
@@ -22,13 +22,11 @@ public class GrimUITrainingModeController : MonoBehaviour
     {
     }
 
-    private void Awake()
+    public void Init()
     {
-        OnUITrainingOptionsOnHideActionHandler.Instance.AddPostfix(_ =>
-        {
-            Instance._trainingModePage.Hide(true);
-            enabled = false;
-        });
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => _enabled = true);
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => _enabled = false);
+        OnUITrainingOptionsOnHideActionHandler.Instance.AddPostfix(_ => { Instance._trainingModePage.Hide(true); });
         OnUITrainingOptionsOnShowActionHandler.Instance.AddPostfix(uiTrainingOptions =>
             {
                 Instance._uiTrainingOptions = uiTrainingOptions;
@@ -74,46 +72,44 @@ public class GrimUITrainingModeController : MonoBehaviour
                             Instance?._mainSettingsPage.Show(eventData);
                         }
                     }));
-                enabled = true;
             }
         );
-        enabled = false;
+
+        OnUIStackedMenuPushPage.Instance.AddPostfix((page, _, _) => { Instance.UpdateButtonBar(page.Root.name); });
+
+        OnUIStackedMenuPopPage.Instance.AddPostfix((stackedMenu, _) =>
+        {
+            Instance.UpdateButtonBar(stackedMenu.stack.Peek()?.page.Root.name);
+        });
     }
 
-    private void Update()
-    {
-        if (Instance._uiTrainingOptions.stack.Count == 1)
-        {
-            Instance._uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonLB, "GrimbaHack");
-            Instance._uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonRB,
-                "Extra Training Options");
-            Instance.UpdateButtonBar();
-            return;
-        }
 
-        switch (Instance._uiTrainingOptions.stack.stack.Peek().page.Root.name)
+    private void UpdateButtonBar(string pageName)
+    {
+        if (!_enabled) return;
+
+        switch (pageName)
         {
-            case "GrimUIMainSettings":
+            case "mainRoot":
+                Instance._uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonRB,
+                    "Extra Training Options");
+                Instance._uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonLB, "GrimbaHack");
+                break;
+            case nameof(GrimUITrainingModeSettings):
+                Instance._uiTrainingOptions.buttonBarConfig.ClearText(ButtonBarItem.ButtonRB);
+                Instance._uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonLB, "GrimbaHack");
+                break;
+            case nameof(GrimUIMainSettings):
                 Instance._uiTrainingOptions.buttonBarConfig.ClearText(ButtonBarItem.ButtonLB);
                 Instance._uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonRB,
                     "Extra Training Options");
-                Instance.UpdateButtonBar();
-                break;
-            case "GrimUITrainingModeSettings":
-                Instance._uiTrainingOptions.buttonBarConfig.ClearText(ButtonBarItem.ButtonRB);
-                Instance._uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonLB, "GrimbaHack");
-                Instance.UpdateButtonBar();
                 break;
             default:
-                Instance._uiTrainingOptions.buttonBarConfig.ClearText(ButtonBarItem.ButtonRB);
                 Instance._uiTrainingOptions.buttonBarConfig.ClearText(ButtonBarItem.ButtonLB);
-                Instance.UpdateButtonBar();
+                Instance._uiTrainingOptions.buttonBarConfig.ClearText(ButtonBarItem.ButtonRB);
                 break;
         }
-    }
 
-    private void UpdateButtonBar()
-    {
         nway.gameplay.ui.UIManager.Get.ButtonBar.Update(ControllerManager.GetController(0),
             UserPersistence.Get.p1ButtonMap,
             Instance._uiTrainingOptions.buttonBarConfig);
