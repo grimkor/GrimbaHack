@@ -11,6 +11,7 @@ using GrimbaHack.UI.MenuItems;
 using GrimbaHack.UI.Pages;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
+using UnityEngine;
 
 namespace GrimbaHack;
 
@@ -59,8 +60,14 @@ public class Plugin : BasePlugin
         ClassInjector.RegisterTypeInIl2Cpp<GrimUIPage>();
         ClassInjector.RegisterTypeInIl2Cpp<GrimUITrainingModeSettings>();
         ClassInjector.RegisterTypeInIl2Cpp<GrimUIMainSettings>();
+        ClassInjector.RegisterTypeInIl2Cpp<GrimUITrainingModeController>();
 
-        GrimUITrainingModeController.Instance.Init();
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() =>
+        {
+            var go = new GameObject("GrimUITrainingModeControllerObject");
+            GameObject.DontDestroyOnLoad(go);
+            go.AddComponent<GrimUITrainingModeController>();
+        });
         GrimUIMainSettingsController.Instance.Init();
         CommandHistoryFix.Init();
     }
