@@ -28,11 +28,11 @@ public class CollisionBoxViewer : ModuleBase
 
     public bool Enabled
     {
-        get => _enabled;
+        get => Instance._enabled;
         set
         {
+            Instance._enabled = value;
             CollisionBoxViewerController.Enabled = value;
-            _enabled = value;
             toggleInstances.ForEach((toggle => toggle.isOn = value));
         }
     }
