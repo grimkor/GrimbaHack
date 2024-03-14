@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
@@ -10,12 +9,7 @@ using GrimbaHack.Utility;
 using GrimbaHack.UI.Managers;
 using GrimbaHack.UI.MenuItems;
 using GrimbaHack.UI.Pages;
-using GrimbaHack.Utility;
 using HarmonyLib;
-using nway.gameplay;
-using nway.gameplay.ui;
-using UnityEngine;
-
 using Il2CppInterop.Runtime.Injection;
 
 namespace GrimbaHack;
@@ -71,4 +65,3 @@ public class Plugin : BasePlugin
         CommandHistoryFix.Init();
     }
 }
-
