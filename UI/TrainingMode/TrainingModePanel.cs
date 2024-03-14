@@ -10,7 +10,7 @@ public class TrainingModePanel : MenuPanelBase
 {
     public TrainingModePanel(UIBase owner) : base(owner)
     {
-        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => SetButtonVisible(true));
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => SetButtonVisible(true));
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => { SetButtonVisible(false); });
         SetButtonVisible(false);
     }

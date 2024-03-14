@@ -24,7 +24,7 @@ public class UnlimitedInstall : CheatPrevention
             .staticDurationFrames;
         Instance._adamDefaultInstallLength = TableStatusEffect.instance.statusEffectMap["adam_super_install"]
             .staticDurationFrames;
-        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.SetUnlimitedInstall(Instance._enabled));
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => Instance.SetUnlimitedInstall(Instance._enabled));
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.SetUnlimitedInstall(false));
     }
 

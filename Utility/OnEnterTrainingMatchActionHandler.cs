@@ -22,15 +22,15 @@ public class OnEnterTrainingMatchActionHandler
     }
 
     public static OnEnterTrainingMatchActionHandler Instance { get; set; }
-    private List<Action> callbacks = new();
+    private List<Action> postfixCallbacks = new();
     private List<Action> prefixCallbacks = new();
 
-    public void AddCallback(Action callback)
+    public void AddPostfix(Action callback)
     {
-        Instance.callbacks.Add(callback);
+        Instance.postfixCallbacks.Add(callback);
     }
 
-    public void AddPrefixCallback(Action callback)
+    public void AddPrefix(Action callback)
     {
         Instance.prefixCallbacks.Add(callback);
     }
@@ -38,7 +38,7 @@ public class OnEnterTrainingMatchActionHandler
     public static void Postfix(AppState state)
     {
         if (!Data.Global.IsTrainingMatch()) return;
-        foreach (var callback in Instance.callbacks)
+        foreach (var callback in Instance.postfixCallbacks)
         {
             callback();
         }

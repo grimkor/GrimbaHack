@@ -30,7 +30,7 @@ public sealed class DummyTrimRecording : ModuleBase
         GameObject.DontDestroyOnLoad(go);
         Instance.Behaviour = go.AddComponent<DummyTrimRecordingBehaviour>();
         Instance.Behaviour.enabled = false;
-        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => Instance.Enabled = Instance._enabled);
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Behaviour.enabled = false);
     }
 

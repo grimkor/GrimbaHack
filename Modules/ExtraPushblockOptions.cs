@@ -36,7 +36,7 @@ public sealed class ExtraPushblockOptions : ModuleBase
         GameObject.DontDestroyOnLoad(go);
         Instance.Behaviour = go.AddComponent<ExtraPushblockOptionsBehaviour>();
         Instance.Enabled = false;
-        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => Instance.Enabled = Instance._enabled);
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Behaviour.enabled = false);
     }
 

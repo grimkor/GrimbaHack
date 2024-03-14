@@ -3,6 +3,7 @@ using GrimbaHack.Data;
 using GrimbaHack.UI.Global;
 using GrimbaHack.UI.BGMPlayer;
 using GrimbaHack.UI.Experimental;
+using GrimbaHack.UI.RecordingDummy;
 using GrimbaHack.UI.TrainingMode;
 using GrimbaHack.UI.Twitch;
 using UniverseLib.UI;

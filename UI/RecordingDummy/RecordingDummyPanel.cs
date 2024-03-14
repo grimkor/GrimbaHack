@@ -1,21 +1,16 @@
-using epoch.db;
 using GrimbaHack.Data;
 using GrimbaHack.Modules;
-using GrimbaHack.UI.Global;
 using GrimbaHack.Utility;
-using HarmonyLib;
-using nway.gameplay;
-using nway.gameplay.match;
 using UnityEngine;
 using UniverseLib.UI;
 
-namespace GrimbaHack.UI.TrainingMode;
+namespace GrimbaHack.UI.RecordingDummy;
 
 public class RecordingDummyPanel : MenuPanelBase
 {
     public RecordingDummyPanel(UIBase owner) : base(owner)
     {
-        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => SetButtonVisible(true));
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => SetButtonVisible(true));
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => { SetButtonVisible(false); });
         SetButtonVisible(false);
     }

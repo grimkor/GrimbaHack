@@ -17,7 +17,7 @@ public class CollisionBoxViewer : ModuleBase
     static CollisionBoxViewer()
     {
         Instance = new();
-        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => Instance.Enabled = Instance._enabled);
         OnEnterPremadeMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => CollisionBoxViewerController.Enabled = false);
     }
