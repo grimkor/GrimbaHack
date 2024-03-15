@@ -26,8 +26,8 @@ public class GrimUIMainSettings : GrimUIPage
 
     public override void Init(UISettings uiSettings)
     {
-        base.Init(uiSettings);
         _uiSettings = uiSettings;
+        base.Init(uiSettings);
     }
 
     public override void Hide()
@@ -42,7 +42,7 @@ public class GrimUIMainSettings : GrimUIPage
 
     protected override void Populate()
     {
-        StageSelectOverrideSelector.Generate(Menu);
+        StageSelectOverrideSelector.Generate(Menu, _uiSettings, ButtonBarConfig, Stack);
         SameCharacterSelector.Generate(Menu);
         EnableCameraSelector.Generate(Menu);
         CustomTexturesSelector.Generate(Menu);
@@ -99,23 +99,5 @@ public class GrimUIMainSettings : GrimUIPage
         {
             Plugin.Log.LogInfo("Clicked Twitch Login Button");
         }));
-    }
-
-    private void AddCustomTexturesSelector()
-    {
-        var selector =
-            Page.AddItem<MenuListSelector<DefaultMenuOptions>>("customTexturesSelector");
-        var items = new Il2CppSystem.Collections.Generic.List<DefaultMenuOptions>();
-        items.Add(DefaultMenuOptions.Enabled);
-        items.Add(DefaultMenuOptions.Disabled);
-        selector.Items =
-            items.TryCast<Il2CppSystem.Collections.Generic.IList<DefaultMenuOptions>>();
-        selector.LocalizedText = "Load Custom Textures";
-        selector.CurrentItem =
-            TextureLoader.Instance.Enabled ? DefaultMenuOptions.Enabled : DefaultMenuOptions.Disabled;
-        selector.OnValueChanged = (Action<DefaultMenuOptions, DefaultMenuOptions>)((newValue, _) =>
-        {
-            TextureLoader.Instance.Enabled = newValue == DefaultMenuOptions.Enabled;
-        });
     }
 }

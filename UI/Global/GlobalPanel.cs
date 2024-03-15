@@ -26,8 +26,6 @@ public class GlobalPanel : MenuPanelBase
     protected override void ConstructPanelContent()
     {
         SetActive(false);
-        StageSelectOverride.CreateUIControls(ContentRoot, out Action callback);
-        _updateCallbacks.Add(callback);
         PickSameCharacter.CreateUIControls(ContentRoot);
         CameraControl.CreateUIControls(ContentRoot);
         TextureLoader.CreateUIControls(ContentRoot);

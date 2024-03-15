@@ -3,8 +3,10 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
+using GrimbaHack.Data;
 using GrimbaHack.Modules;
 using GrimbaHack.UI;
+using GrimbaHack.UI.Elements;
 using GrimbaHack.Utility;
 using GrimbaHack.UI.Managers;
 using GrimbaHack.UI.MenuItems;
@@ -55,10 +57,12 @@ public class Plugin : BasePlugin
         TextureLoader.Instance.CreateFolders();
         EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
         EnumInjector.RegisterEnumInIl2Cpp<TrainingModeSelectables>();
+        EnumInjector.RegisterEnumInIl2Cpp<StageSelectOverrideOptions>();
         ClassInjector.RegisterTypeInIl2Cpp<BetterRangeSelector>();
         ClassInjector.RegisterTypeInIl2Cpp<GrimUIPage>();
         ClassInjector.RegisterTypeInIl2Cpp<GrimUITrainingModeSettings>();
         ClassInjector.RegisterTypeInIl2Cpp<GrimUIMainSettings>();
+        ClassInjector.RegisterTypeInIl2Cpp<RandomStageSelectPage>();
 
         GrimUITrainingModeController.Instance.Init();
         GrimUIMainSettingsController.Instance.Init();
