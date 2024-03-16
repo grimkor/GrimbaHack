@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using GrimbaHack.Data;
 using GrimbaHack.Modules;
-using GrimbaHack.UI.Pages;
 using GrimbaHack.Utility;
+using HarmonyLib;
+using nway;
 using nway.gameplay.ui;
 using nway.ui;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace GrimbaHack.UI.Elements;
@@ -18,9 +20,9 @@ static class StageSelectOverrideSelector
     public static void Generate(MenuPage menuPage, UISettings uiSettings, ButtonBarConfig buttonBarConfig,
         UIStackedMenu stack)
     {
-        var randomSelectPage = uiSettings.transform.gameObject.AddComponent<RandomStageSelectPage>();
-        randomSelectPage.Init(uiSettings);
-        randomSelectPage.Hide();
+        // var randomSelectPage = uiSettings.transform.gameObject.AddComponent<RandomStageSelectPage>();
+        // randomSelectPage.Init(uiSettings);
+        // randomSelectPage.Hide();
         var stages = new Il2CppSystem.Collections.Generic.List<StageSelectOverrideOptions>();
         foreach (var stage in Data.Global.Stages)
         {
@@ -46,10 +48,18 @@ static class StageSelectOverrideSelector
         {
             if (StageSelectOverride.Stage.Key == StageSelectOverrideOptions.Random)
             {
-                if (stack.stack.Peek().page.Root.name == menuPage.Page.Root.name)
+                if (uiSettings.EventSystem.IsPriority(uiSettings.InputLayer) &&
+                    uiSettings.EventSystem.CurrentSelectedByLayer(uiSettings.InputLayer).name ==
+                    "stageSelectOverrideSelector")
                 {
                     SetButtonConfigVisibility(false, buttonBarConfig);
-                    randomSelectPage.Show(eventData);
+                    RandomSelectPage.Show(() =>
+                    {
+                        menuPage.Page.SetVisible(true);
+                        selector.Select(uiSettings.EventSystem, uiSettings.InputLayer);
+                    });
+                    uiSettings.EventSystem.SetSelectedGameObject(null, uiSettings.InputLayer);
+                    menuPage.Page.SetVisible(false);
                 }
             }
         }));
@@ -63,6 +73,9 @@ static class StageSelectOverrideSelector
             SetButtonConfigVisibility(false, buttonBarConfig);
         }));
     }
+
+    public static UISpectateOptions SomeWindow { get; set; }
+
 
     private static void SetButtonConfigVisibility(bool visible, ButtonBarConfig buttonBarConfig)
     {
@@ -84,29 +97,77 @@ static class StageSelectOverrideSelector
     }
 }
 
-public class RandomStageSelectPage : GrimUIPage
+[HarmonyPatch(typeof(UISpectateOptions), nameof(UISpectateOptions.OnInitializeComponents))]
+public class RandomSelectPage
 {
-    private readonly List<MenuListSelector<DefaultMenuOptions>> _mapSelectors = new();
-    private bool _bulkUpdate;
+    private static UISpectateOptions _popup;
+    private static string _headerText = "Random Stage Filter";
+    private static readonly List<MenuListSelector<DefaultMenuOptions>> _mapSelectors = new();
+    private static bool _bulkUpdate;
+    private static Action _callback;
 
-    protected override void SetupButtonListeners()
+    public static void Show(Action callback)
     {
+        _bulkUpdate = false;
+        _mapSelectors.Clear();
+        _popup = new UISpectateOptions();
+        _callback = callback;
+        _popup.ShowModalWindow();
     }
 
-    public override void Init(UISettings uiSettings)
+    public static void Show()
     {
-        base.Init(uiSettings);
-        Menu.Page.onShow += (Action)(UpdateButtonBarConfig);
+        _callback = null;
+        _bulkUpdate = false;
+        _mapSelectors.Clear();
+        _popup = new UISpectateOptions();
+        _popup.ShowModalWindow();
     }
 
-    public override void Init(UITrainingOptions uiTrainingOptions)
+    private static bool AllStagesEnabled()
     {
-        base.Init(uiTrainingOptions);
-        Menu.Page.onShow += (Action)(UpdateButtonBarConfig);
+        return StageSelectOverride.RandomStages.Count == Data.Global.Stages.Count - 1;
     }
 
-    protected override void Populate()
+    private static void ToggleAllStages(ILayeredEventData _)
     {
+        _bulkUpdate = true;
+        var state = !AllStagesEnabled();
+        foreach (var selector in _mapSelectors)
+        {
+            if (selector.CurrentItem == DefaultMenuOptions.Enabled != state)
+            {
+                selector.CurrentItem = state ? DefaultMenuOptions.Enabled : DefaultMenuOptions.Disabled;
+            }
+        }
+
+        _bulkUpdate = false;
+        UpdateButtonBarConfig();
+    }
+
+    static void UpdateButtonBarConfig()
+    {
+        if (AllStagesEnabled())
+        {
+            _popup.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonY, "Disable All");
+        }
+        else
+        {
+            _popup.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonY, "Enable All");
+        }
+
+        nway.gameplay.ui.UIManager.Get.ButtonBar.Update(ControllerManager.GetController(0),
+            UserPersistence.Get.p1ButtonMap, _popup.buttonBarConfig);
+    }
+
+    private static void CreateMenu(UIPage uiPage)
+    {
+        var stages = new Il2CppSystem.Collections.Generic.List<StageSelectOverrideOptions>();
+        foreach (var stage in Data.Global.Stages)
+        {
+            stages.Add(stage.Key);
+        }
+
         var itemList = new Il2CppSystem.Collections.Generic.List<DefaultMenuOptions>();
         itemList.Add(DefaultMenuOptions.Disabled);
         itemList.Add(DefaultMenuOptions.Enabled);
@@ -116,7 +177,7 @@ public class RandomStageSelectPage : GrimUIPage
             if (item.Key == StageSelectOverrideOptions.Random ||
                 item.Key == StageSelectOverrideOptions.Disabled) continue;
 
-            var selector = Menu.AddItem<MenuListSelector<DefaultMenuOptions>>(item.Value);
+            var selector = uiPage.AddItem<MenuListSelector<DefaultMenuOptions>>(item.Value);
             selector.Items = items;
             selector.CurrentItem = StageSelectOverride.RandomStages.Contains(item)
                 ? DefaultMenuOptions.Enabled
@@ -128,66 +189,64 @@ public class RandomStageSelectPage : GrimUIPage
                     newValue == DefaultMenuOptions.Enabled);
                 if (!_bulkUpdate)
                 {
-                    Plugin.Log.LogInfo($"bulkUPdate: {_bulkUpdate}");
                     UpdateButtonBarConfig();
                 }
             });
             _mapSelectors.Add(selector);
         }
-
-        Window.AddButtonCallback(MenuButton.XboxY, (UnityAction<ILayeredEventData>)ToggleAllStages);
     }
 
-
-    // -1 for Random in Global.Stages
-    private bool AllStagesEnabled()
+    static bool Prefix(UISpectateOptions __instance)
     {
-        Plugin.Log.LogInfo($"{StageSelectOverride.RandomStages.Count} == {Data.Global.Stages.Count - 1}");
-        return StageSelectOverride.RandomStages.Count == Data.Global.Stages.Count - 1;
-    }
+        if (_popup.Pointer != __instance.Pointer) return true;
 
-    private void ToggleAllStages(ILayeredEventData _)
-    {
-        if (Stack.stack.Peek().page.Root.name != Menu.Page.Root.name)
-        {
-            return;
-        }
+        UIMenuComponentGenerator uiMenuGenerator =
+            new UIMenuComponentGenerator(__instance.transform.FindByName<Transform>("templates/menuComponents"));
+        var mainPage = new UIPage(__instance.transform.FindByName<Transform>("root"), uiMenuGenerator, "buttonRoot");
+        var headerText = __instance.transform.FindByName<LocalizedText>("root/buttonRoot/headerText");
+        headerText.localizedText = _headerText;
+        __instance.mainPage = mainPage;
 
-        _bulkUpdate = true;
-        var state = !AllStagesEnabled();
-        Plugin.Log.LogInfo($"Next state is: {state}");
-        foreach (var selector in _mapSelectors)
+        CreateMenu(__instance.mainPage);
+
+        __instance.startingSelection = __instance.mainPage.GetDefaultSelection();
+        __instance.InputLayer = new EventSystemLayer("GrimUIRandomStageFilter");
+        __instance.mainPage.CreateChain(true, true, __instance.InputLayer);
+        __instance.EventSystem.RegisterLayer(__instance.InputModule, __instance.InputLayer,
+            __instance.EventSystem.MaxPriority + 1, __instance.Controllers);
+        __instance.SetOnShowCallback((Action)(() =>
         {
-            if (selector.CurrentItem == DefaultMenuOptions.Enabled != state)
+            __instance.SetOnCancelCallback((Action<ILayeredEventData>)(_ => { __instance.CloseWindow(); }));
+            __instance.AddButtonCallback(MenuButton.XboxY, (UnityAction<ILayeredEventData>)ToggleAllStages);
+            nway.gameplay.ui.UIManager.Get.ButtonBar.Push(ControllerManager.GetController(0),
+                UserPersistence.Get.p1ButtonMap, __instance.buttonBarConfig);
+            __instance.buttonBarConfig.SetLocalizedText(ButtonBarItem.Cancel,
+                UITextManager.Get.GetUIText("UIText_Back_01"));
+            __instance.buttonBarConfig.SetLocalizedText(ButtonBarItem.NavUpDown,
+                UITextManager.Get.GetUIText("UIText_Move_01"));
+
+
+            UpdateButtonBarConfig();
+            __instance.EventSystem.SetSelectedGameObject(__instance.startingSelection.Selectable,
+                __instance.InputLayer);
+        }));
+        __instance.SetOnHideCallback((Action)(() =>
+        {
+            __instance.OnHide();
+            if (_callback != null)
             {
-                Plugin.Log.LogInfo($"State: {selector.CurrentItem} -> {!state}");
-                selector.CurrentItem = state ? DefaultMenuOptions.Enabled : DefaultMenuOptions.Disabled;
+                _callback();
             }
-        }
-
-        _bulkUpdate = false;
-        UpdateButtonBarConfig();
-    }
-
-    void UpdateButtonBarConfig()
-    {
-        if (AllStagesEnabled())
+        }));
+        __instance.SetOnCancelCallback((Action<ILayeredEventData>)(eventData =>
         {
-            ButtonBarConfig.SetLocalizedText(ButtonBarItem.ButtonY, "Disable All");
-        }
-        else
-        {
-            ButtonBarConfig.SetLocalizedText(ButtonBarItem.ButtonY, "Enable All");
-        }
+            __instance.OnCancel(eventData);
+            if (_callback != null)
+            {
+                _callback();
+            }
+        }));
 
-        nway.gameplay.ui.UIManager.Get.ButtonBar.Update(ControllerManager.GetController(0),
-            UserPersistence.Get.p1ButtonMap,
-            ButtonBarConfig);
-    }
-
-    public override void Hide()
-    {
-        ButtonBarConfig?.ClearText(ButtonBarItem.ButtonY);
-        base.Hide();
+        return false;
     }
 }
