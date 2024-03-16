@@ -1,5 +1,6 @@
 using GrimbaHack.UI.Pages;
 using GrimbaHack.UI.Popup.MainSettings;
+using GrimbaHack.UI.Popup.TrainingSettings;
 using GrimbaHack.Utility;
 using nway.gameplay.ui;
 using nway.ui;
@@ -40,15 +41,16 @@ public class GrimUITrainingModeController
                     (ILayeredEventData eventData) =>
                     {
                         // Command list and button configurations are modals and not part of the stack
-                        if (uiTrainingOptions.stack.Count <= 1 && nway.gameplay.ui.UIManager.instance.PopupManager
-                                .activeModalUINameStack.Count <= 1)
+                        if (uiTrainingOptions.stack.Count <= 1 &&
+                            uiTrainingOptions.EventSystem.IsPriority(uiTrainingOptions.InputLayer))
                         {
-                            Instance?._trainingModePage.Show(eventData);
-                        }
-                        else if ((bool)uiTrainingOptions.stack.stack.Peek()?.page.Root.name?.StartsWith("GrimUI"))
-                        {
-                            uiTrainingOptions.stack.PopPage(uiTrainingOptions.EventSystem);
-                            Instance?._trainingModePage.Show(eventData);
+                            TrainingSettingsPopup.Show(() =>
+                            {
+                                uiTrainingOptions.mainPage.GetDefaultSelection()
+                                    .Select(uiTrainingOptions.EventSystem, uiTrainingOptions.InputLayer);
+                                uiTrainingOptions.mainPage.SetVisible(true);
+                            });
+                            uiTrainingOptions.EventSystem.SetSelectedGameObject(null, uiTrainingOptions.InputLayer);
                         }
                     }));
 
@@ -56,7 +58,8 @@ public class GrimUITrainingModeController
                 uiTrainingOptions.AddButtonCallback(MenuButton.LeftBumper, (UnityAction<ILayeredEventData>)(
                     (ILayeredEventData _) =>
                     {
-                        if (uiTrainingOptions.stack.Count <= 1 && uiTrainingOptions.EventSystem.IsPriority(uiTrainingOptions.InputLayer))
+                        if (uiTrainingOptions.stack.Count <= 1 &&
+                            uiTrainingOptions.EventSystem.IsPriority(uiTrainingOptions.InputLayer))
                         {
                             MainSettingsPopup.Show(() =>
                             {

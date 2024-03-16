@@ -1,28 +1,24 @@
 using System;
-using System.Collections.Generic;
-using GrimbaHack.UI.Popup.MainSettings.Elements;
-using GrimbaHack.Utility;
+using GrimbaHack.UI.Elements;
 using HarmonyLib;
 using nway;
 using nway.gameplay.ui;
 using nway.ui;
 using UnityEngine;
 
-namespace GrimbaHack.UI.Popup.MainSettings;
+namespace GrimbaHack.UI.Popup.TrainingSettings;
 
 [HarmonyPatch(typeof(UISpectateOptions), nameof(UISpectateOptions.OnInitializeComponents))]
-public class MainSettingsPopup
+public class TrainingSettingsPopup
 {
     private static UISpectateOptions _popup;
-    private static string _headerText = "GrimbaHack Settings";
-    private static readonly List<MenuListSelector<DefaultMenuOptions>> _mapSelectors = new();
+    private static string _headerText = "Extra Training Options";
     private static bool _bulkUpdate;
     private static Action _callback;
     private static MenuPage _mainPage;
     private static UIStackedMenu stack;
     public static string PageTemplateName = "templates/pages/pageTemplate";
     private static UIMenuComponentGenerator uiMenuGenerator;
-    private static MenuPage stageOverridePage;
 
     public static void Show(Action callback)
     {
@@ -55,10 +51,10 @@ public class MainSettingsPopup
         CreateMainPage(_popup);
         _popup.mainPage = _mainPage.Page;
 
-        stageOverridePage = new StageSelectOverrideSelectorNew(uiMenuGenerator, _popup, _mainPage.Page, stack).Generate();
-        EnableCameraSelectorNew.Generate(_mainPage.Page);
-        SameCharacterSelectorNew.Generate(_mainPage.Page);
-        CustomTexturesSelectorNew.Generate(_mainPage.Page);
+            CollisionBoxViewerSelector.Generate(_mainPage);
+            ShowFrameDataSelector.Generate(_mainPage);
+            UnlimitedInstallSelector.Generate(_mainPage);
+            GameSpeedSlider.Generate(_mainPage, _popup.buttonBarConfig, _popup);
 
         _popup.startingSelection = _mainPage.Page.GetDefaultSelection();
         _mainPage.Page.CreateChain(true, true, _popup.InputLayer);
