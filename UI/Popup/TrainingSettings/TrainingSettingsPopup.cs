@@ -1,5 +1,6 @@
 using System;
 using GrimbaHack.UI.Elements;
+using GrimbaHack.UI.Popup.TrainingSettings.Elements;
 using HarmonyLib;
 using nway;
 using nway.gameplay.ui;
@@ -29,13 +30,15 @@ public class TrainingSettingsPopup
         {
             nway.gameplay.ui.UIManager.Get.PopupManager.uiPopupAssetList.Remove(_popup.GetUIPath());
         }
+
         _callback = callback;
         _popup.ShowModalWindow();
     }
 
     private static void CreateMainPage(UISpectateOptions uiSpectateOptions)
     {
-        _mainPage = MenuPage.Create(uiMenuGenerator, uiSpectateOptions.transform.FindByName<Transform>("root"), "buttonRoot");
+        _mainPage = MenuPage.Create(uiMenuGenerator, uiSpectateOptions.transform.FindByName<Transform>("root"),
+            "buttonRoot");
         var headerText = uiSpectateOptions.transform.FindByName<LocalizedText>("root/buttonRoot/headerText");
         headerText.localizedText = _headerText;
         _mainPage.Size = new(480, 600);
@@ -51,10 +54,12 @@ public class TrainingSettingsPopup
         CreateMainPage(_popup);
         _popup.mainPage = _mainPage.Page;
 
-            CollisionBoxViewerSelector.Generate(_mainPage);
-            ShowFrameDataSelector.Generate(_mainPage);
-            UnlimitedInstallSelector.Generate(_mainPage);
-            GameSpeedSlider.Generate(_mainPage, _popup.buttonBarConfig, _popup);
+        CollisionBoxViewerSelector.Generate(_mainPage);
+        ShowFrameDataSelector.Generate(_mainPage);
+        UnlimitedInstallSelector.Generate(_mainPage);
+        GameSpeedSlider.Generate(_mainPage, _popup.buttonBarConfig, _popup);
+        DummyExPunishSelector.Generate(_mainPage.Page);
+        EnhancedDummyPushblockSelector.Generate(_mainPage.Page);
 
         _popup.startingSelection = _mainPage.Page.GetDefaultSelection();
         _mainPage.Page.CreateChain(true, true, _popup.InputLayer);

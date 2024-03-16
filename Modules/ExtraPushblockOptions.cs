@@ -56,14 +56,10 @@ public sealed class ExtraPushblockOptions : ModuleBase
 
     public void SetPercentToPushblock(int percentIndex)
     {
-        if (percentIndex >= 0 && percentIndex <= Global.PercentOptions.Count - 1)
-        {
-            var percent = Global.PercentOptions[percentIndex].Value;
-            if (percent >= -1 && percent <= 100)
+            if (percentIndex >= -1 && percentIndex <= 100)
             {
-                Behaviour.SetPercentToPushblock(percent);
+                Behaviour.SetPercentToPushblock(percentIndex);
             }
-        }
     }
 
 
@@ -79,7 +75,6 @@ public sealed class ExtraPushblockOptions : ModuleBase
             out Text extraPushblockToggleText, checkHeight: 20, checkWidth: 20);
         _extraPushblockToggle.onValueChanged.AddListener(new Action<bool>(enabled =>
         {
-            // var canEnable = enabled && MatchManager.instance.matchType == MatchType.TRAINING;
             Instance._extraPushblockDropdown.gameObject.active = enabled;
             Instance.Enabled = enabled;
         }));
@@ -150,7 +145,7 @@ public class ExtraPushblockOptionsBehaviour : MonoBehaviour
     private static Character _dummyCharacter;
     public static bool Ready;
     public static bool DummyIsStunned;
-    public static int PercentToPushblock = -1;
+    public static int PercentToPushblock = 100;
 
     public void SetPercentToPushblock(int percent)
     {

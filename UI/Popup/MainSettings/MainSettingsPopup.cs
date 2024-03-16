@@ -59,6 +59,7 @@ public class MainSettingsPopup
         EnableCameraSelectorNew.Generate(_mainPage.Page);
         SameCharacterSelectorNew.Generate(_mainPage.Page);
         CustomTexturesSelectorNew.Generate(_mainPage.Page);
+        MemoryLeakFixSelectorNew.Generate(_mainPage.Page);
 
         _popup.startingSelection = _mainPage.Page.GetDefaultSelection();
         _mainPage.Page.CreateChain(true, true, _popup.InputLayer);
