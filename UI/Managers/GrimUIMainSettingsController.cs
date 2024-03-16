@@ -1,4 +1,4 @@
-using GrimbaHack.UI.Pages;
+using GrimbaHack.UI.Popup.MainSettings;
 using GrimbaHack.Utility;
 using nway.gameplay.ui;
 using nway.ui;
@@ -9,7 +9,6 @@ namespace GrimbaHack.UI.Managers;
 public class GrimUIMainSettingsController
 {
     public static readonly GrimUIMainSettingsController Instance = new();
-    private GrimUIMainSettings _mainSettingsPage;
     private bool _enabled;
     private UISettings _uiSettings;
 
@@ -26,29 +25,25 @@ public class GrimUIMainSettingsController
         OnUISettingsOnHideActionHandler.Instance.AddPostfix(_ =>
         {
             _enabled = false;
-            Instance._mainSettingsPage.Hide();
         });
         OnUISettingsOnShowActionHandler.Instance.AddPrefix(uiSettings =>
             {
                 _enabled = true;
                 _uiSettings = uiSettings;
-                if (uiSettings.transform.gameObject.GetComponent<GrimUIMainSettings>() == null)
-                {
-                    Instance._mainSettingsPage =
-                        uiSettings.transform.gameObject.AddComponent<GrimUIMainSettings>();
-                }
 
-                Instance._mainSettingsPage.Init(uiSettings);
-                Instance._mainSettingsPage.Hide();
                 uiSettings.AddButtonCallback(MenuButton.LeftBumper, (UnityAction<ILayeredEventData>)(
-                    (ILayeredEventData eventData) =>
+                    (ILayeredEventData _) =>
                     {
-                        if (uiSettings.stack.Count > 1)
+                        if (uiSettings.stack.Count <= 1 && uiSettings.EventSystem.IsPriority(uiSettings.InputLayer))
                         {
-                            uiSettings.stack.PopPage(uiSettings.EventSystem);
+                            MainSettingsPopup.Show(() =>
+                            {
+                                uiSettings.mainPage.GetDefaultSelection()
+                                    .Select(uiSettings.EventSystem, uiSettings.InputLayer);
+                                uiSettings.mainPage.SetVisible(true);
+                            });
+                            uiSettings.EventSystem.SetSelectedGameObject(null, uiSettings.InputLayer);
                         }
-
-                        _mainSettingsPage.Show(eventData);
                     }));
             }
         );
@@ -68,9 +63,6 @@ public class GrimUIMainSettingsController
         {
             case "root":
                 Instance._uiSettings.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonLB, "GrimbaHack");
-                break;
-            case nameof(GrimUIMainSettings):
-                Instance._uiSettings.buttonBarConfig.ClearText(ButtonBarItem.ButtonLB);
                 break;
             default:
                 Instance._uiSettings.buttonBarConfig.ClearText(ButtonBarItem.ButtonLB);

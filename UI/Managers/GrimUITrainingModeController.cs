@@ -1,4 +1,5 @@
 using GrimbaHack.UI.Pages;
+using GrimbaHack.UI.Popup.MainSettings;
 using GrimbaHack.Utility;
 using nway.gameplay.ui;
 using nway.ui;
@@ -10,7 +11,6 @@ public class GrimUITrainingModeController
 {
     public static readonly GrimUITrainingModeController Instance = new();
     private GrimUITrainingModeSettings _trainingModePage;
-    private GrimUIMainSettings _mainSettingsPage;
     private UITrainingOptions _uiTrainingOptions;
     private bool _enabled;
 
@@ -30,14 +30,10 @@ public class GrimUITrainingModeController
         OnUITrainingOptionsOnShowActionHandler.Instance.AddPostfix(uiTrainingOptions =>
             {
                 Instance._uiTrainingOptions = uiTrainingOptions;
-                Instance._mainSettingsPage =
-                    uiTrainingOptions.transform.gameObject.AddComponent<GrimUIMainSettings>();
                 Instance._trainingModePage =
                     uiTrainingOptions.transform.gameObject.AddComponent<GrimUITrainingModeSettings>();
                 Instance._trainingModePage.Init(uiTrainingOptions);
-                Instance._mainSettingsPage.Init(uiTrainingOptions);
                 Instance._trainingModePage.Hide(false);
-                Instance._mainSettingsPage.Hide();
                 uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonRB,
                     "Extra Training Options");
                 uiTrainingOptions.AddButtonCallback(MenuButton.RightBumper, (UnityAction<ILayeredEventData>)(
@@ -58,18 +54,17 @@ public class GrimUITrainingModeController
 
                 uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonLB, "GrimbaHack");
                 uiTrainingOptions.AddButtonCallback(MenuButton.LeftBumper, (UnityAction<ILayeredEventData>)(
-                    (ILayeredEventData eventData) =>
+                    (ILayeredEventData _) =>
                     {
-                        // Command list and button configurations are modals and not part of the stack
-                        if (uiTrainingOptions.stack.Count <= 1 && nway.gameplay.ui.UIManager.instance.PopupManager
-                                .activeModalUINameStack.Count <= 1)
+                        if (uiTrainingOptions.stack.Count <= 1 && uiTrainingOptions.EventSystem.IsPriority(uiTrainingOptions.InputLayer))
                         {
-                            Instance?._mainSettingsPage.Show(eventData);
-                        }
-                        else if ((bool)uiTrainingOptions.stack.stack.Peek()?.page.Root.name?.StartsWith("GrimUI"))
-                        {
-                            uiTrainingOptions.stack.PopPage(uiTrainingOptions.EventSystem);
-                            Instance?._mainSettingsPage.Show(eventData);
+                            MainSettingsPopup.Show(() =>
+                            {
+                                uiTrainingOptions.mainPage.GetDefaultSelection()
+                                    .Select(uiTrainingOptions.EventSystem, uiTrainingOptions.InputLayer);
+                                uiTrainingOptions.mainPage.SetVisible(true);
+                            });
+                            uiTrainingOptions.EventSystem.SetSelectedGameObject(null, uiTrainingOptions.InputLayer);
                         }
                     }));
             }
