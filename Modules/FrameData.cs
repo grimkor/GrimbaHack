@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using GrimbaHack.Utility;
-using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using UniverseLib.UI;
