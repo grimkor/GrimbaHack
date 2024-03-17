@@ -1,6 +1,7 @@
 using System;
 using epoch.db;
 using HarmonyLib;
+using Il2CppSystem.Collections.Generic;
 using nway.gameplay;
 using nway.gameplay.match;
 using nway.gameplay.ui;
@@ -8,53 +9,52 @@ using nway.ui;
 
 namespace GrimbaHack.UI.ComboTrial;
 
-// [HarmonyPatch(typeof(UIMainMenu), nameof(UIMainMenu.OnInitializeComponents))]
-// public class Test
-// {
-//     static void Postfix(UIMainMenu __instance)
-//     {
-//         __instance.AddButtonCallback(MenuButton.XboxLB, (Action<ILayeredEventData>)(_ =>
-//         {
-//             var match = new TrainingMatch();
-//             match.arenaId = "Arena_Training_Pit";
-//             var team = new TeamHeroSelection();
-//             var team2 = new TeamHeroSelection();
-//             for (int i = 0; i < 3; i++)
-//             {
-//                 team.SetHero(i, new TeamHeroSelection.Hero(i + 1));
-//                 team2.SetHero(i, new TeamHeroSelection.Hero(i + 1));
-//             }
-//
-//             match.Initialize(team, team2, PlayerControllerMapping.CreateForSinglePlayer());
-//             MatchManager.ShowLoadingScreen(match);
-//             var startup = MatchManager.Get.SetupGamePlay(match, MatchManager.Get.GetPID(),
-//                 PlayerControllerMapping.CreateForTwoPlayerTraining());
-//             var gameplay = new PvPGamePlay(startup);
-//
-//             gameplay.Start();
-//         }));
-//     }
-// }
-
 [HarmonyPatch(typeof(UIHeroSelect), nameof(UIHeroSelect.OnConfirmSkinSelect))]
 public class SelectHero
 {
     public static TeamHeroSelection.Hero selectedHero;
+    private static ScreenHeroSelection heroSelection;
 
     static void Postfix(UIHeroSelect __instance, UIHeroSelect.Team team, bool isSkinUnlocked)
     {
-        selectedHero = new TeamHeroSelection.Hero(__instance.leftPlayer.teamSelection.selections[0].data.heroIndex);
-        selectedHero.color = __instance.leftPlayer.teamSelection.selections[0].skin.colorID;
-        selectedHero.skin = __instance.leftPlayer.teamSelection.selections[0].skin.skinID;
-        __instance.CloseWindow(true);
-        ShowTutorialSelection();
+        if (SceneManager.screenManager.currentScreen.Pointer == heroSelection.Pointer)
+        {
+            selectedHero = new TeamHeroSelection.Hero(__instance.leftPlayer.teamSelection.selections[0].data.heroIndex);
+            selectedHero.color = __instance.leftPlayer.teamSelection.selections[0].skin.colorID;
+            selectedHero.skin = __instance.leftPlayer.teamSelection.selections[0].skin.skinID;
+            __instance.CloseWindow(true);
+            ShowTutorialSelection();
+        }
     }
 
     static void ShowTutorialSelection()
     {
         var screen = new ScreenTutorial();
-        screen.tutorial = TableStory.instance.tutorial;
-        screen.tutorial.chapters[0].battles.Clear();
+        screen.tutorial = new Story
+        {
+            db = new DB_Story
+            {
+                displayName = "Combo Trial",
+                type = StoryType.Tutorial,
+                id = "comboTrial",
+                displayDescription = "Combo Trial",
+                enableZordSelection = false
+            },
+            chapters = new List<StoryChapter>()
+        };
+        screen.tutorial.chapters.Add(
+            new StoryChapter
+            {
+                battles = new(),
+                db = new DB_StoryChapter
+                {
+                    displayName = "Combo Trial",
+                    id = "comboTrial",
+                    actID = "comboTrial",
+                    storyID = "comboTrial"
+                },
+            });
+
         for (int n = 1; n < 11; n++)
         {
             var b = new StoryBattle();
@@ -109,6 +109,19 @@ public class SelectHero
         var gameplay = new PvPGamePlay(startup);
 
         gameplay.Start();
+    }
+
+    public static void LoadUIHeroSelect()
+    {
+        heroSelection = new ScreenHeroSelection
+        {
+            hubArgs = new ScreenHeroSelection.HeroSelectionArgs
+            {
+                matchType = MatchType.Training
+            }
+        };
+
+        Plugin.Log.LogInfo(SceneManager.EnterScreen(heroSelection));
     }
 }
 
