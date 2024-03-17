@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using GrimbaHack.Utility;
-using nway.gameplay.ui;
-using nway.ui;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -31,7 +29,7 @@ public sealed class PlayerInputController : ModuleBase
         Object.DontDestroyOnLoad(go);
         Instance.Behaviour = go.AddComponent<PlayerInputBehaviour>();
         Instance.Behaviour.SetEnable(false);
-        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => { Instance.Behaviour.SetEnable(true); });
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => { Instance.Behaviour.SetEnable(true); });
         OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
         {
             Instance.Reset();

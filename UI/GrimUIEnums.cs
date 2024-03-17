@@ -1,4 +1,4 @@
-namespace GrimbaHack.Utility;
+namespace GrimbaHack.UI;
 
 public enum DefaultMenuOptions
 {
