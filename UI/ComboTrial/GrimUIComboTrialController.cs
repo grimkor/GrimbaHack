@@ -10,10 +10,10 @@ using nway.ui;
 namespace GrimbaHack.UI.ComboTrial;
 
 [HarmonyPatch(typeof(UIHeroSelect), nameof(UIHeroSelect.OnConfirmSkinSelect))]
-public class SelectHero
+public class GrimUIComboTrialController
 {
     public static TeamHeroSelection.Hero selectedHero;
-    private static ScreenHeroSelection heroSelection;
+    private static BaseScreen heroSelection;
 
     static void Postfix(UIHeroSelect __instance, UIHeroSelect.Team team, bool isSkinUnlocked)
     {
@@ -22,7 +22,7 @@ public class SelectHero
             selectedHero = new TeamHeroSelection.Hero(__instance.leftPlayer.teamSelection.selections[0].data.heroIndex);
             selectedHero.color = __instance.leftPlayer.teamSelection.selections[0].skin.colorID;
             selectedHero.skin = __instance.leftPlayer.teamSelection.selections[0].skin.skinID;
-            __instance.CloseWindow(true);
+            __instance.CloseWindow();
             ShowTutorialSelection();
         }
     }
@@ -42,19 +42,17 @@ public class SelectHero
             },
             chapters = new List<StoryChapter>()
         };
-        screen.tutorial.chapters.Add(
-            new StoryChapter
+        var chapter = new StoryChapter
+        {
+            battles = new(),
+            db = new DB_StoryChapter
             {
-                battles = new(),
-                db = new DB_StoryChapter
-                {
-                    displayName = "Combo Trial",
-                    id = "comboTrial",
-                    actID = "comboTrial",
-                    storyID = "comboTrial"
-                },
-            });
-
+                displayName = "Combo Trial",
+                id = "comboTrial",
+                actID = "comboTrial",
+                storyID = "comboTrial"
+            },
+        };
         for (int n = 1; n < 11; n++)
         {
             var b = new StoryBattle();
@@ -83,9 +81,11 @@ public class SelectHero
             db.winConditionType = CombatConditionType.None;
 
             b.Initialize(db);
-            screen.tutorial.chapters[0].AddStoryBattle(b);
+            chapter.AddStoryBattle(b);
         }
 
+        screen.tutorial.chapters.Add(chapter);
+        heroSelection = screen;
         SceneManager.EnterScreen(screen);
     }
 
@@ -120,17 +120,21 @@ public class SelectHero
                 matchType = MatchType.Training
             }
         };
-
-        Plugin.Log.LogInfo(SceneManager.EnterScreen(heroSelection));
+        SceneManager.EnterScreen(heroSelection);
     }
-}
 
-[HarmonyPatch(typeof(UITutorialSelect.BattleBlade), nameof(UITutorialSelect.BattleBlade.OnSubmit))]
-public class OverrideSelection
-{
-    static bool Prefix()
+    [HarmonyPatch(typeof(UITutorialSelect.BattleBlade), nameof(UITutorialSelect.BattleBlade.OnSubmit))]
+    private class OverrideSelection
     {
-        SelectHero.StartGame();
-        return false;
+        static bool Prefix()
+        {
+            if (SceneManager.screenManager.currentScreen.Pointer == heroSelection?.Pointer)
+            {
+                StartGame();
+                return false;
+            }
+
+            return true;
+        }
     }
 }
