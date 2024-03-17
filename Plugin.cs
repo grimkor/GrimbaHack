@@ -10,7 +10,6 @@ using GrimbaHack.UI.Elements;
 using GrimbaHack.Utility;
 using GrimbaHack.UI.Managers;
 using GrimbaHack.UI.MenuItems;
-using GrimbaHack.UI.Pages;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 
@@ -59,10 +58,6 @@ public class Plugin : BasePlugin
         EnumInjector.RegisterEnumInIl2Cpp<TrainingModeSelectables>();
         EnumInjector.RegisterEnumInIl2Cpp<StageSelectOverrideOptions>();
         ClassInjector.RegisterTypeInIl2Cpp<BetterRangeSelector>();
-        ClassInjector.RegisterTypeInIl2Cpp<GrimUIPage>();
-        ClassInjector.RegisterTypeInIl2Cpp<GrimUITrainingModeSettings>();
-        ClassInjector.RegisterTypeInIl2Cpp<GrimUIMainSettings>();
-        ClassInjector.RegisterTypeInIl2Cpp<RandomStageSelectPage>();
 
         GrimUITrainingModeController.Instance.Init();
         GrimUIMainSettingsController.Instance.Init();

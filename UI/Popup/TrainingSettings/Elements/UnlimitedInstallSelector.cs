@@ -5,7 +5,7 @@ using nway.ui;
 
 namespace GrimbaHack.UI.Elements;
 
-public class UnlimitedInstallSelector
+public static class UnlimitedInstallSelector
 {
 
     public static void Generate(MenuPage menuPage)

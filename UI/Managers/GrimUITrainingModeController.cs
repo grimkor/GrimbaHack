@@ -1,4 +1,3 @@
-using GrimbaHack.UI.Pages;
 using GrimbaHack.UI.Popup.MainSettings;
 using GrimbaHack.UI.Popup.TrainingSettings;
 using GrimbaHack.Utility;
@@ -11,7 +10,6 @@ namespace GrimbaHack.UI.Managers;
 public class GrimUITrainingModeController
 {
     public static readonly GrimUITrainingModeController Instance = new();
-    private GrimUITrainingModeSettings _trainingModePage;
     private UITrainingOptions _uiTrainingOptions;
     private bool _enabled;
 
@@ -27,18 +25,13 @@ public class GrimUITrainingModeController
     {
         OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => _enabled = true);
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => _enabled = false);
-        OnUITrainingOptionsOnHideActionHandler.Instance.AddPostfix(_ => { Instance._trainingModePage.Hide(true); });
         OnUITrainingOptionsOnShowActionHandler.Instance.AddPostfix(uiTrainingOptions =>
             {
                 Instance._uiTrainingOptions = uiTrainingOptions;
-                Instance._trainingModePage =
-                    uiTrainingOptions.transform.gameObject.AddComponent<GrimUITrainingModeSettings>();
-                Instance._trainingModePage.Init(uiTrainingOptions);
-                Instance._trainingModePage.Hide(false);
                 uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonRB,
                     "Extra Training Options");
                 uiTrainingOptions.AddButtonCallback(MenuButton.RightBumper, (UnityAction<ILayeredEventData>)(
-                    (ILayeredEventData eventData) =>
+                    (ILayeredEventData _) =>
                     {
                         // Command list and button configurations are modals and not part of the stack
                         if (uiTrainingOptions.stack.Count <= 1 &&
@@ -92,15 +85,6 @@ public class GrimUITrainingModeController
                 Instance._uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonRB,
                     "Extra Training Options");
                 Instance._uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonLB, "GrimbaHack");
-                break;
-            case nameof(GrimUITrainingModeSettings):
-                Instance._uiTrainingOptions.buttonBarConfig.ClearText(ButtonBarItem.ButtonRB);
-                Instance._uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonLB, "GrimbaHack");
-                break;
-            case nameof(GrimUIMainSettings):
-                Instance._uiTrainingOptions.buttonBarConfig.ClearText(ButtonBarItem.ButtonLB);
-                Instance._uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonRB,
-                    "Extra Training Options");
                 break;
             default:
                 Instance._uiTrainingOptions.buttonBarConfig.ClearText(ButtonBarItem.ButtonLB);

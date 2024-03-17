@@ -66,4 +66,8 @@
       <HintPath>deps\lib\net6.0\UniverseLib.IL2CPP.Interop.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UI\Elements\" />
+  </ItemGroup>
 </Project>
