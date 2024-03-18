@@ -150,6 +150,7 @@ public class ComboRecorderControls : ModuleBase
 
 public class ComboExport
 {
+    public string Title;
     public List<string> Combo;
     public List<uint> Inputs;
     public string Character;

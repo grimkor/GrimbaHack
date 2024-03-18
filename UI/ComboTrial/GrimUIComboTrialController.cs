@@ -1,11 +1,17 @@
-using System;
+using System.IO;
+using System.Text.Json;
 using epoch.db;
+using GrimbaHack.Modules.Combo;
+using GrimbaHack.Modules.PlayerInput;
+using GrimbaHack.UI.TrainingMode;
+using GrimbaHack.Utility;
 using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
 using nway.gameplay;
 using nway.gameplay.match;
 using nway.gameplay.ui;
 using nway.ui;
+using MatchType = epoch.db.MatchType;
 
 namespace GrimbaHack.UI.ComboTrial;
 
@@ -14,6 +20,23 @@ public class GrimUIComboTrialController
 {
     public static TeamHeroSelection.Hero selectedHero;
     private static BaseScreen heroSelection;
+    private static TrainingMatch match;
+
+    private static System.Collections.Generic.List<ComboExport> combos;
+    private static ComboExport combo;
+    private static Vector3F playerPosition;
+    private static Vector3F dummyPosition;
+
+    static GrimUIComboTrialController()
+    {
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() =>
+        {
+            if (combo == null) return;
+            ComboTrackerController.Instance.SetEnabled(true);
+            UIComboTracker.Instance.SetCombo(combo.Combo);
+            PlayerInputController.SetInputs(combo.Inputs);
+        });
+    }
 
     static void Postfix(UIHeroSelect __instance, UIHeroSelect.Team team, bool isSkinUnlocked)
     {
@@ -53,15 +76,25 @@ public class GrimUIComboTrialController
                 storyID = "comboTrial"
             },
         };
-        for (int n = 1; n < 11; n++)
+
+        var filepath = Path.Join(BepInEx.Paths.GameRootPath, "output", "combo-trials.json");
+        var fileContents = File.ReadAllText(filepath);
+        var options = new JsonSerializerOptions { IncludeFields = true };
+        var json = JsonSerializer.Deserialize<System.Collections.Generic.List<ComboExport>>(fileContents, options);
+        if (json.Count == 0)
+        {
+            return;
+        }
+
+        for (int n = 0; n < json.Count; n++)
         {
             var b = new StoryBattle();
             var db = new DB_StoryBattle();
-            db.displayName = $"Combo Trial {n}";
+            db.displayName = $"{json[n].Title}";
             db.enemyLeader = 1;
             db.enemyAssist1 = 2;
             db.enemyAssist2 = 3;
-            db.playerLeader = 1;
+            db.playerLeader = selectedHero.index;
             db.playerAssist1 = 2;
             db.playerAssist2 = 3;
             db.infiniteTime = true;
@@ -84,6 +117,7 @@ public class GrimUIComboTrialController
             chapter.AddStoryBattle(b);
         }
 
+        combos = json;
         screen.tutorial.chapters.Add(chapter);
         heroSelection = screen;
         SceneManager.EnterScreen(screen);
@@ -91,7 +125,7 @@ public class GrimUIComboTrialController
 
     public static void StartGame()
     {
-        var match = new TrainingMatch();
+        match = new TrainingMatch();
         match.arenaId = "Arena_Training_Pit";
         var team1 = new TeamHeroSelection();
         var team2 = new TeamHeroSelection();
@@ -126,12 +160,23 @@ public class GrimUIComboTrialController
     [HarmonyPatch(typeof(UITutorialSelect.BattleBlade), nameof(UITutorialSelect.BattleBlade.OnSubmit))]
     private class OverrideSelection
     {
-        static bool Prefix()
+        static bool Prefix(UITutorialSelect.BattleBlade __instance)
         {
             if (SceneManager.screenManager.currentScreen.Pointer == heroSelection?.Pointer)
             {
-                StartGame();
-                return false;
+                if (combos[__instance.index] != null)
+                {
+                    combo = combos[__instance.index];
+                    playerPosition = new Vector3F()
+                        { x = combo.PlayerPosition[0], y = combo.PlayerPosition[1], z = combo.PlayerPosition[2] };
+                    dummyPosition = new Vector3F()
+                        { x = combo.DummyPosition[0], y = combo.DummyPosition[1], z = combo.DummyPosition[2] };
+
+                    PlayerInputController.SetCharacterPositions(playerPosition, dummyPosition);
+                    ComboTracker.Instance.SetCombo(combo.Combo);
+                    StartGame();
+                    return false;
+                }
             }
 
             return true;
