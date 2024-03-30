@@ -86,9 +86,7 @@ public class ComboTrialManager
 
         var dummyDriver = drivers.FindExtension<TrainingDummyDriver>();
         dummyDriver.Behavior = TrainingOptions.EnemyBehavior.Dummy;
-        dummyDriver.Guard = TrainingOptions.EnemyGuard.GuardFollowUps;
         dummyDriver.Recovery = TrainingOptions.EnemyRecovery.InPlace;
-        dummyDriver.GuardSwitch = TrainingOptions.EnemyGuardSwitch.Switch;
         dummyDriver.PushBlock = TrainingOptions.EnemyPushBlock.Never;
         //Config
         // dummyDriver.Pose = TrainingOptions.EnemyPose.Jumping;
@@ -108,7 +106,7 @@ public class ComboTrialManager
     public void Playback()
     {
         Instance._playbackBehaviour.Playback(Instance.player.GetCharacterTeam().GetInputSystem(),
-            Instance._combo.Inputs);
+            Instance._combo.Inputs, 30);
         Instance.playbackQueued = false;
     }
 
