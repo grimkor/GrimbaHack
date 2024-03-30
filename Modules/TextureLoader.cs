@@ -49,7 +49,7 @@ public class TextureLoader : ModuleBase
     {
         Instance = new TextureLoader();
         Instance.Enabled = Plugin.EXPERIMENTAL_TextureLoader.Value;
-        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        OnSimulationInitializeActionHandler.Instance.AddPostfix(() =>
         {
             if (!Instance.Enabled)
             {

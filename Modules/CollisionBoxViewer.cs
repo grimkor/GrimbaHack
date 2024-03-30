@@ -59,7 +59,7 @@ public static class CollisionBoxViewerController
 {
     static CollisionBoxViewerController()
     {
-        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        OnSimulationInitializeActionHandler.Instance.AddPostfix(() =>
         {
             if (Enabled)
             {

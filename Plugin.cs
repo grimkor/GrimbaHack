@@ -4,14 +4,17 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using GrimbaHack.Data;
+using GrimbaHack.module;
 using GrimbaHack.Modules;
+using GrimbaHack.Modules.ComboTrial;
+using GrimbaHack.Modules.PlayerInput;
 using GrimbaHack.UI;
-using GrimbaHack.UI.Elements;
 using GrimbaHack.Utility;
 using GrimbaHack.UI.Managers;
 using GrimbaHack.UI.MenuItems;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
+
 
 namespace GrimbaHack;
 
@@ -62,5 +65,12 @@ public class Plugin : BasePlugin
         GrimUITrainingModeController.Instance.Init();
         GrimUIMainSettingsController.Instance.Init();
         CommandHistoryFix.Init();
+        ClassInjector.RegisterTypeInIl2Cpp<PlayerInputBehaviour>();
+        ClassInjector.RegisterTypeInIl2Cpp<UnityMainThreadDispatcher>();
+        ClassInjector.RegisterTypeInIl2Cpp<PlayerInputPlaybackBehaviour>();
+        AddComponent<UnityMainThreadDispatcher>();
+        EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
+
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => SpriteMap.Instance.GenerateSpriteMap());
     }
 }

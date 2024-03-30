@@ -26,6 +26,18 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>deps\interop\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="DOTween">
+      <HintPath>deps\interop\DOTween.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTween43">
+      <HintPath>deps\interop\DOTween43.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTween46">
+      <HintPath>deps\interop\DOTween46.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTweenPro">
+      <HintPath>deps\interop\DOTweenPro.dll</HintPath>
+    </Reference>
     <Reference Include="Il2Cppmscorlib">
       <HintPath>deps\interop\Il2Cppmscorlib.dll</HintPath>
     </Reference>
@@ -69,5 +81,6 @@
 
   <ItemGroup>
     <Folder Include="UI\Elements\" />
+    <Folder Include="_bank\" />
   </ItemGroup>
 </Project>

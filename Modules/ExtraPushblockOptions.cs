@@ -102,7 +102,7 @@ public class ExtraPushblockOptionsBehaviour : MonoBehaviour
 {
     public ExtraPushblockOptionsBehaviour()
     {
-        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        OnSimulationInitializeActionHandler.Instance.AddPostfix(() =>
         {
             if (MatchManager.instance.matchType != MatchType.TRAINING)
             {

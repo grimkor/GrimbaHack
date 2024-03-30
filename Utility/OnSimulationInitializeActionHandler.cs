@@ -20,16 +20,29 @@ public class OnSimulationInitializeActionHandler
     }
 
     public static OnSimulationInitializeActionHandler Instance { get; private set; }
-    private List<Action> callbacks = new();
+    private List<Action> postfixCallbacks = new();
+    private List<Action> prefixCallbacks = new();
 
-    public void AddCallback(Action callback)
+    public void AddPrefix(Action callback)
     {
-        Instance.callbacks.Add(callback);
+        Instance.postfixCallbacks.Add(callback);
+    }
+
+    public static void Prefix()
+    {
+        foreach (var callback in Instance.prefixCallbacks)
+        {
+            callback();
+        }
+    }
+    public void AddPostfix(Action callback)
+    {
+        Instance.postfixCallbacks.Add(callback);
     }
 
     public static void Postfix()
     {
-        foreach (var callback in Instance.callbacks)
+        foreach (var callback in Instance.postfixCallbacks)
         {
             callback();
         }

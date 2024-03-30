@@ -77,7 +77,7 @@ public class DummyExPunishBehaviour : MonoBehaviour
 
     public DummyExPunishBehaviour()
     {
-        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        OnSimulationInitializeActionHandler.Instance.AddPostfix(() =>
         {
             if (DummyExPunish.Instance.Enabled)
             {

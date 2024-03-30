@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using GrimbaHack.Utility;
-using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using UniverseLib.UI;
@@ -44,7 +43,7 @@ public class FrameDataManager : ModuleBase
         Instance.Behaviour.enabled = false;
         OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => Instance.Enabled = Instance._enabled);
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Behaviour.SetEnable(false));
-        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        OnSimulationInitializeActionHandler.Instance.AddPostfix(() =>
         {
             if (Instance.Enabled)
                 Instance.Behaviour.SetupUpdateOverlayTargets();
