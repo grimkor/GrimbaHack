@@ -48,10 +48,12 @@ public class GrimUIComboTrialController
     {
         if (SceneManager.screenManager.currentScreen.Pointer == heroSelection.Pointer)
         {
+            match = null;
             selectedHero = new TeamHeroSelection.Hero(__instance.leftPlayer.teamSelection.selections[0].data.heroIndex);
             selectedHero.color = __instance.leftPlayer.teamSelection.selections[0].skin.colorID;
             selectedHero.skin = __instance.leftPlayer.teamSelection.selections[0].skin.skinID;
-            __instance.CloseWindow();
+            // __instance.CloseWindow();
+            __instance.Hide();
             ShowTutorialSelection();
         }
     }
@@ -131,6 +133,7 @@ public class GrimUIComboTrialController
 
     public static void StartGame()
     {
+        if (match != null) return;
         match = new TrainingMatch();
         match.arenaId = "Arena_Training_Pit";
         var team1 = new TeamHeroSelection();
