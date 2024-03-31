@@ -71,6 +71,10 @@ public class Plugin : BasePlugin
         AddComponent<UnityMainThreadDispatcher>();
         EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
 
-        OnEnterMainMenuActionHandler.Instance.AddCallback(() => SpriteMap.Instance.GenerateSpriteMap());
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() =>
+        {
+            SpriteMap.Instance.GenerateSpriteMap();
+            ComboTrialDataManager.Instance.Init();
+        });
     }
 }

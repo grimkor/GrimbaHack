@@ -1,9 +1,5 @@
-using System.IO;
-using System.Text.Json;
 using epoch.db;
-using GrimbaHack.Modules.Combo;
 using GrimbaHack.Modules.ComboTrial;
-using GrimbaHack.Modules.PlayerInput;
 using GrimbaHack.UI.TrainingMode;
 using GrimbaHack.Utility;
 using HarmonyLib;
@@ -20,18 +16,21 @@ namespace GrimbaHack.UI.ComboTrial;
 public class GrimUIComboTrialController
 {
     public static TeamHeroSelection.Hero selectedHero;
-    public static TeamHeroSelection.Hero selectedDummy;
     private static BaseScreen heroSelection;
     private static TrainingMatch match;
+    public static bool IsTrialCharacterSelect;
 
-    private static System.Collections.Generic.List<ComboExport> combos;
-    private static ComboExport _combo;
+    static GrimUIComboTrialController()
+    {
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => { IsTrialCharacterSelect = false; });
+    }
 
     static void Postfix(UIHeroSelect __instance, UIHeroSelect.Team team, bool isSkinUnlocked)
     {
         if (SceneManager.screenManager.currentScreen.Pointer == heroSelection.Pointer)
         {
             match = null;
+            ComboTrialManager.Instance.SetHero(__instance.leftPlayer.teamSelection.selections[0].data.heroIndex);
             selectedHero = new TeamHeroSelection.Hero(__instance.leftPlayer.teamSelection.selections[0].data.heroIndex);
             selectedHero.color = __instance.leftPlayer.teamSelection.selections[0].skin.colorID;
             selectedHero.skin = __instance.leftPlayer.teamSelection.selections[0].skin.skinID;
@@ -40,7 +39,7 @@ public class GrimUIComboTrialController
         }
     }
 
-    public static ScreenTutorial CreateTutorialSelection()
+    public static ScreenTutorial CreateTutorialSelection(System.Collections.Generic.List<ComboExport> characterCombos)
     {
         match = null;
         var screen = new ScreenTutorial();
@@ -68,21 +67,41 @@ public class GrimUIComboTrialController
             },
         };
 
-        var filepath = Path.Join(BepInEx.Paths.GameRootPath, "output", "combo-trials.json");
-        var fileContents = File.ReadAllText(filepath);
-        var options = new JsonSerializerOptions { IncludeFields = true };
-        var json = JsonSerializer.Deserialize<System.Collections.Generic.List<ComboExport>>(fileContents, options);
-        if (json.Count == 0)
-        {
-            //TODO: handle no entries
-            // return null;
-        }
-
-        for (int n = 0; n < json.Count; n++)
+        if (characterCombos.Count < 1)
         {
             var b = new StoryBattle();
             var db = new DB_StoryBattle();
-            db.displayName = $"{json[n].Title}";
+            db.displayName = $"None";
+            db.enemyLeader = 1;
+            db.enemyAssist1 = 2;
+            db.enemyAssist2 = 3;
+            db.playerLeader = selectedHero.index;
+            db.playerAssist1 = 2;
+            db.playerAssist2 = 3;
+            db.infiniteTime = true;
+            db.arenaID = "Arena_Training_Pit";
+            for (int i = 0; i < 3; i++)
+            {
+                db.playerHealthStack.Add(1);
+                db.enemyHealthStack.Add(1);
+                db.enemyStartingHealthPercent.Add(100);
+                db.playerStartingHealthPercent.Add(100);
+            }
+
+            db.enemyReceiveDamageFromSkillTags.Add(SkillTag.Normal);
+            db.enemyReceiveDamageFromSkillTags.Add(SkillTag.Projectile);
+            db.enemyReceiveDamageFromSkillTags.Add(SkillTag.Super);
+            db.enemyReceiveDamageFromSkillTags.Add(SkillTag.Throw);
+            db.winConditionType = CombatConditionType.None;
+            b.Initialize(db);
+            chapter.AddStoryBattle(b);
+        }
+
+        foreach (var combo in characterCombos)
+        {
+            var b = new StoryBattle();
+            var db = new DB_StoryBattle();
+            db.displayName = $"{combo.Title}";
             db.enemyLeader = 1;
             db.enemyAssist1 = 2;
             db.enemyAssist2 = 3;
@@ -109,7 +128,6 @@ public class GrimUIComboTrialController
             chapter.AddStoryBattle(b);
         }
 
-        combos = json;
         screen.tutorial.chapters.Add(chapter);
         heroSelection = screen;
         return screen;
@@ -117,12 +135,20 @@ public class GrimUIComboTrialController
 
     static void ShowTutorialSelection()
     {
-        SceneManager.EnterScreen(CreateTutorialSelection());
+        if (ComboTrialManager.Instance.Combos == null || ComboTrialManager.Instance.Combos.Count < 1)
+        {
+            var messageBox = new UIErrorMessageBox();
+            messageBox.header = "Oops!";
+            messageBox.message = "No combos found for this character";
+            messageBox.ShowModalWindow();
+            return;
+        }
+
+        SceneManager.EnterScreen(CreateTutorialSelection(ComboTrialManager.Instance.Combos));
     }
 
     public static void StartGame()
     {
-        if (match != null) return;
         match = new TrainingMatch();
         match.arenaId = "Arena_Training_Pit";
         var team1 = new TeamHeroSelection();
@@ -133,15 +159,15 @@ public class GrimUIComboTrialController
             team2.SetHero(i, new TeamHeroSelection.Hero(i + 1));
         }
 
-        team1.SetHero(0, selectedHero);
-        team2.SetHero(0, new TeamHeroSelection.Hero(_combo.DummyId));
+        team1.SetHero(0, new TeamHeroSelection.Hero(ComboTrialManager.Instance.GetCurrentCombo().CharacterId));
+        team2.SetHero(0, new TeamHeroSelection.Hero(ComboTrialManager.Instance.GetCurrentCombo().DummyId));
         match.Initialize(team1, team2, PlayerControllerMapping.CreateForSinglePlayer());
         MatchManager.ShowLoadingScreen(match);
         var startup = MatchManager.Get.SetupGamePlay(match, MatchManager.Get.GetPID(),
             PlayerControllerMapping.CreateForTwoPlayerTraining());
         var gameplay = new PvPGamePlay(startup);
 
-        ComboTrialManager.Instance.Init(_combo);
+        ComboTrialManager.Instance.Init(ComboTrialManager.Instance.GetCurrentCombo());
         gameplay.Start();
     }
 
@@ -164,15 +190,24 @@ public class GrimUIComboTrialController
         {
             if (SceneManager.screenManager.currentScreen.Pointer == heroSelection?.Pointer)
             {
-                if (combos[__instance.index] != null)
-                {
-                    _combo = combos[__instance.index];
-                    StartGame();
-                    return false;
-                }
+                ComboTrialManager.Instance.SetComboId(__instance.index);
+                StartGame();
+                return false;
             }
 
             return true;
         }
+    }
+}
+
+[HarmonyPatch(typeof(UIHeroSelect), nameof(UIHeroSelect.SetUpCard))]
+public class HeroCardEnabling
+{
+    static void Postfix(UIHeroSelect.UIHeroCard heroCard, DB_CharacterSelectEntry data)
+    {
+        if (!GrimUIComboTrialController.IsTrialCharacterSelect) return;
+        heroCard.Enabled = heroCard.Enabled && ComboTrialDataManager.Instance.CharacterHasCombos(data.heroIndex);
+        heroCard.HeroEnabled =
+            heroCard.HeroEnabled && ComboTrialDataManager.Instance.CharacterHasCombos(data.heroIndex);
     }
 }

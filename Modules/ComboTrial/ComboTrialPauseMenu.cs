@@ -53,7 +53,14 @@ public class ComboTrialPauseMenu
         nextTrialButton.LocalizedText = "Next Trial";
         nextTrialButton.SetOnSubmit((UnityAction<ILayeredEventData>)((ILayeredEventData data) =>
         {
-            uit.OnSubmitResume(data);
+            data.Use();
+            var changed = ComboTrialManager.Instance.SetToNextTrial();
+            if (changed)
+            {
+                uit.CloseWindow();
+                GameManager.Get.RequestUnpauseApp();
+                ComboTrialManager.Instance.LoadTrialFromMatch();
+            }
         }));
         return nextTrialButton;
     }
@@ -65,7 +72,14 @@ public class ComboTrialPauseMenu
         previousTrialButton.LocalizedText = "Previous Trial";
         previousTrialButton.SetOnSubmit((UnityAction<ILayeredEventData>)((ILayeredEventData data) =>
         {
-            uit.OnSubmitResume(data);
+            data.Use();
+            var changed = ComboTrialManager.Instance.SetToPreviousTrial();
+            if (changed)
+            {
+                uit.CloseWindow();
+                GameManager.Get.RequestUnpauseApp();
+                ComboTrialManager.Instance.LoadTrialFromMatch();
+            }
         }));
         return previousTrialButton;
     }
@@ -87,10 +101,7 @@ public class ComboTrialPauseMenu
         var returnButton =
             uit.mainPage.AddItem<MenuSubmit>("ReturnButton");
         returnButton.LocalizedText = "Return To Trial Select";
-        returnButton.SetOnSubmit((UnityAction<ILayeredEventData>)((ILayeredEventData _) =>
-        {
-            ReturnToTrialSelect();
-        }));
+        returnButton.SetOnSubmit((UnityAction<ILayeredEventData>)((ILayeredEventData _) => { ReturnToTrialSelect(); }));
         return returnButton;
     }
 
@@ -99,10 +110,8 @@ public class ComboTrialPauseMenu
         var exitButton =
             uit.mainPage.AddItem<MenuSubmit>("ExitButton");
         exitButton.LocalizedText = UITextManager.Get.GetUIText("UIText_TrainingSettings_Exit_01");
-        exitButton.SetOnSubmit((UnityAction<ILayeredEventData>)((ILayeredEventData data) =>
-        {
-            uit.OnSubmitExit(data);
-        }));
+        exitButton.SetOnSubmit(
+            (UnityAction<ILayeredEventData>)((ILayeredEventData data) => { uit.OnSubmitExit(data); }));
         return exitButton;
     }
 
@@ -147,15 +156,14 @@ public class ComboTrialPauseMenu
     }
 }
 
-public class SomeShit : ILoadingContext
+public class IContextWrapper : ILoadingContext
 {
     private UILoadingScreenBase _loadingScreenBase;
-    public SomeShit(IntPtr ptr) : base(ptr)
+    public IContextWrapper(IntPtr ptr) : base(ptr)
     {
-
     }
 
-    public SomeShit(UILoadingScreenBase loadingScreenBase) : base(loadingScreenBase.Pointer)
+    public IContextWrapper(UILoadingScreenBase loadingScreenBase) : base(loadingScreenBase.Pointer)
     {
         _loadingScreenBase = loadingScreenBase;
     }

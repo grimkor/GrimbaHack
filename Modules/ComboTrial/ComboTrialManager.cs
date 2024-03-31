@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GrimbaHack.UI.ComboTrial;
 using GrimbaHack.UI.TrainingMode;
 using GrimbaHack.Utility;
@@ -6,6 +7,7 @@ using nway.gameplay;
 using nway.gameplay.ai;
 using nway.gameplay.match;
 using nway.gameplay.ui;
+using nway.ui;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -14,6 +16,9 @@ namespace GrimbaHack.Modules.ComboTrial;
 public class ComboTrialManager
 {
     public static ComboTrialManager Instance = new();
+    private int _selectedHeroIndex = 1;
+    public List<ComboExport> Combos;
+    private int _comboIndex;
     private ComboExport _combo;
     private GameObject _playerInputGo;
     private PlayerInputPlaybackBehaviour _playbackBehaviour;
@@ -197,13 +202,115 @@ public class ComboTrialManager
         }
     }
 
+    public void LoadTrialFromMatch()
+    {
+        ScreenFader.Get.StartFadeOut(Color.black, 0.5f);
+
+        Instance.TestFlag = true;
+        var loadingScreen = new UIPostMatchLoadingScreen();
+        loadingScreen.ShowNonmodalWindow();
+        var screen =
+            GrimUIComboTrialController.CreateTutorialSelection(
+                ComboTrialDataManager.Instance.GetCharacterCombos(Instance._combo.CharacterId));
+        LevelManager.Get.LeaveZone(screen, new IContextWrapper(loadingScreen));
+    }
+
+    [HarmonyPatch(typeof(ScreenTutorial), nameof(ScreenTutorial.OnExit))]
+    public class TestExit
+    {
+        public static bool Prefix()
+        {
+            if (Instance.TestFlag)
+            {
+                Instance.TestFlag = false;
+                return false;
+            }
+
+            return true;
+        }
+    }
+    [HarmonyPatch(typeof(ScreenTutorial), nameof(ScreenTutorial.OnEnter))]
+    public class Test
+    {
+        public static bool Prefix()
+        {
+            if (Instance.TestFlag)
+            {
+                GameManager.Get.onlineServices.UpdateNWayPlayInMatchState(false);
+                SceneManager.HideLoadingScreen();
+                GrimUIComboTrialController.StartGame();
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    public bool TestFlag { get; set; }
+
+
     public void ReturnToTrialSelect()
     {
         var loadingScreen = new UIPostMatchLoadingScreen();
         loadingScreen.ShowNonmodalWindow();
-        var screen = GrimUIComboTrialController.CreateTutorialSelection();
-        var shit = new SomeShit(loadingScreen);
+        var screen =
+            GrimUIComboTrialController.CreateTutorialSelection(
+                ComboTrialDataManager.Instance.GetCharacterCombos(Instance._combo.CharacterId));
+        var shit = new IContextWrapper(loadingScreen);
         LevelManager.Get.LeaveZone(screen, shit);
         Instance.Teardown();
+    }
+
+    public void SetHero(int heroIndex)
+    {
+        _selectedHeroIndex = heroIndex;
+        LoadCharacterCombos();
+    }
+
+    private void LoadCharacterCombos()
+    {
+        var combos = ComboTrialDataManager.Instance.GetCharacterCombos(_selectedHeroIndex);
+        if (combos.Count > 0)
+        {
+            Combos = combos;
+        }
+    }
+
+    public void SetComboId(int index)
+    {
+        if (index > Combos.Count - 1)
+        {
+            Plugin.Log.LogInfo(
+                $"[ComboTrialManager.SetComboId]: Index greater than combo list ({index} > {Combos.Count - 1}");
+            return;
+        }
+
+        Instance._comboIndex = index;
+    }
+
+    public ComboExport GetCurrentCombo()
+    {
+        return Instance.Combos?[Instance._comboIndex];
+    }
+
+    public bool SetToPreviousTrial()
+    {
+        if (Instance._comboIndex - 1 >= 0)
+        {
+            SetComboId(Instance._comboIndex - 1);
+            return true;
+        }
+
+        return false;
+    }
+    public bool SetToNextTrial()
+    {
+        if (Instance._comboIndex + 1 < Instance.Combos.Count)
+        {
+            SetComboId(Instance._comboIndex + 1);
+            return true;
+        }
+
+        return false;
     }
 }

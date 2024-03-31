@@ -23,6 +23,7 @@ public class CreateMainMenuComboTrialOption
         submit.Selectable.interactable = true;
         submit.SetOnSubmit((Action<ILayeredEventData>)((_) =>
         {
+            GrimUIComboTrialController.IsTrialCharacterSelect = true;
             GrimUIComboTrialController.LoadUIHeroSelect();
         }));
         submit.Enabled = true;
