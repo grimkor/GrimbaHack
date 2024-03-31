@@ -15,14 +15,13 @@ public class MainSettingsPopup
 {
     private static UISpectateOptions _popup;
     private static string _headerText = "GrimbaHack Settings";
-    private static readonly List<MenuListSelector<DefaultMenuOptions>> _mapSelectors = new();
     private static bool _bulkUpdate;
     private static Action _callback;
     private static MenuPage _mainPage;
     private static UIStackedMenu stack;
     public static string PageTemplateName = "templates/pages/pageTemplate";
     private static UIMenuComponentGenerator uiMenuGenerator;
-    private static MenuPage stageOverridePage;
+    private static MenuPage _stageOverridePage;
 
     public static void Show(Action callback)
     {
@@ -55,7 +54,7 @@ public class MainSettingsPopup
         CreateMainPage(_popup);
         _popup.mainPage = _mainPage.Page;
 
-        stageOverridePage = new StageSelectOverrideSelectorNew(uiMenuGenerator, _popup, _mainPage.Page, stack).Generate();
+        _stageOverridePage = new StageSelectOverrideSelectorNew(uiMenuGenerator, _popup, _mainPage.Page, stack).Generate();
         EnableCameraSelectorNew.Generate(_mainPage.Page);
         SameCharacterSelectorNew.Generate(_mainPage.Page);
         CustomTexturesSelectorNew.Generate(_mainPage.Page);

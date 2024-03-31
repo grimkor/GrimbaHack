@@ -1,9 +1,11 @@
+using GrimbaHack.UI.ComboTrial;
 using GrimbaHack.UI.TrainingMode;
 using GrimbaHack.Utility;
 using HarmonyLib;
 using nway.gameplay;
 using nway.gameplay.ai;
 using nway.gameplay.match;
+using nway.gameplay.ui;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -93,7 +95,6 @@ public class ComboTrialManager
 
         var teamOrderDriver = drivers.FindExtension<TeamOrderDriver>();
         teamOrderDriver.KeepCurrentCharacterOnReset = true;
-
     }
 
     private void TriggerPlayback()
@@ -101,8 +102,8 @@ public class ComboTrialManager
         Instance.playbackQueued = true;
         var resetDriver = MatchManager.instance.CombatDriver.FindExtension<MatchResetDriver>();
         resetDriver.ResetTrainingBattle();
-
     }
+
     public void Playback()
     {
         Instance._playbackBehaviour.Playback(Instance.player.GetCharacterTeam().GetInputSystem(),
@@ -164,6 +165,7 @@ public class ComboTrialManager
         Instance._playerInputGo = null;
         Instance.dummy = null;
         Instance.player = null;
+        ComboTrialPauseMenu.Teardown();
     }
 
     [HarmonyPatch(typeof(SceneStartup), nameof(SceneStartup.AbortZone))]
@@ -174,7 +176,6 @@ public class ComboTrialManager
             Instance.Teardown();
         }
     }
-
 
     [HarmonyPatch(typeof(CommandRecordingDriver), nameof(CommandRecordingDriver.TogglePlaybackState))]
     public class OverrideTogglePlayback
@@ -194,5 +195,15 @@ public class ComboTrialManager
         {
             return !Instance.IsComboTrial;
         }
+    }
+
+    public void ReturnToTrialSelect()
+    {
+        var loadingScreen = new UIPostMatchLoadingScreen();
+        loadingScreen.ShowNonmodalWindow();
+        var screen = GrimUIComboTrialController.CreateTutorialSelection();
+        var shit = new SomeShit(loadingScreen);
+        LevelManager.Get.LeaveZone(screen, shit);
+        Instance.Teardown();
     }
 }

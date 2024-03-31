@@ -26,23 +26,6 @@ public class GrimUIComboTrialController
 
     private static System.Collections.Generic.List<ComboExport> combos;
     private static ComboExport _combo;
-    private static Vector3F playerPosition;
-    private static Vector3F dummyPosition;
-
-    static GrimUIComboTrialController()
-    {
-        // OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() =>
-        // {
-        //     if (_combo == null) return;
-        //     // ComboTrackerController.Instance.SetEnabled(true);
-        //     // UIComboTracker.Instance.SetCombo(combo.Combo);
-        //     // UIComboTrial.Instance.Init(combo.Combo);
-        //
-        //     Plugin.Log.LogInfo($"Triggered OnEnterTrainingMode");
-        //     ComboTrialManager.Instance.Init(_combo);
-        //     // PlayerInputController.SetInputs(combo.Inputs);
-        // });
-    }
 
     static void Postfix(UIHeroSelect __instance, UIHeroSelect.Team team, bool isSkinUnlocked)
     {
@@ -52,14 +35,14 @@ public class GrimUIComboTrialController
             selectedHero = new TeamHeroSelection.Hero(__instance.leftPlayer.teamSelection.selections[0].data.heroIndex);
             selectedHero.color = __instance.leftPlayer.teamSelection.selections[0].skin.colorID;
             selectedHero.skin = __instance.leftPlayer.teamSelection.selections[0].skin.skinID;
-            // __instance.CloseWindow();
             __instance.Hide();
             ShowTutorialSelection();
         }
     }
 
-    static void ShowTutorialSelection()
+    public static ScreenTutorial CreateTutorialSelection()
     {
+        match = null;
         var screen = new ScreenTutorial();
         screen.tutorial = new Story
         {
@@ -91,7 +74,8 @@ public class GrimUIComboTrialController
         var json = JsonSerializer.Deserialize<System.Collections.Generic.List<ComboExport>>(fileContents, options);
         if (json.Count == 0)
         {
-            return;
+            //TODO: handle no entries
+            // return null;
         }
 
         for (int n = 0; n < json.Count; n++)
@@ -128,7 +112,12 @@ public class GrimUIComboTrialController
         combos = json;
         screen.tutorial.chapters.Add(chapter);
         heroSelection = screen;
-        SceneManager.EnterScreen(screen);
+        return screen;
+    }
+
+    static void ShowTutorialSelection()
+    {
+        SceneManager.EnterScreen(CreateTutorialSelection());
     }
 
     public static void StartGame()
@@ -178,13 +167,6 @@ public class GrimUIComboTrialController
                 if (combos[__instance.index] != null)
                 {
                     _combo = combos[__instance.index];
-                    playerPosition = new Vector3F()
-                        { x = _combo.PlayerPosition[0], y = _combo.PlayerPosition[1], z = _combo.PlayerPosition[2] };
-                    dummyPosition = new Vector3F()
-                        { x = _combo.DummyPosition[0], y = _combo.DummyPosition[1], z = _combo.DummyPosition[2] };
-
-                    // PlayerInputController.SetCharacterPositions(playerPosition, dummyPosition);
-                    // ComboTracker.Instance.SetCombo(combo.Combo);
                     StartGame();
                     return false;
                 }

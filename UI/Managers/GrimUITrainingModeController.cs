@@ -1,3 +1,4 @@
+using GrimbaHack.Modules.ComboTrial;
 using GrimbaHack.UI.Popup.MainSettings;
 using GrimbaHack.UI.Popup.TrainingSettings;
 using GrimbaHack.Utility;
@@ -23,8 +24,9 @@ public class GrimUITrainingModeController
 
     public void Init()
     {
-        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => _enabled = true);
-        OnEnterMainMenuActionHandler.Instance.AddCallback(() => _enabled = false);
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() =>
+            Instance._enabled = !ComboTrialManager.Instance.IsComboTrial);
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance._enabled = false);
         OnUITrainingOptionsOnShowActionHandler.Instance.AddPostfix(uiTrainingOptions =>
             {
                 Instance._uiTrainingOptions = uiTrainingOptions;
@@ -33,17 +35,20 @@ public class GrimUITrainingModeController
                 uiTrainingOptions.AddButtonCallback(MenuButton.RightBumper, (UnityAction<ILayeredEventData>)(
                     (ILayeredEventData _) =>
                     {
-                        // Command list and button configurations are modals and not part of the stack
-                        if (uiTrainingOptions.stack.Count <= 1 &&
-                            uiTrainingOptions.EventSystem.IsPriority(uiTrainingOptions.InputLayer))
+                        if (Instance._enabled)
                         {
-                            TrainingSettingsPopup.Show(() =>
+                            // Command list and button configurations are modals and not part of the stack
+                            if (uiTrainingOptions.stack.Count <= 1 &&
+                                uiTrainingOptions.EventSystem.IsPriority(uiTrainingOptions.InputLayer))
                             {
-                                uiTrainingOptions.mainPage.GetDefaultSelection()
-                                    .Select(uiTrainingOptions.EventSystem, uiTrainingOptions.InputLayer);
-                                uiTrainingOptions.mainPage.SetVisible(true);
-                            });
-                            uiTrainingOptions.EventSystem.SetSelectedGameObject(null, uiTrainingOptions.InputLayer);
+                                TrainingSettingsPopup.Show(() =>
+                                {
+                                    uiTrainingOptions.mainPage.GetDefaultSelection()
+                                        .Select(uiTrainingOptions.EventSystem, uiTrainingOptions.InputLayer);
+                                    uiTrainingOptions.mainPage.SetVisible(true);
+                                });
+                                uiTrainingOptions.EventSystem.SetSelectedGameObject(null, uiTrainingOptions.InputLayer);
+                            }
                         }
                     }));
 
@@ -51,16 +56,19 @@ public class GrimUITrainingModeController
                 uiTrainingOptions.AddButtonCallback(MenuButton.LeftBumper, (UnityAction<ILayeredEventData>)(
                     (ILayeredEventData _) =>
                     {
-                        if (uiTrainingOptions.stack.Count <= 1 &&
-                            uiTrainingOptions.EventSystem.IsPriority(uiTrainingOptions.InputLayer))
+                        if (Instance._enabled)
                         {
-                            MainSettingsPopup.Show(() =>
+                            if (uiTrainingOptions.stack.Count <= 1 &&
+                                uiTrainingOptions.EventSystem.IsPriority(uiTrainingOptions.InputLayer))
                             {
-                                uiTrainingOptions.mainPage.GetDefaultSelection()
-                                    .Select(uiTrainingOptions.EventSystem, uiTrainingOptions.InputLayer);
-                                uiTrainingOptions.mainPage.SetVisible(true);
-                            });
-                            uiTrainingOptions.EventSystem.SetSelectedGameObject(null, uiTrainingOptions.InputLayer);
+                                MainSettingsPopup.Show(() =>
+                                {
+                                    uiTrainingOptions.mainPage.GetDefaultSelection()
+                                        .Select(uiTrainingOptions.EventSystem, uiTrainingOptions.InputLayer);
+                                    uiTrainingOptions.mainPage.SetVisible(true);
+                                });
+                                uiTrainingOptions.EventSystem.SetSelectedGameObject(null, uiTrainingOptions.InputLayer);
+                            }
                         }
                     }));
             }
@@ -77,7 +85,7 @@ public class GrimUITrainingModeController
 
     private void UpdateButtonBar(string pageName)
     {
-        if (!_enabled) return;
+        if (!Instance._enabled) return;
 
         switch (pageName)
         {
