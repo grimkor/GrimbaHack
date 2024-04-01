@@ -12,10 +12,6 @@ public class PlayerInputPlaybackBehaviour : MonoBehaviour
     private InputSystem _inputSystem;
     private IController _controller;
 
-    private PlayerInputPlaybackBehaviour()
-    {
-    }
-
     public void Playback(InputSystem inputSystem, List<uint> comboInputs, int delay = 0)
     {
         var inputs = comboInputs.ToList();

@@ -6,6 +6,7 @@ using BepInEx.Unity.IL2CPP;
 using GrimbaHack.Data;
 using GrimbaHack.module;
 using GrimbaHack.Modules;
+using GrimbaHack.Modules.ComboRecorder;
 using GrimbaHack.Modules.ComboTrial;
 using GrimbaHack.Modules.PlayerInput;
 using GrimbaHack.UI;
@@ -68,6 +69,7 @@ public class Plugin : BasePlugin
         ClassInjector.RegisterTypeInIl2Cpp<PlayerInputBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<UnityMainThreadDispatcher>();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerInputPlaybackBehaviour>();
+        ClassInjector.RegisterTypeInIl2Cpp<InputRecorderBehaviour>();
         AddComponent<UnityMainThreadDispatcher>();
         EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
 

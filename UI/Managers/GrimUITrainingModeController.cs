@@ -51,6 +51,27 @@ public class GrimUITrainingModeController
                             }
                         }
                     }));
+                uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonY,
+                    "Combo Recorder");
+                uiTrainingOptions.AddButtonCallback(MenuButton.XboxY, (UnityAction<ILayeredEventData>)(
+                    (ILayeredEventData _) =>
+                    {
+                        if (Instance._enabled)
+                        {
+                            // Command list and button configurations are modals and not part of the stack
+                            if (uiTrainingOptions.stack.Count <= 1 &&
+                                uiTrainingOptions.EventSystem.IsPriority(uiTrainingOptions.InputLayer))
+                            {
+                                ComboRecorderSettingsPopup.Show(() =>
+                                {
+                                    uiTrainingOptions.mainPage.GetDefaultSelection()
+                                        .Select(uiTrainingOptions.EventSystem, uiTrainingOptions.InputLayer);
+                                    uiTrainingOptions.mainPage.SetVisible(true);
+                                });
+                                uiTrainingOptions.EventSystem.SetSelectedGameObject(null, uiTrainingOptions.InputLayer);
+                            }
+                        }
+                    }));
 
                 uiTrainingOptions.buttonBarConfig.SetLocalizedText(ButtonBarItem.ButtonLB, "GrimbaHack");
                 uiTrainingOptions.AddButtonCallback(MenuButton.LeftBumper, (UnityAction<ILayeredEventData>)(

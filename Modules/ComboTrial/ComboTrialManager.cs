@@ -236,7 +236,6 @@ public class ComboTrialManager
         {
             if (Instance.TestFlag)
             {
-                GameManager.Get.onlineServices.UpdateNWayPlayInMatchState(false);
                 SceneManager.HideLoadingScreen();
                 GrimUIComboTrialController.StartGame();
                 return false;

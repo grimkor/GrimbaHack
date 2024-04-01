@@ -59,7 +59,6 @@ public sealed class PlayerInputController : ModuleBase
     {
         _state = PlayerInputBehaviourState.Idle;
         Instance.Behaviour.SetEnable(false);
-        Instance.Behaviour.PlaybackCount = 0;
     }
 
     public static void PreRecord()
@@ -88,7 +87,6 @@ public sealed class PlayerInputController : ModuleBase
     {
         Instance.Behaviour.SetEnable(true);
         Instance._state = PlayerInputBehaviourState.Playback;
-        Instance.Behaviour.PlaybackCount = 0;
     }
 
     public PlayerInputBehaviourState GetState()
@@ -131,10 +129,6 @@ public sealed class PlayerInputController : ModuleBase
 
     public static void LoadSavedCharacterPositions()
     {
-        Plugin.Log.LogInfo(
-            $"player1 asdofijasdf({Instance.playerPosition}):{Instance.playerPosition[0]}, {Instance.playerPosition[1]}, {Instance.playerPosition[2]} ");
-        Plugin.Log.LogInfo(
-            $"player2 sdoifhjasdf({Instance.dummyPosition}):{Instance.dummyPosition[0]}, {Instance.dummyPosition[1]}, {Instance.dummyPosition[2]} ");
         GetPlayerCharacter().SetPosition(Instance.playerPosition);
         GetDummyCharacter().SetPosition(Instance.dummyPosition);
     }

@@ -1,5 +1,4 @@
 using System;
-using GrimbaHack.UI.Elements;
 using GrimbaHack.UI.Popup.TrainingSettings.Elements;
 using HarmonyLib;
 using nway;
@@ -10,10 +9,10 @@ using UnityEngine;
 namespace GrimbaHack.UI.Popup.TrainingSettings;
 
 [HarmonyPatch(typeof(UISpectateOptions), nameof(UISpectateOptions.OnInitializeComponents))]
-public class TrainingSettingsPopup
+public class ComboRecorderSettingsPopup
 {
     private static UISpectateOptions _popup;
-    private static string _headerText = "Extra Training Options";
+    private static readonly string _headerText = "Combo Recorder Settings";
     private static bool _bulkUpdate;
     private static Action _callback;
     private static MenuPage _mainPage;
@@ -53,12 +52,8 @@ public class TrainingSettingsPopup
         CreateMainPage(_popup);
         _popup.mainPage = _mainPage.Page;
 
-        CollisionBoxViewerSelector.Generate(_mainPage);
-        ShowFrameDataSelector.Generate(_mainPage);
-        UnlimitedInstallSelector.Generate(_mainPage);
-        GameSpeedSlider.Generate(_mainPage, _popup.buttonBarConfig, _popup);
-        DummyExPunishSelector.Generate(_mainPage.Page);
-        EnhancedDummyPushblockSelector.Generate(_mainPage.Page);
+        ComboRecorderSelector.Generate(_mainPage.Page);
+        ComboRecorderExportSubmit.Generate(_mainPage.Page);
 
         _popup.startingSelection = _mainPage.Page.GetDefaultSelection();
         _mainPage.Page.CreateChain(true, true, _popup.InputLayer);
@@ -80,14 +75,13 @@ public class TrainingSettingsPopup
         }));
         _popup.SetOnHideCallback((Action)(() =>
         {
-            // GoBack();
             _popup.OnHide();
             if (_callback != null)
             {
                 _callback();
             }
         }));
-        _popup.SetOnCancelCallback((Action<ILayeredEventData>)(_ => { GoBack(); }));
+        _popup.SetOnCancelCallback((Action<ILayeredEventData>)GoBack);
 
         return false;
     }
@@ -98,8 +92,9 @@ public class TrainingSettingsPopup
             UserPersistence.Get.p1ButtonMap, _popup.buttonBarConfig);
     }
 
-    private static void GoBack()
+    private static void GoBack(ILayeredEventData data)
     {
+        data.Use();
         if (stack.Count == 1)
         {
             _popup.CloseWindow();

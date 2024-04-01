@@ -10,7 +10,6 @@ public class PlayerInputBehaviour : MonoBehaviour
 {
     private static InputSystem _inputSystem;
     public List<uint> Inputs = new();
-    public int PlaybackCount;
 
     public void SetEnable(bool value)
     {
@@ -38,8 +37,6 @@ public class PlayerInputBehaviour : MonoBehaviour
                 if (character.team == 0)
                 {
                     player = character;
-                    _inputSystem = character.GetCharacterTeam().GetInputSystem();
-                    PlaybackCount = 0;
                 }
                 else
                 {
@@ -53,10 +50,6 @@ public class PlayerInputBehaviour : MonoBehaviour
             PlayerInputController.SetCharacters(player, dummy);
         }
 
-        if (ComboTrackerController.GetState() == ComboTrackerState.Comparing)
-        {
-            PlayerInputController.LoadSavedCharacterPositions();
-        }
     }
 
     private void Update()
@@ -80,15 +73,6 @@ public class PlayerInputBehaviour : MonoBehaviour
                 case PlayerInputBehaviourState.Recording:
                     Inputs.Add(_inputSystem.GetCharacterInput());
                     break;
-                case PlayerInputBehaviourState.Playback:
-                    if (Inputs.Count > 0 && PlaybackCount <= Inputs.Count - 1)
-                    {
-                        _inputSystem.SetInput(Inputs[PlaybackCount++]);
-                    }
-                    else
-                    {
-                        PlayerInputController.Instance.Idle();
-                    }
 
                     break;
                 default:
