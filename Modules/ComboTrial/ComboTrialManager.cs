@@ -3,6 +3,7 @@ using GrimbaHack.UI.ComboTrial;
 using GrimbaHack.UI.TrainingMode;
 using GrimbaHack.Utility;
 using HarmonyLib;
+using Il2CppSystem;
 using nway.gameplay;
 using nway.gameplay.ai;
 using nway.gameplay.match;
@@ -136,21 +137,18 @@ public class ComboTrialManager
     {
         Instance.player = null;
         Instance.dummy = null;
-        var characters = Object.FindObjectsOfType<Character>();
-        foreach (var character in characters)
+        SceneStartup.Get.GamePlay._playerList.ForEach((Action<Character> )((Character character) =>
         {
-            if (character.IsActiveCharacter)
+            if (character.team == 0 && character.IsActiveCharacter)
             {
-                if (character.team == 0)
-                {
-                    Instance.player = character;
-                }
-                else
-                {
-                    Instance.dummy = character;
-                }
+                Instance.player = character;
             }
-        }
+            else if (character.team == 1 && character.IsActiveCharacter)
+
+            {
+                Instance.dummy = character;
+            }
+        }));
     }
 
     public void SetStartingPosition()
@@ -229,6 +227,7 @@ public class ComboTrialManager
             return true;
         }
     }
+
     [HarmonyPatch(typeof(ScreenTutorial), nameof(ScreenTutorial.OnEnter))]
     public class Test
     {
@@ -302,6 +301,7 @@ public class ComboTrialManager
 
         return false;
     }
+
     public bool SetToNextTrial()
     {
         if (Instance._comboIndex + 1 < Instance.Combos.Count)

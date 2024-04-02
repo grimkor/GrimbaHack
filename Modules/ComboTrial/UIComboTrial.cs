@@ -252,10 +252,13 @@ public class UIComboTrial
 
         Instance._completeAnimation = () =>
         {
+            Plugin.Log.LogInfo($"running complete animation");
             Instance._animationGo.SetActive(true);
             var boltSequence = DOTween.Sequence();
             textGo.transform.localPosition = new(2000, 0, 0);
             boltSpriteGo.transform.localScale = new Vector3(20, 20, 20);
+            boltSprite.color = new(1,1,1,1);
+            text.color = new(1,1,1,1);
             boltSequence.Append(boltSpriteGo.transform.DOScale(new Vector3(1.75f, 1.75f, 1.75f), .45f)
                 .SetEase(Ease.OutQuart));
             boltSequence.Insert(0.35f, textGo.transform.DOLocalMove(new Vector3(0, 0, 0), .4f).SetEase(Ease.OutBack));

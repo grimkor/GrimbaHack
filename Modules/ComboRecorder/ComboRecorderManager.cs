@@ -107,6 +107,9 @@ public class ComboRecorderManager
             case ComboRecorderState.PlaybackStart:
                 StopRecording();
                 MatchManager.Get.CombatDriver.FindExtension<MatchResetDriver>().ResetTrainingBattle();
+                var combo = Instance.GenerateExportCombo();
+                if (combo == null) break;
+                ComboTrialManager.Instance.Init(combo);
                 break;
             case ComboRecorderState.PlaybackRunning:
                 StopRecording();
@@ -176,15 +179,16 @@ public class ComboRecorderManager
         return Instance._comboParts;
     }
 
-    public void ExportCombo()
+    private ComboExport GenerateExportCombo()
     {
+
         var combo = Instance.GetComboParts();
         var inputs = Instance.GetRecordedInputs();
         var drivers = MatchManager.Get.CombatDriver;
         var trainingMeterDriver = drivers.FindExtension<TrainingMeterDriver>();
         if (combo == null || inputs == null || Instance._player == null || trainingMeterDriver == null)
         {
-            return;
+            return null;
         }
 
         List<List<ComboItem>> convertedCombo =
@@ -197,7 +201,7 @@ public class ComboRecorderManager
                         { Ids = new() { s }, Notation = new() { ComboQuickConverter.ConvertGia(s) }, Repeat = 1 };
                 }).ToList()
             };
-        var exportClass = new ComboExport()
+        var comboExport = new ComboExport()
         {
             Title = $"{Instance._player.GetCharacterName()}_{Time.frameCount}",
             Combo = convertedCombo,
@@ -211,15 +215,20 @@ public class ComboRecorderManager
             SuperMeter = trainingMeterDriver.LocalPlayerSuperRefillLevel,
             MzMeter = trainingMeterDriver.LocalPlayerMZMeterLevel
         };
+        return comboExport;
+    }
+    public void ExportCombo()
+    {
         var options = new JsonSerializerOptions { IncludeFields = true, WriteIndented = true };
+        var combo = Instance.GenerateExportCombo();
+        if (combo == null) return;
         File.WriteAllText(Path.Join(BepInEx.Paths.GameRootPath, "output", $"{Instance._player.GetCharacterName()}_{Time.frameCount}.json"),
-            JsonSerializer.Serialize(exportClass, options));
+            JsonSerializer.Serialize(combo, options));
     }
 
     private void GetActiveCharacters()
     {
-        var characters = Object.FindObjectsOfType<Character>();
-        foreach (var character in characters)
+        foreach (var character in SceneStartup.Get.GamePlay._playerList)
         {
             if (character.IsActiveCharacter)
             {

@@ -29,8 +29,7 @@ public class PlayerInputBehaviour : MonoBehaviour
     public void Setup()
     {
         Character player = null, dummy = null;
-        var characters = FindObjectsOfType<Character>();
-        foreach (var character in characters)
+        foreach (var character in SceneStartup.Get.GamePlay._playerList)
         {
             if (character.IsActiveCharacter)
             {

@@ -70,7 +70,7 @@ public class CommandHistoryItem
             var text = go.AddComponent<Text>();
             text.AssignDefaultFont();
             text.fontSize = 20;
-            text.text = $"FUCK YOU I WONT DO WHAT YOU TELL ME {i + 1}";
+            text.text = $"Test";
         }
 
         var rectTransform = containerObject.GetComponent<RectTransform>();
@@ -78,42 +78,5 @@ public class CommandHistoryItem
         {
             rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left,0,  rectTransform.sizeDelta.x);
         }
-
-        // var sprites = Object.FindObjectsOfType<Sprite>();
-        // var med = sprites.ToList().Find(sprite => sprite.name.Contains("button_pc_medium") && sprite.name.Contains("Clone"));
-        // var spriteGo = new GameObject();
-        // spriteGo.AddComponent<CanvasRenderer>();
-        // var spr = spriteGo.AddComponent<Image>();
-        // spr.sprite = med;
-        // spr.transform.localScale = new Vector3(1, 1, 1);
-        // spr.transform.localPosition = new Vector3(1, 1, 1);
-        // spr.m_Sprite = med;
-        // spriteGo.transform.SetParent(_containerObject.transform);
-        // Plugin.Log.LogInfo($"{canvas.renderMode}");
-
-
-        // var labelGo = new GameObject();
-        // labelGo.transform.SetParent(horizontalLayout.transform);
-        // labelGo.AddComponent<CanvasRenderer>();
-        // _text = labelGo.AddComponent<LocalizedText>();
-        // labelGo.transform.localScale = new Vector3(1, 1, 1);
-        // labelGo.transform.localPosition = new Vector3(1, 1, 1);
-        // _text.normalText = labelText;
-        // _text.TextComponent.fontSize = 30;
-        // _text.TextComponent.alignment = TextAnchor.MiddleLeft;
-        // var labelShadow = labelGo.AddComponent<Shadow>();
-        // labelShadow.effectColor = new Color(0, 0, 0, 1);
-        // labelShadow.effectDistance = new Vector2(4, -4);
-        // labelShadow.useGraphicAlpha = true;
-
-        // assign the font if we found it
-        // if (font != null)
-        // {
-        //     _text.TextComponent.font = font;
-        // }
-        // else
-        // {
-        //     _text.TextComponent.AssignDefaultFont();
-        // }
     }
 }

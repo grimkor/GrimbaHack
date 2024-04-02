@@ -100,7 +100,8 @@ public sealed class ComboTracker
         {
             return;
         }
-        var characters = Object.FindObjectsOfType<Character>();
+
+        var characters = SceneStartup.instance.GamePlay._playerList;
         foreach (var character in characters)
         {
             if (character.IsActiveCharacter)

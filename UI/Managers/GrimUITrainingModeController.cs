@@ -1,3 +1,4 @@
+using GrimbaHack.Modules.ComboRecorder;
 using GrimbaHack.Modules.ComboTrial;
 using GrimbaHack.UI.Popup.MainSettings;
 using GrimbaHack.UI.Popup.TrainingSettings;
@@ -25,7 +26,7 @@ public class GrimUITrainingModeController
     public void Init()
     {
         OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() =>
-            Instance._enabled = !ComboTrialManager.Instance.IsComboTrial);
+            Instance._enabled = !ComboTrialManager.Instance.IsComboTrial || ComboRecorderManager.Instance.Enabled);
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance._enabled = false);
         OnUITrainingOptionsOnShowActionHandler.Instance.AddPostfix(uiTrainingOptions =>
             {

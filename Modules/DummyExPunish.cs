@@ -71,8 +71,8 @@ public class DummyExPunishBehaviour : MonoBehaviour
     private static Character DummyCharacter;
     private static CommandRecordingDriver RecordController;
     private static CommandRecordingDriver.RecordingState DummyRecorder;
-    private static bool DummyIsStunned = false;
-    private static bool _ExTriggered = false;
+    private static bool DummyIsStunned;
+    private static bool _ExTriggered;
     private Il2CppArrayBase<Character> _characters;
 
     public DummyExPunishBehaviour()
@@ -81,9 +81,9 @@ public class DummyExPunishBehaviour : MonoBehaviour
         {
             if (DummyExPunish.Instance.Enabled)
             {
-                var sceneStartup = FindObjectOfType<SceneStartup>();
+                var sceneStartup = SceneStartup.Get;
 
-                var characters = FindObjectsOfType<Character>();
+                var characters = sceneStartup.GamePlay._playerList;
 
                 foreach (var character in characters)
                 {

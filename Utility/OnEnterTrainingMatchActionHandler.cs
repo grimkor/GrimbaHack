@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using GrimbaHack.Modules;
 using HarmonyLib;
 using nway.gameplay;
 using nway.gameplay.match;
-using nway.gameplay.ui;
 using Action = System.Action;
 
 namespace GrimbaHack.Utility;
@@ -38,6 +36,7 @@ public class OnEnterTrainingMatchActionHandler
     public static void Postfix(AppState state)
     {
         if (!Data.Global.IsTrainingMatch()) return;
+        Plugin.Log.LogInfo($"OnTrainingEnter postfix: {Instance.postfixCallbacks.Count}");
         foreach (var callback in Instance.postfixCallbacks)
         {
             callback();
@@ -47,6 +46,7 @@ public class OnEnterTrainingMatchActionHandler
     public static void Prefix(AppState state)
     {
         if (!Data.Global.IsTrainingMatch()) return;
+        Plugin.Log.LogInfo($"OnTrainingEnter prefix: {Instance.prefixCallbacks.Count}");
         foreach (var callback in Instance.prefixCallbacks)
         {
             callback();
