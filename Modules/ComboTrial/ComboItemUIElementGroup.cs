@@ -34,7 +34,7 @@ public class ComboItemUIElementGroup : ComboItem
         _groupContainer.transform.SetParent(_parentTransform);
 
         var layout = _groupContainer.AddComponent<HorizontalLayoutGroup>();
-        layout.childControlHeight = false;
+        layout.childControlHeight = true;
         layout.childControlWidth = false;
         layout.childScaleHeight = false;
         layout.childScaleWidth = false;

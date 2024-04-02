@@ -19,7 +19,7 @@ public static class GameSpeedSlider
         rangeSelector.MinValue = 1;
         rangeSelector.MaxValue = 100;
         rangeSelector.CurrentValue = SimulationSpeed.GetSpeed();
-        rangeSelector.OnValueChanged = (Action<int, int>)((newValue, _) => { SimulationSpeed.SetSpeed(newValue); });
+        rangeSelector.OnValueChanged = (Action<int, int>)((newValue, _) => { SimulationSpeed.Instance.SetSpeed(newValue); });
         rangeSelector.selectable.SetOnSelect((Action<ILayeredEventData>)(eventData =>
         {
             _selected = true;
@@ -40,7 +40,7 @@ public static class GameSpeedSlider
             {
                 rangeSelector.CurrentValue = 100;
                 rangeSelector.slider.Set(1);
-                SimulationSpeed.SetSpeed(100);
+                SimulationSpeed.Instance.SetSpeed(100);
             }
         }));
     }

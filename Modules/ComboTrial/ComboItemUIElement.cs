@@ -81,6 +81,7 @@ public class ComboItemUIElement
                 rect.position = new(1, 1, 1);
                 img.sprite = sprite;
                 img.overrideSprite = sprite;
+                img.preserveAspect = true;
             }
         }
         else
