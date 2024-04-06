@@ -137,7 +137,7 @@ public class ComboTrialManager
     {
         Instance.player = null;
         Instance.dummy = null;
-        SceneStartup.Get.GamePlay._playerList.ForEach((Action<Character> )((Character character) =>
+        SceneStartup.Get.GamePlay._playerList.ForEach((Action<Character>)((Character character) =>
         {
             if (character.team == 0 && character.IsActiveCharacter)
             {
@@ -209,7 +209,7 @@ public class ComboTrialManager
         loadingScreen.ShowNonmodalWindow();
         var screen =
             GrimUIComboTrialController.CreateTutorialSelection(
-                ComboTrialDataManager.Instance.GetCharacterCombos(Instance._combo.CharacterId));
+                ComboTrialDataManager.GetCharacterCombos(Instance._combo.CharacterId));
         LevelManager.Get.LeaveZone(screen, new IContextWrapper(loadingScreen));
     }
 
@@ -253,7 +253,7 @@ public class ComboTrialManager
         loadingScreen.ShowNonmodalWindow();
         var screen =
             GrimUIComboTrialController.CreateTutorialSelection(
-                ComboTrialDataManager.Instance.GetCharacterCombos(Instance._combo.CharacterId));
+                ComboTrialDataManager.GetCharacterCombos(Instance._combo.CharacterId));
         var shit = new IContextWrapper(loadingScreen);
         LevelManager.Get.LeaveZone(screen, shit);
         Instance.Teardown();
@@ -267,7 +267,7 @@ public class ComboTrialManager
 
     private void LoadCharacterCombos()
     {
-        var combos = ComboTrialDataManager.Instance.GetCharacterCombos(_selectedHeroIndex);
+        var combos = ComboTrialDataManager.GetCharacterCombos(_selectedHeroIndex);
         if (combos.Count > 0)
         {
             Combos = combos;

@@ -1,6 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using BepInEx;
+using GrimbaHack.Data;
 using GrimbaHack.UI.TrainingMode;
 
 namespace GrimbaHack.Modules.ComboTrial;
@@ -17,6 +21,7 @@ public class ComboTrialDataManager
     public void Init()
     {
         Instance.LoadData();
+        Instance.CreateFolders();
     }
 
     private readonly Dictionary<string, List<ComboExport>> _combos = new();
@@ -40,18 +45,60 @@ public class ComboTrialDataManager
         _loaded = true;
     }
 
-    public List<ComboExport> GetCharacterCombos(int heroIndex)
+    public static List<ComboExport> GetCharacterCombos(int heroIndex)
     {
-        if (_combos.TryGetValue(TableHero.instance.GetDBHeroData(heroIndex).heroName, out var comboExports))
+        var comboExports = new List<ComboExport>();
+        if (CharacterHasCombos(heroIndex))
         {
+            var options = new JsonSerializerOptions { IncludeFields = true };
+            foreach (var file in Directory.GetFiles(Path.Join(FolderPathFromHeroId(heroIndex))))
+            {
+                var contents = File.ReadAllBytes(file);
+                try
+                {
+                    var combo = JsonSerializer.Deserialize<ComboExport>(contents, options);
+                    comboExports.Add(combo);
+                }
+                catch (Exception e)
+                {
+                    Plugin.Log.LogError($"Error parsing{file}: {e.Message}");
+                }
+            }
             return comboExports;
         }
-
-        return new List<ComboExport>();
+        comboExports.Sort((a,b) => string.Compare(a.Title, b.Title, StringComparison.Ordinal));
+        return comboExports;
     }
 
-    public bool CharacterHasCombos(int heroIndex)
+    public static bool CharacterHasCombos(int heroIndex)
     {
-        return Instance._combos.ContainsKey(TableHero.instance.GetDBHeroData(heroIndex).heroName);
+        var folder = Directory.GetFiles(FolderPathFromHeroId(heroIndex)).ToList();
+        return folder.ToList().Count > 0;
+    }
+
+    private static string GetHeroNameFromId(int heroIndex)
+    {
+        return TableHero.instance.GetDBHeroData(heroIndex).heroName;
+    }
+
+    private static string FolderPathFromHeroId(int heroIndex)
+    {
+      return Path.Join(Paths.PluginPath, "combos", GetHeroNameFromId(heroIndex));
+    }
+
+    private void CreateFolders()
+    {
+        foreach (var hero in Global.AssetHeroInfoMapper)
+        {
+            if (!hero.hasCombos) continue;
+            if (!Directory.Exists(Path.Join(Paths.PluginPath, "combos")))
+            {
+                Directory.CreateDirectory(Path.Join(Paths.PluginPath, "combos"));
+            }
+            if (!Directory.Exists(Path.Join(Paths.PluginPath, "combos", hero.skinOption)))
+            {
+                Directory.CreateDirectory(Path.Join(Paths.PluginPath, "combos", hero.skinOption));
+            }
+        }
     }
 }

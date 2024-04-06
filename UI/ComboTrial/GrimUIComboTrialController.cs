@@ -27,7 +27,7 @@ public class GrimUIComboTrialController
 
     static void Postfix(UIHeroSelect __instance, UIHeroSelect.Team team, bool isSkinUnlocked)
     {
-        if (SceneManager.screenManager.currentScreen.Pointer == heroSelection.Pointer)
+        if (SceneManager.screenManager.currentScreen.Pointer == heroSelection?.Pointer)
         {
             match = null;
             ComboTrialManager.Instance.SetHero(__instance.leftPlayer.teamSelection.selections[0].data.heroIndex);
@@ -206,8 +206,8 @@ public class HeroCardEnabling
     static void Postfix(UIHeroSelect.UIHeroCard heroCard, DB_CharacterSelectEntry data)
     {
         if (!GrimUIComboTrialController.IsTrialCharacterSelect) return;
-        heroCard.Enabled = heroCard.Enabled && ComboTrialDataManager.Instance.CharacterHasCombos(data.heroIndex);
+        heroCard.Enabled = heroCard.Enabled && ComboTrialDataManager.CharacterHasCombos(data.heroIndex);
         heroCard.HeroEnabled =
-            heroCard.HeroEnabled && ComboTrialDataManager.Instance.CharacterHasCombos(data.heroIndex);
+            heroCard.HeroEnabled && ComboTrialDataManager.CharacterHasCombos(data.heroIndex);
     }
 }
