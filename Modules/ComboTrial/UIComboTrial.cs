@@ -252,7 +252,6 @@ public class UIComboTrial
 
         Instance._completeAnimation = () =>
         {
-            Plugin.Log.LogInfo($"running complete animation");
             Instance._animationGo.SetActive(true);
             var boltSequence = DOTween.Sequence();
             textGo.transform.localPosition = new(2000, 0, 0);

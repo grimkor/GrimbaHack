@@ -20,7 +20,6 @@ public class OnUITrainingOptionsOnHideActionHandler
 
     static void Postfix(UITrainingOptions __instance)
     {
-        Plugin.Log.LogInfo("Running OnHide Postfix handler");
         foreach (var callback in Instance._callbacks)
         {
             callback(__instance);

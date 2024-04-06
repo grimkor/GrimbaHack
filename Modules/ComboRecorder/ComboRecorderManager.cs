@@ -196,7 +196,6 @@ public class ComboRecorderManager
             {
                 combo.Select(s =>
                 {
-                    Plugin.Log.LogInfo($"combo part: {s} | {ComboQuickConverter.ConvertGia(s)}");
                     return new ComboItem()
                         { Ids = new() { s }, Notation = new() { ComboQuickConverter.ConvertGia(s) }, Repeat = 1 };
                 }).ToList()

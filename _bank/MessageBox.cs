@@ -18,7 +18,6 @@ public class MessageBoxSample
 
     public static void DoTheThing()
     {
-        Plugin.Log.LogInfo("Triggered the Button Action Callback");
         mb.message = "Rita is downplayed.";
         mb.button1Text = "Yes";
         mb.button2Text = "Mid at best";
@@ -48,30 +47,5 @@ public class MessageBoxSample
     public static bool IsVisible()
     {
         return mb.uiPopup.IsActive();
-    }
-}
-
-public class UIExtendedWindow : UISettings
-{
-
-    public UIExtendedWindow()
-    {
-        // var go = new GameObject("TEST");
-        // Object.DontDestroyOnLoad(go);
-        // go.hideFlags = HideFlags.HideAndDontSave;
-        // uiPopup = go.AddComponent<UIPopup>();
-        // uiPopup.hideFlags = HideFlags.HideAndDontSave;
-        // Object.DontDestroyOnLoad(go);
-        // transform = go.transform;
-        // blockLayer = new EventSystemLayer("TEST");
-        // buttonEvents = new List<KeyValuePair<MenuButton, UnityAction<ILayeredEventData>>>();
-        // Controllers = new Il2CppReferenceArray<IControllerGroup>([]);
-    }
-
-    public static void DoTheThing(ILayeredEventData eventData)
-    {
-        // var x = ControllerManager.GetController(2);
-        // ControllerManager.SwapToPrimary(eventData.Input);
-        // // uis.ShowModalWindow();
     }
 }

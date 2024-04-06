@@ -30,7 +30,6 @@ public class OnSimulationInitializeActionHandler
 
     public static void Prefix()
     {
-        Plugin.Log.LogInfo($"Simulation prefix count: {Instance.prefixCallbacks.Count}");
         foreach (var callback in Instance.prefixCallbacks)
         {
             callback();
@@ -43,7 +42,6 @@ public class OnSimulationInitializeActionHandler
 
     public static void Postfix()
     {
-        Plugin.Log.LogInfo($"Simulation postfix count: {Instance.postfixCallbacks.Count}");
         foreach (var callback in Instance.postfixCallbacks)
         {
             callback();

@@ -168,7 +168,6 @@ public class TwitchApi : ModuleBase
             var response = await _api.Helix.Predictions.GetPredictionsAsync(Plugin.TwitchBroadcasterID.Value);
             if (response.Data.Length > 0 && response.Data[0].EndedAt == null)
             {
-                Plugin.Log.LogInfo("Cancelling previous prediction that was unfinished.");
                 await _api.Helix.Predictions.EndPredictionAsync(Plugin.TwitchBroadcasterID.Value, response.Data[0].Id,
                     PredictionEndStatus.CANCELED);
             }

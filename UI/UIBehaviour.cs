@@ -1,19 +1,11 @@
-using GrimbaHack._bank;
-using GrimbaHack.Utility;
 using Il2CppInterop.Runtime.Injection;
-using Il2CppSystem;
-using nway.ui;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UniverseLib.Runtime.Il2Cpp;
-using IntPtr = System.IntPtr;
-using Object = System.Object;
 
 namespace GrimbaHack.UI;
 
 public class UIBehaviour : MonoBehaviour
 {
-    private UIExtendedWindow test;
 
     internal static void Setup()
     {

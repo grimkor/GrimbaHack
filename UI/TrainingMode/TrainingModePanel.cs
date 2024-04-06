@@ -1,7 +1,5 @@
 using GrimbaHack.Data;
 using GrimbaHack.Modules;
-using GrimbaHack.Modules.Combo;
-using GrimbaHack.Modules.PlayerInput;
 using GrimbaHack.Utility;
 using UnityEngine;
 using UniverseLib.UI;
@@ -36,7 +34,6 @@ public class TrainingModePanel : MenuPanelBase
         ComboRecorderControls.CreateUIControls(ContentRoot);
         FrameDataManager.CreateUIControls(ContentRoot);
         CollisionBoxViewer.CreateUIControls(ContentRoot);
-        SimulationSpeed.CreateUIControls(ContentRoot);
         DummyExPunish.CreateUIControls(ContentRoot);
         ExtraPushblockOptions.CreateUIControls(ContentRoot);
         UnlimitedInstall.CreateUIControls(ContentRoot);

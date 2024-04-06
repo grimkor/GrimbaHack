@@ -96,7 +96,6 @@ public class MatchPrediction : ModuleBase
                     return;
                 }
             
-                Plugin.Log.LogInfo(match.GetType());
                 if (match.GetMatchType() == MatchType.RANKED || match.GetMatchType() == MatchType.LOBBY)
                 {
                     Instance.Reset();

@@ -10,9 +10,9 @@ using GrimbaHack.Modules.ComboRecorder;
 using GrimbaHack.Modules.ComboTrial;
 using GrimbaHack.Modules.PlayerInput;
 using GrimbaHack.UI;
-using GrimbaHack.Utility;
 using GrimbaHack.UI.Managers;
 using GrimbaHack.UI.MenuItems;
+using GrimbaHack.Utility;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 
@@ -67,10 +67,8 @@ public class Plugin : BasePlugin
         GrimUIMainSettingsController.Instance.Init();
         CommandHistoryFix.Init();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerInputBehaviour>();
-        ClassInjector.RegisterTypeInIl2Cpp<UnityMainThreadDispatcher>();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerInputPlaybackBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<InputRecorderBehaviour>();
-        AddComponent<UnityMainThreadDispatcher>();
         EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
 
         OnEnterMainMenuActionHandler.Instance.AddCallback(() =>

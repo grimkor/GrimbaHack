@@ -36,7 +36,6 @@ public class OnEnterTrainingMatchActionHandler
     public static void Postfix(AppState state)
     {
         if (!Data.Global.IsTrainingMatch()) return;
-        Plugin.Log.LogInfo($"OnTrainingEnter postfix: {Instance.postfixCallbacks.Count}");
         foreach (var callback in Instance.postfixCallbacks)
         {
             callback();
@@ -46,7 +45,6 @@ public class OnEnterTrainingMatchActionHandler
     public static void Prefix(AppState state)
     {
         if (!Data.Global.IsTrainingMatch()) return;
-        Plugin.Log.LogInfo($"OnTrainingEnter prefix: {Instance.prefixCallbacks.Count}");
         foreach (var callback in Instance.prefixCallbacks)
         {
             callback();
@@ -71,7 +69,6 @@ public class OnMatchManagerCreateTrainingNextActionHandler
 
     public void AddCallback(Action<TeamHeroSelection, TeamHeroSelection, string> callback)
     {
-        Plugin.Log.LogInfo("Adding callback");
         Instance.callbacks.Add(callback);
     }
 
@@ -81,7 +78,6 @@ public class OnMatchManagerCreateTrainingNextActionHandler
         string arenaIdOverride = null
     )
     {
-        Plugin.Log.LogInfo($"Running callbacks: {Instance.callbacks.Count}");
         foreach (var callback in Instance.callbacks)
         {
             callback(p1, p2, arenaIdOverride);
