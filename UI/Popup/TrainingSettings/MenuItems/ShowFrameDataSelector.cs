@@ -1,29 +1,26 @@
 using System;
 using GrimbaHack.Modules;
-using GrimbaHack.Utility;
 using nway.ui;
 
-namespace GrimbaHack.UI.Elements;
+namespace GrimbaHack.UI.Popup.TrainingSettings.MenuItems;
 
-public static class UnlimitedInstallSelector
+static class ShowFrameDataSelector
 {
-
     public static void Generate(MenuPage menuPage)
     {
         var selector =
-            menuPage.Page.AddItem<MenuListSelector<DefaultMenuOptions>>("unlimitedInstallTimeSelector");
+            menuPage.Page.AddItem<MenuListSelector<DefaultMenuOptions>>("showFrameDataToggle");
         var items = new Il2CppSystem.Collections.Generic.List<DefaultMenuOptions>();
         items.Add(DefaultMenuOptions.Enabled);
         items.Add(DefaultMenuOptions.Disabled);
         selector.Items =
             items.TryCast<Il2CppSystem.Collections.Generic.IList<DefaultMenuOptions>>();
-        selector.LocalizedText = "Unlimited Install (Adam/Eric)";
-        selector.CurrentItem = UnlimitedInstall.Instance.GetEnabled()
-            ? DefaultMenuOptions.Enabled
-            : DefaultMenuOptions.Disabled;
+        selector.LocalizedText = "Show Frame Data";
+        selector.CurrentItem =
+            FrameDataManager.Instance.Enabled ? DefaultMenuOptions.Enabled : DefaultMenuOptions.Disabled;
         selector.OnValueChanged = (Action<DefaultMenuOptions, DefaultMenuOptions>)((newValue, oldValue) =>
         {
-            UnlimitedInstall.Instance.SetEnabled(newValue == DefaultMenuOptions.Enabled);
+            FrameDataManager.Instance.Enabled = newValue == DefaultMenuOptions.Enabled;
         });
     }
 }

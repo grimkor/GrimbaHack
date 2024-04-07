@@ -1,6 +1,5 @@
 using System;
-using GrimbaHack.UI.Elements;
-using GrimbaHack.UI.Popup.TrainingSettings.Elements;
+using GrimbaHack.UI.Popup.TrainingSettings.MenuItems;
 using HarmonyLib;
 using nway;
 using nway.gameplay.ui;

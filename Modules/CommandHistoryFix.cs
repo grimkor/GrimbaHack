@@ -1,5 +1,5 @@
 using System.Linq;
-using GrimbaHack.module;
+using GrimbaHack.Modules.ComboTrial.UI;
 using GrimbaHack.Utility;
 using UnityEngine;
 

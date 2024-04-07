@@ -1,5 +1,4 @@
 using epoch.db;
-using GrimbaHack.Modules.ComboTrial;
 using GrimbaHack.UI.TrainingMode;
 using GrimbaHack.Utility;
 using HarmonyLib;
@@ -10,30 +9,30 @@ using nway.gameplay.ui;
 using nway.ui;
 using MatchType = epoch.db.MatchType;
 
-namespace GrimbaHack.UI.ComboTrial;
+namespace GrimbaHack.Modules.ComboTrial.UI;
 
 [HarmonyPatch(typeof(UIHeroSelect), nameof(UIHeroSelect.OnConfirmSkinSelect))]
-public class GrimUIComboTrialController
+public class ComboTrialMenuManager
 {
-    public static TeamHeroSelection.Hero selectedHero;
-    private static BaseScreen heroSelection;
-    private static TrainingMatch match;
+    private static TeamHeroSelection.Hero _selectedHero;
+    private static BaseScreen _heroSelection;
+    private static TrainingMatch _match;
     public static bool IsTrialCharacterSelect;
 
-    static GrimUIComboTrialController()
+    static ComboTrialMenuManager()
     {
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => { IsTrialCharacterSelect = false; });
     }
 
     static void Postfix(UIHeroSelect __instance, UIHeroSelect.Team team, bool isSkinUnlocked)
     {
-        if (SceneManager.screenManager.currentScreen.Pointer == heroSelection?.Pointer)
+        if (SceneManager.screenManager.currentScreen.Pointer == _heroSelection?.Pointer)
         {
-            match = null;
+            _match = null;
             ComboTrialManager.Instance.SetHero(__instance.leftPlayer.teamSelection.selections[0].data.heroIndex);
-            selectedHero = new TeamHeroSelection.Hero(__instance.leftPlayer.teamSelection.selections[0].data.heroIndex);
-            selectedHero.color = __instance.leftPlayer.teamSelection.selections[0].skin.colorID;
-            selectedHero.skin = __instance.leftPlayer.teamSelection.selections[0].skin.skinID;
+            _selectedHero = new TeamHeroSelection.Hero(__instance.leftPlayer.teamSelection.selections[0].data.heroIndex);
+            _selectedHero.color = __instance.leftPlayer.teamSelection.selections[0].skin.colorID;
+            _selectedHero.skin = __instance.leftPlayer.teamSelection.selections[0].skin.skinID;
             __instance.Hide();
             ShowTutorialSelection();
         }
@@ -41,7 +40,7 @@ public class GrimUIComboTrialController
 
     public static ScreenTutorial CreateTutorialSelection(System.Collections.Generic.List<ComboExport> characterCombos)
     {
-        match = null;
+        _match = null;
         var screen = new ScreenTutorial();
         screen.tutorial = new Story
         {
@@ -75,7 +74,7 @@ public class GrimUIComboTrialController
             db.enemyLeader = 1;
             db.enemyAssist1 = 2;
             db.enemyAssist2 = 3;
-            db.playerLeader = selectedHero.index;
+            db.playerLeader = _selectedHero.index;
             db.playerAssist1 = 2;
             db.playerAssist2 = 3;
             db.infiniteTime = true;
@@ -105,7 +104,7 @@ public class GrimUIComboTrialController
             db.enemyLeader = 1;
             db.enemyAssist1 = 2;
             db.enemyAssist2 = 3;
-            db.playerLeader = selectedHero.index;
+            db.playerLeader = _selectedHero.index;
             db.playerAssist1 = 2;
             db.playerAssist2 = 3;
             db.infiniteTime = true;
@@ -129,7 +128,7 @@ public class GrimUIComboTrialController
         }
 
         screen.tutorial.chapters.Add(chapter);
-        heroSelection = screen;
+        _heroSelection = screen;
         return screen;
     }
 
@@ -149,8 +148,8 @@ public class GrimUIComboTrialController
 
     public static void StartGame()
     {
-        match = new TrainingMatch();
-        match.arenaId = "Arena_Training_Pit";
+        _match = new TrainingMatch();
+        _match.arenaId = "Arena_Training_Pit";
         var team1 = new TeamHeroSelection();
         var team2 = new TeamHeroSelection();
         for (int i = 0; i < 3; i++)
@@ -161,9 +160,9 @@ public class GrimUIComboTrialController
 
         team1.SetHero(0, new TeamHeroSelection.Hero(ComboTrialManager.Instance.GetCurrentCombo().CharacterId));
         team2.SetHero(0, new TeamHeroSelection.Hero(ComboTrialManager.Instance.GetCurrentCombo().DummyId));
-        match.Initialize(team1, team2, PlayerControllerMapping.CreateForSinglePlayer());
-        MatchManager.ShowLoadingScreen(match);
-        var startup = MatchManager.Get.SetupGamePlay(match, MatchManager.Get.GetPID(),
+        _match.Initialize(team1, team2, PlayerControllerMapping.CreateForSinglePlayer());
+        MatchManager.ShowLoadingScreen(_match);
+        var startup = MatchManager.Get.SetupGamePlay(_match, MatchManager.Get.GetPID(),
             PlayerControllerMapping.CreateForTwoPlayerTraining());
         var gameplay = new PvPGamePlay(startup);
 
@@ -173,14 +172,14 @@ public class GrimUIComboTrialController
 
     public static void LoadUIHeroSelect()
     {
-        heroSelection = new ScreenHeroSelection
+        _heroSelection = new ScreenHeroSelection
         {
             hubArgs = new ScreenHeroSelection.HeroSelectionArgs
             {
                 matchType = MatchType.Arcade
             }
         };
-        SceneManager.EnterScreen(heroSelection);
+        SceneManager.EnterScreen(_heroSelection);
     }
 
     [HarmonyPatch(typeof(UITutorialSelect.BattleBlade), nameof(UITutorialSelect.BattleBlade.OnSubmit))]
@@ -188,7 +187,7 @@ public class GrimUIComboTrialController
     {
         static bool Prefix(UITutorialSelect.BattleBlade __instance)
         {
-            if (SceneManager.screenManager.currentScreen.Pointer == heroSelection?.Pointer)
+            if (SceneManager.screenManager.currentScreen.Pointer == _heroSelection?.Pointer)
             {
                 ComboTrialManager.Instance.SetComboId(__instance.index);
                 StartGame();
@@ -205,7 +204,7 @@ public class HeroCardEnabling
 {
     static void Postfix(UIHeroSelect.UIHeroCard heroCard, DB_CharacterSelectEntry data)
     {
-        if (!GrimUIComboTrialController.IsTrialCharacterSelect) return;
+        if (!ComboTrialMenuManager.IsTrialCharacterSelect) return;
         heroCard.ArcadeCompleted = false;
         heroCard.Enabled = heroCard.Enabled && ComboTrialDataManager.CharacterHasCombos(data.heroIndex);
         heroCard.HeroEnabled =

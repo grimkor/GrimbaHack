@@ -1,9 +1,9 @@
 using System;
 using GrimbaHack.Modules;
-using GrimbaHack.UI.MenuItems;
+using GrimbaHack.UI.Popup.CommonElements;
 using nway.ui;
 
-namespace GrimbaHack.UI.Popup.TrainingSettings.Elements;
+namespace GrimbaHack.UI.Popup.TrainingSettings.MenuItems;
 
 static class EnhancedDummyPushblockRangeSelector
 {

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
 
-namespace GrimbaHack.UI.Global;
+namespace GrimbaHack.UI.Toolbar;
 
 public sealed class Toolbar
 {

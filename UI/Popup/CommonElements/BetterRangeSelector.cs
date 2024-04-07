@@ -1,6 +1,6 @@
 using nway.ui;
 
-namespace GrimbaHack.UI.MenuItems;
+namespace GrimbaHack.UI.Popup.CommonElements;
 
 public class BetterRangeSelector : MenuRangeSelector
 {

@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using GrimbaHack.Data;
 using GrimbaHack.Modules;
-using GrimbaHack.Utility;
 using nway.gameplay.ui;
 using nway.ui;
 using UnityEngine.Events;
 
-namespace GrimbaHack.UI.Popup.MainSettings.Elements;
+namespace GrimbaHack.UI.Popup.MainSettings.MenuItems;
 
 public class StageSelectOverrideSelectorNew
 {

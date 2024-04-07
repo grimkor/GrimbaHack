@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using GrimbaHack.Modules.ComboTrial;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GrimbaHack.module;
+namespace GrimbaHack.Modules.ComboTrial.UI;
 
 public class ComboItemUIElementGroup : ComboItem
 {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using GrimbaHack.Data;
-using GrimbaHack.UI.Global;
 using GrimbaHack.UI.BGMPlayer;
+using GrimbaHack.UI.OnlineTraining;
 using GrimbaHack.UI.RecordingDummy;
 using GrimbaHack.UI.TrainingMode;
 using GrimbaHack.UI.Twitch;
@@ -29,7 +29,7 @@ public static class LegacyUIManager
     public static void Init()
     {
         UIBase = UniversalUI.RegisterUI("UI.Grimbakor.UI", Update);
-        Toolbar.CreateUI(UIBase.RootObject);
+        Toolbar.Toolbar.CreateUI(UIBase.RootObject);
         _panels.Add(PanelTypes.BGMPlayer, new BGMPlayerPanel(UIBase));
         _panels.Add(PanelTypes.RecordingDummy, new RecordingDummyPanel(UIBase));
         _panels.Add(PanelTypes.OnlineTrainingMode, new OnlineTrainingPanel(UIBase));

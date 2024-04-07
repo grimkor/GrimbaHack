@@ -6,7 +6,7 @@ using nway.ui;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace GrimbaHack.Modules.ComboTrial;
+namespace GrimbaHack.Modules.ComboTrial.UI;
 
 [HarmonyPatch(typeof(UITrainingOptions), nameof(UITrainingOptions.OnInitializeComponents))]
 public class ComboTrialPauseMenu

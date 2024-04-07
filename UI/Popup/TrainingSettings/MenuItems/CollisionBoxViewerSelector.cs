@@ -1,9 +1,8 @@
 using System;
 using GrimbaHack.Modules;
-using GrimbaHack.Utility;
 using nway.ui;
 
-namespace GrimbaHack.UI.Elements;
+namespace GrimbaHack.UI.Popup.TrainingSettings.MenuItems;
 
 static class CollisionBoxViewerSelector
 {

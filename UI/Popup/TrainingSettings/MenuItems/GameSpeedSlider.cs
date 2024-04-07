@@ -1,11 +1,11 @@
 using System;
 using GrimbaHack.Modules;
-using GrimbaHack.UI.MenuItems;
+using GrimbaHack.UI.Popup.CommonElements;
 using nway.gameplay.ui;
 using nway.ui;
 using UnityEngine.Events;
 
-namespace GrimbaHack.UI.Elements;
+namespace GrimbaHack.UI.Popup.TrainingSettings.MenuItems;
 
 public static class GameSpeedSlider
 {

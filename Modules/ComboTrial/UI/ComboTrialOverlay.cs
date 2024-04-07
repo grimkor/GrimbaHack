@@ -1,26 +1,19 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using epoch.db;
-using GrimbaHack.module;
 using GrimbaHack.Utility;
-using HarmonyLib;
-using nway;
-using nway.gameplay;
 using nway.gameplay.match;
-using nway.gameplay.ui;
-using nway.ui;
 using UnityEngine;
 using UnityEngine.UI;
 using Action = System.Action;
 using Object = UnityEngine.Object;
 
-namespace GrimbaHack.Modules.ComboTrial;
+namespace GrimbaHack.Modules.ComboTrial.UI;
 
-public class UIComboTrial
+public class ComboTrialOverlay
 {
-    public static readonly UIComboTrial Instance = new();
+    public static readonly ComboTrialOverlay Instance = new();
     private List<ComboItemUIElementGroup> _icons = new();
     private GameObject _rootGameObject;
     private int _comboLocation;
@@ -30,7 +23,7 @@ public class UIComboTrial
     private Action _completeAnimation;
     private List<List<ComboItem>> _combo;
 
-    static UIComboTrial()
+    static ComboTrialOverlay()
     {
         OnEnterMainMenuActionHandler.Instance.AddCallback(() =>
         {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using GrimbaHack.Modules.Combo;
 using GrimbaHack.Modules.ComboTrial;
+using GrimbaHack.Modules.ComboTrial.UI;
 using GrimbaHack.UI.TrainingMode;
 using GrimbaHack.Utility;
 using HarmonyLib;

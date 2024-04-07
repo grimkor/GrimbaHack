@@ -2,7 +2,7 @@ using System;
 using GrimbaHack.Modules.ComboRecorder;
 using nway.ui;
 
-namespace GrimbaHack.UI.Popup.TrainingSettings.Elements;
+namespace GrimbaHack.UI.Popup.TrainingSettings.MenuItems;
 
 static class ComboRecorderSelector
 {

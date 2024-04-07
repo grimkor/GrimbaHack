@@ -1,9 +1,8 @@
 using System;
 using GrimbaHack.Modules;
-using GrimbaHack.Utility;
 using nway.ui;
 
-namespace GrimbaHack.UI.Popup.MainSettings.Elements;
+namespace GrimbaHack.UI.Popup.MainSettings.MenuItems;
 
 static class CustomTexturesSelectorNew
 {

@@ -80,8 +80,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UI\Elements\" />
-    <Folder Include="UI\Global\" />
     <Folder Include="_bank\" />
   </ItemGroup>
 </Project>

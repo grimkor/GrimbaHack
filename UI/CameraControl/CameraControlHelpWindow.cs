@@ -3,7 +3,7 @@ using UnityEngine;
 using UniverseLib.UI;
 using UniverseLib.UI.Panels;
 
-namespace GrimbaHack;
+namespace GrimbaHack.UI.CameraControl;
 
 public class CameraControlHelpWindow : PanelBase
 {

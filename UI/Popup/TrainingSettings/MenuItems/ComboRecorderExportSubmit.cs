@@ -2,7 +2,7 @@ using GrimbaHack.Modules.ComboRecorder;
 using nway.ui;
 using UnityEngine.Events;
 
-namespace GrimbaHack.UI.Popup.TrainingSettings.Elements;
+namespace GrimbaHack.UI.Popup.TrainingSettings.MenuItems;
 
 static class ComboRecorderExportSubmit
 {

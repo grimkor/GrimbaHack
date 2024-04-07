@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GrimbaHack.UI.ComboTrial;
+using GrimbaHack.Modules.ComboTrial.UI;
 using GrimbaHack.UI.TrainingMode;
 using GrimbaHack.Utility;
 using HarmonyLib;
@@ -50,7 +50,7 @@ public class ComboTrialManager
             if (!Instance.IsComboTrial) return;
             if (info.isBlocked) return;
 
-            if (UIComboTrial.Instance.CheckAttack(info.attackName))
+            if (ComboTrialOverlay.Instance.CheckAttack(info.attackName))
             {
                 Instance.OnTrialComplete();
             }
@@ -65,12 +65,12 @@ public class ComboTrialManager
     private void OnTrialComplete()
     {
         Instance._completed = true;
-        UIComboTrial.Instance.Complete();
+        ComboTrialOverlay.Instance.Complete();
     }
 
     private void OnTrialFail()
     {
-        UIComboTrial.Instance.Restart();
+        ComboTrialOverlay.Instance.Restart();
     }
 
     public void SetupComboTrial(ComboExport combo)
@@ -81,7 +81,7 @@ public class ComboTrialManager
         Instance._playbackBehaviour = Instance._playerInputGo.AddComponent<PlayerInputPlaybackBehaviour>();
         Instance._playbackBehaviour.enabled = false;
         Instance.SetCombo(combo);
-        UIComboTrial.Instance.Show();
+        ComboTrialOverlay.Instance.Show();
     }
 
     private void SetTrainingModeSettings()
@@ -125,7 +125,7 @@ public class ComboTrialManager
     private void SetCombo(ComboExport combo)
     {
         Instance._combo = combo;
-        UIComboTrial.Instance.Init(combo.Combo);
+        ComboTrialOverlay.Instance.Init(combo.Combo);
     }
 
     private void ResetTrial()
@@ -135,7 +135,7 @@ public class ComboTrialManager
         Instance._completed = false;
         Instance.GetCharacters();
         Instance.SetStartingPosition();
-        UIComboTrial.Instance.Restart();
+        ComboTrialOverlay.Instance.Restart();
     }
 
     private void GetCharacters()
@@ -166,7 +166,7 @@ public class ComboTrialManager
 
     public void Teardown()
     {
-        UIComboTrial.Instance.Hide();
+        ComboTrialOverlay.Instance.Hide();
         Instance.IsComboTrial = false;
         Instance._combo = new();
         if (Instance._playerInputGo)
@@ -217,7 +217,7 @@ public class ComboTrialManager
         var loadingScreen = new UIPostMatchLoadingScreen();
         loadingScreen.ShowNonmodalWindow();
         var screen =
-            GrimUIComboTrialController.CreateTutorialSelection(
+            ComboTrialMenuManager.CreateTutorialSelection(
                 ComboTrialDataManager.GetCharacterCombos(Instance._combo.CharacterId));
         LevelManager.Get.LeaveZone(screen, new IContextWrapper(loadingScreen));
     }
@@ -245,7 +245,7 @@ public class ComboTrialManager
             if (Instance.TestFlag)
             {
                 SceneManager.HideLoadingScreen();
-                GrimUIComboTrialController.StartGame();
+                ComboTrialMenuManager.StartGame();
                 return false;
             }
 
@@ -261,7 +261,7 @@ public class ComboTrialManager
         var loadingScreen = new UIPostMatchLoadingScreen();
         loadingScreen.ShowNonmodalWindow();
         var screen =
-            GrimUIComboTrialController.CreateTutorialSelection(
+            ComboTrialMenuManager.CreateTutorialSelection(
                 ComboTrialDataManager.GetCharacterCombos(Instance._combo.CharacterId));
         var shit = new IContextWrapper(loadingScreen);
         LevelManager.Get.LeaveZone(screen, shit);

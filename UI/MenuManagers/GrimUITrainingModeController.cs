@@ -7,7 +7,7 @@ using nway.gameplay.ui;
 using nway.ui;
 using UnityEngine.Events;
 
-namespace GrimbaHack.UI.Managers;
+namespace GrimbaHack.UI.MenuManagers;
 
 public class GrimUITrainingModeController
 {

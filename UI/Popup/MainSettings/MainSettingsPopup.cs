@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using GrimbaHack.UI.Popup.MainSettings.Elements;
+using GrimbaHack.UI.Popup.MainSettings.MenuItems;
 using GrimbaHack.Utility;
 using HarmonyLib;
 using nway;

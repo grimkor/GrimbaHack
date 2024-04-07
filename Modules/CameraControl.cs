@@ -1,11 +1,9 @@
-﻿using GrimbaHack.Modules;
-using Il2CppInterop.Runtime.Injection;
-using nway.ui;
+﻿using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Object = UnityEngine.Object;
 
-namespace GrimbaHack;
+namespace GrimbaHack.Modules;
 
 public sealed class CameraControl : ModuleBase
 {

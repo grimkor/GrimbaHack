@@ -4,7 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GrimbaHack.module;
+namespace GrimbaHack.Modules.ComboTrial.UI;
 
 public class ComboItemUIElement
 {

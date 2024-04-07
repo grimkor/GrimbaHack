@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GrimbaHack.Modules.ComboTrial;
+using GrimbaHack.Modules.ComboTrial.UI;
 using nway.gameplay;
 
 namespace GrimbaHack.UI.TrainingMode;

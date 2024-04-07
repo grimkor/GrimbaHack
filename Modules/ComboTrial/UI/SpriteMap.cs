@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GrimbaHack.module;
+namespace GrimbaHack.Modules.ComboTrial.UI;
 
 public class SpriteMap
 {

@@ -4,7 +4,7 @@ using GrimbaHack.Utility;
 using UnityEngine;
 using UniverseLib.UI;
 
-namespace GrimbaHack.UI.TrainingMode;
+namespace GrimbaHack.UI.OnlineTraining;
 
 public class OnlineTrainingPanel : MenuPanelBase
 {

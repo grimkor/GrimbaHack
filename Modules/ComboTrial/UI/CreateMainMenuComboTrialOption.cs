@@ -4,7 +4,7 @@ using HarmonyLib;
 using nway.gameplay.ui;
 using nway.ui;
 
-namespace GrimbaHack.UI.ComboTrial;
+namespace GrimbaHack.Modules.ComboTrial.UI;
 
 [HarmonyPatch(typeof(UIMainMenu), nameof(UIMainMenu.InitializeTrainingMenu))]
 public class CreateMainMenuComboTrialOption
@@ -23,8 +23,8 @@ public class CreateMainMenuComboTrialOption
         submit.Selectable.interactable = true;
         submit.SetOnSubmit((Action<ILayeredEventData>)((_) =>
         {
-            GrimUIComboTrialController.IsTrialCharacterSelect = true;
-            GrimUIComboTrialController.LoadUIHeroSelect();
+            ComboTrialMenuManager.IsTrialCharacterSelect = true;
+            ComboTrialMenuManager.LoadUIHeroSelect();
         }));
         submit.Enabled = true;
     }

@@ -1,5 +1,4 @@
 using GrimbaHack.Data;
-using GrimbaHack.UI.Global;
 using UnityEngine.UI;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
@@ -32,8 +31,8 @@ public abstract class MenuPanelBase : PanelBase
     {
         base.ConstructUI();
 
-        MenuButton = UIFactory.CreateButton(Toolbar.ButtonContainer, $"{Name}_Button", Name);
-        Toolbar.Instance._panels.Add(PanelType, this);
+        MenuButton = UIFactory.CreateButton(Toolbar.Toolbar.ButtonContainer, $"{Name}_Button", Name);
+        Toolbar.Toolbar.Instance._panels.Add(PanelType, this);
         MenuButton.OnClick += () => { LegacyUIManager.TogglePanel(PanelType); };
         layoutElement =
             UIFactory.SetLayoutElement(MenuButton.GameObject, minHeight: 25, minWidth: 50, preferredWidth: 150);
