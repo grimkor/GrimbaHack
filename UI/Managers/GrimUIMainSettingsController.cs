@@ -20,16 +20,16 @@ public class GrimUIMainSettingsController
     {
     }
 
-    public void Init()
+    public static void Init()
     {
         OnUISettingsOnHideActionHandler.Instance.AddPostfix(_ =>
         {
-            _enabled = false;
+            Instance._enabled = false;
         });
         OnUISettingsOnShowActionHandler.Instance.AddPrefix(uiSettings =>
             {
-                _enabled = true;
-                _uiSettings = uiSettings;
+                Instance._enabled = true;
+                Instance._uiSettings = uiSettings;
 
                 uiSettings.AddButtonCallback(MenuButton.LeftBumper, (UnityAction<ILayeredEventData>)(
                     (ILayeredEventData _) =>

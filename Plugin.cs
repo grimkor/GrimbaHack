@@ -63,18 +63,19 @@ public class Plugin : BasePlugin
         EnumInjector.RegisterEnumInIl2Cpp<StageSelectOverrideOptions>();
         ClassInjector.RegisterTypeInIl2Cpp<BetterRangeSelector>();
 
-        GrimUITrainingModeController.Instance.Init();
-        GrimUIMainSettingsController.Instance.Init();
-        CommandHistoryFix.Init();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerInputBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerInputPlaybackBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<InputRecorderBehaviour>();
         EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
 
+        GrimUITrainingModeController.Init();
+        GrimUIMainSettingsController.Init();
+        CommandHistoryFix.Init();
+        ComboTrialDataManager.Instance.Init();
+
         OnEnterMainMenuActionHandler.Instance.AddCallback(() =>
         {
             SpriteMap.Instance.GenerateSpriteMap();
-            ComboTrialDataManager.Instance.Init();
         });
     }
 }

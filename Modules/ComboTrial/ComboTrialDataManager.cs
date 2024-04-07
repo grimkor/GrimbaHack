@@ -11,7 +11,6 @@ namespace GrimbaHack.Modules.ComboTrial;
 
 public class ComboTrialDataManager
 {
-    private bool _loaded;
     public static ComboTrialDataManager Instance = new();
 
     private ComboTrialDataManager()
@@ -20,30 +19,11 @@ public class ComboTrialDataManager
 
     public void Init()
     {
-        Instance.LoadData();
         Instance.CreateFolders();
     }
 
     private readonly Dictionary<string, List<ComboExport>> _combos = new();
 
-    private void LoadData()
-    {
-        if (_loaded) return;
-        var filepath = Path.Join(BepInEx.Paths.GameRootPath, "output", "combo-trials.json");
-        var fileContents = File.ReadAllText(filepath);
-        var options = new JsonSerializerOptions { IncludeFields = true };
-        var json = JsonSerializer.Deserialize<List<ComboExport>>(fileContents, options);
-        for (int i = 1; i < 21; i++)
-        {
-            var hero = TableHero.instance.GetDBHeroData(i);
-            if (hero != null)
-            {
-                _combos.Add(hero.heroName, json);
-            }
-        }
-
-        _loaded = true;
-    }
 
     public static List<ComboExport> GetCharacterCombos(int heroIndex)
     {

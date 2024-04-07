@@ -23,7 +23,7 @@ public class GrimUITrainingModeController
     {
     }
 
-    public void Init()
+    public static void Init()
     {
         OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() =>
             Instance._enabled = !ComboTrialManager.Instance.IsComboTrial || ComboRecorderManager.Instance.Enabled);
@@ -107,7 +107,7 @@ public class GrimUITrainingModeController
 
     private void UpdateButtonBar(string pageName)
     {
-        if (!Instance._enabled) return;
+        if (!Instance._enabled || Instance._uiTrainingOptions == null) return;
 
         switch (pageName)
         {

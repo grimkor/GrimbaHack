@@ -95,7 +95,7 @@ public class ComboRecorderControls : ModuleBase
                 $"Combo is not for this character. ({ComboTracker.GetPlayerCharacter().GetCharacterName()} vs {contents.Character})");
         }
 
-        ComboTrialManager.Instance.Init(contents);
+        ComboTrialManager.Instance.SetupComboTrial(contents);
     }
 
     public static void CreateUIControls(GameObject contentRoot)

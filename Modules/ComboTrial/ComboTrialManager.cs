@@ -16,7 +16,7 @@ namespace GrimbaHack.Modules.ComboTrial;
 
 public class ComboTrialManager
 {
-    public static ComboTrialManager Instance = new();
+    public static readonly ComboTrialManager Instance = new();
     private int _selectedHeroIndex = 1;
     public List<ComboExport> Combos;
     private int _comboIndex;
@@ -55,6 +55,11 @@ public class ComboTrialManager
                 Instance.OnTrialComplete();
             }
         });
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() =>
+        {
+            if (!Instance.IsComboTrial) return;
+            Instance.Teardown();
+        });
     }
 
     private void OnTrialComplete()
@@ -68,7 +73,7 @@ public class ComboTrialManager
         UIComboTrial.Instance.Restart();
     }
 
-    public void Init(ComboExport combo)
+    public void SetupComboTrial(ComboExport combo)
     {
         Instance.IsComboTrial = true;
         Instance._playerInputGo = new GameObject("playbackBehaviour");
@@ -164,7 +169,11 @@ public class ComboTrialManager
         UIComboTrial.Instance.Hide();
         Instance.IsComboTrial = false;
         Instance._combo = new();
-        Object.Destroy(Instance._playerInputGo);
+        if (Instance._playerInputGo)
+        {
+            Object.Destroy(Instance._playerInputGo);
+        }
+
         Instance._playerInputGo = null;
         Instance.dummy = null;
         Instance.player = null;

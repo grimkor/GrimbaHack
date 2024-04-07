@@ -29,7 +29,10 @@ public sealed class PlayerInputController : ModuleBase
         Object.DontDestroyOnLoad(go);
         Instance.Behaviour = go.AddComponent<PlayerInputBehaviour>();
         Instance.Behaviour.SetEnable(false);
-        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => { Instance.Behaviour.SetEnable(true); });
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() =>
+        {
+            Instance.Behaviour.SetEnable(true);
+        });
         OnSimulationInitializeActionHandler.Instance.AddPostfix(() =>
         {
             Instance.Reset();

@@ -167,7 +167,7 @@ public class GrimUIComboTrialController
             PlayerControllerMapping.CreateForTwoPlayerTraining());
         var gameplay = new PvPGamePlay(startup);
 
-        ComboTrialManager.Instance.Init(ComboTrialManager.Instance.GetCurrentCombo());
+        ComboTrialManager.Instance.SetupComboTrial(ComboTrialManager.Instance.GetCurrentCombo());
         gameplay.Start();
     }
 
@@ -177,7 +177,7 @@ public class GrimUIComboTrialController
         {
             hubArgs = new ScreenHeroSelection.HeroSelectionArgs
             {
-                matchType = MatchType.Training
+                matchType = MatchType.Arcade
             }
         };
         SceneManager.EnterScreen(heroSelection);
@@ -206,6 +206,7 @@ public class HeroCardEnabling
     static void Postfix(UIHeroSelect.UIHeroCard heroCard, DB_CharacterSelectEntry data)
     {
         if (!GrimUIComboTrialController.IsTrialCharacterSelect) return;
+        heroCard.ArcadeCompleted = false;
         heroCard.Enabled = heroCard.Enabled && ComboTrialDataManager.CharacterHasCombos(data.heroIndex);
         heroCard.HeroEnabled =
             heroCard.HeroEnabled && ComboTrialDataManager.CharacterHasCombos(data.heroIndex);

@@ -48,7 +48,6 @@ public class ComboRecorderManager
 
     static ComboRecorderManager()
     {
-        Instance.Enabled = false;
         var go = new GameObject("grim_input_recorder");
         Object.DontDestroyOnLoad(go);
         Instance._recorder = go.AddComponent<InputRecorderBehaviour>();
@@ -109,7 +108,7 @@ public class ComboRecorderManager
                 MatchManager.Get.CombatDriver.FindExtension<MatchResetDriver>().ResetTrainingBattle();
                 var combo = Instance.GenerateExportCombo();
                 if (combo == null) break;
-                ComboTrialManager.Instance.Init(combo);
+                ComboTrialManager.Instance.SetupComboTrial(combo);
                 break;
             case ComboRecorderState.PlaybackRunning:
                 StopRecording();
@@ -147,9 +146,7 @@ public class ComboRecorderManager
     private void TogglePlayback()
     {
         Instance.SetState(
-            Instance._state == ComboRecorderState.PlaybackRunning
-                ? ComboRecorderState.Idle
-                : ComboRecorderState.PlaybackStart
+            ComboRecorderState.PlaybackStart
         );
     }
 
@@ -160,6 +157,7 @@ public class ComboRecorderManager
             SetState(ComboRecorderState.Idle);
             return;
         }
+
         Instance.SetStartingPositions();
         Instance._playbackController.Playback(Instance._inputSystem, Instance.GetRecordedInputs());
     }
@@ -181,7 +179,6 @@ public class ComboRecorderManager
 
     private ComboExport GenerateExportCombo()
     {
-
         var combo = Instance.GetComboParts();
         var inputs = Instance.GetRecordedInputs();
         var drivers = MatchManager.Get.CombatDriver;
@@ -191,15 +188,7 @@ public class ComboRecorderManager
             return null;
         }
 
-        List<List<ComboItem>> convertedCombo =
-            new List<List<ComboItem>>()
-            {
-                combo.Select(s =>
-                {
-                    return new ComboItem()
-                        { Ids = new() { s }, Notation = new() { ComboQuickConverter.ConvertGia(s) }, Repeat = 1 };
-                }).ToList()
-            };
+        List<List<ComboItem>> convertedCombo = ConvertToComboExport(combo);
         var comboExport = new ComboExport()
         {
             Title = $"{Instance._player.GetCharacterName()}_{Time.frameCount}",
@@ -209,19 +198,45 @@ public class ComboRecorderManager
             CharacterId = Instance._player.GetHeroIndex(),
             Dummy = Instance._dummy.GetCharacterName(),
             DummyId = Instance._dummy.GetHeroIndex(),
-            PlayerPosition = new List<FixedPoint> { Instance._playerPosition.x, Instance._playerPosition.y, Instance._playerPosition.z },
-            DummyPosition = new List<FixedPoint> { Instance._dummyPosition.x, Instance._dummyPosition.y, Instance._dummyPosition.z },
+            PlayerPosition = new List<FixedPoint>
+                { Instance._playerPosition.x, Instance._playerPosition.y, Instance._playerPosition.z },
+            DummyPosition = new List<FixedPoint>
+                { Instance._dummyPosition.x, Instance._dummyPosition.y, Instance._dummyPosition.z },
             SuperMeter = trainingMeterDriver.LocalPlayerSuperRefillLevel,
             MzMeter = trainingMeterDriver.LocalPlayerMZMeterLevel
         };
         return comboExport;
     }
+
+    private List<List<ComboItem>> ConvertToComboExport(List<string> combo)
+    {
+        var convertedCombo = new List<List<ComboItem>>();
+        for (var i = 0; i < combo.Count; i++)
+        {
+            if (i == 0 || convertedCombo.Last().SelectMany(x => x.Notation).Where(x => x != "").ToList().Count % 15 ==
+                0)
+            {
+                convertedCombo.Add(new());
+            }
+
+            var row = convertedCombo.Last();
+            row.Add(new ComboItem
+            {
+                Ids = new() { combo[i] }, Notation = new() { ComboQuickConverter.ConvertGia(combo[i]) }, Repeat = 1
+            });
+        }
+
+        return convertedCombo;
+    }
+
     public void ExportCombo()
     {
         var options = new JsonSerializerOptions { IncludeFields = true, WriteIndented = true };
         var combo = Instance.GenerateExportCombo();
         if (combo == null) return;
-        File.WriteAllText(Path.Join(BepInEx.Paths.GameRootPath, "output", $"{Instance._player.GetCharacterName()}_{Time.frameCount}.json"),
+        File.WriteAllText(
+            Path.Join(BepInEx.Paths.GameRootPath, "output",
+                $"{Instance._player.GetCharacterName()}_{Time.frameCount}.json"),
             JsonSerializer.Serialize(combo, options));
     }
 
