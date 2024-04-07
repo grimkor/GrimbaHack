@@ -5,6 +5,7 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using GrimbaHack.Data;
 using GrimbaHack.Modules;
+using GrimbaHack.Modules.Combo;
 using GrimbaHack.Modules.ComboRecorder;
 using GrimbaHack.Modules.ComboTrial;
 using GrimbaHack.Modules.ComboTrial.UI;
@@ -74,5 +75,8 @@ public class Plugin : BasePlugin
         ComboTrialDataManager.Instance.Init();
 
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => { SpriteMap.Instance.GenerateSpriteMap(); });
+        OnArmorTakeDamageCallbackHandler.Instance.AddPostfix(info =>
+            Plugin.Log.LogInfo($"{info.attackName}: {ComboQuickConverter.ConvertGia(info.attackName)}")
+        );
     }
 }
