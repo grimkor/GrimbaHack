@@ -1,9 +1,6 @@
-using System;
 using System.Linq;
 using GrimbaHack.Utility;
 using UnityEngine;
-using UnityEngine.UI;
-using UniverseLib.UI;
 using Object = UnityEngine.Object;
 
 namespace GrimbaHack.Modules;
@@ -42,24 +39,5 @@ public class MemoryLeakFix
                     }
                 });
         });
-    }
-
-    public static void CreateUIControls(GameObject contentRoot)
-    {
-        var textureLoaderGroup = UIFactory.CreateUIObject("MemoryLeakFixGroup", contentRoot);
-        UIFactory.SetLayoutElement(textureLoaderGroup);
-        UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(textureLoaderGroup, false, false, true, true, padLeft: 25,
-            spacing: 10, childAlignment: TextAnchor.MiddleLeft);
-        UIFactory.CreateToggle(textureLoaderGroup, "MemoryLeakFixToggle", out var toggle,
-            out var label);
-        toggle.isOn = Instance.Enabled;
-        label.text = "Enable memory leak fix";
-        toggle.onValueChanged.AddListener(new Action<bool>((value) =>
-        {
-            Instance.Enabled = value;
-            Plugin.EXPERIMENTAL_MemoryFix.Value = value;
-        }));
-
-        UIFactory.SetLayoutElement(toggle.gameObject, minHeight: 25, minWidth: 50);
     }
 }

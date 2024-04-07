@@ -1,4 +1,3 @@
-using System;
 using epoch.db;
 using GrimbaHack.Data;
 using GrimbaHack.Utility;
@@ -9,8 +8,6 @@ using nway.gameplay.ai;
 using nway.gameplay.match;
 using nway.gameplay.simulation;
 using UnityEngine;
-using UnityEngine.UI;
-using UniverseLib.UI;
 
 namespace GrimbaHack.Modules;
 
@@ -48,21 +45,6 @@ public sealed class DummyExPunish : ModuleBase
             Behaviour.enabled = value;
             _enabled = value;
         }
-    }
-
-    public static void CreateUIControls(GameObject contentRoot)
-    {
-        var dummyExPunishGroup = UIFactory.CreateUIObject("DummyExPunishGroup", contentRoot);
-        UIFactory.SetLayoutElement(dummyExPunishGroup);
-        UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(dummyExPunishGroup, false, false, true, true, padLeft: 25,
-            spacing: 10, childAlignment: TextAnchor.MiddleLeft);
-        UIFactory.CreateToggle(dummyExPunishGroup, "DummyExPunishToggle", out var dummyExPunishToggle,
-            out var dummyExPunishToggleLabel);
-        dummyExPunishToggle.isOn = false;
-        dummyExPunishToggleLabel.text = "Set Dummy to EX when Hit/Block stun expires";
-        dummyExPunishToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
-
-        UIFactory.SetLayoutElement(dummyExPunishToggle.gameObject, minHeight: 25, minWidth: 50);
     }
 }
 

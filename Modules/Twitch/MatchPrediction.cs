@@ -154,7 +154,7 @@ public class MatchPrediction : ModuleBase
                 UIFactory.CreateButton(matchPredictionViewerGroup, "predictionMessageButton", "Prediction Settings");
             predictionMessageButton.OnClick += () =>
             {
-                var panel = new TwitchBotPredictionMessagePanel(UIManager.UIBase);
+                var panel = new TwitchBotPredictionMessagePanel(LegacyUIManager.UIBase);
                 panel.Toggle();
             };
             

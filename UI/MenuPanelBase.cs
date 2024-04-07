@@ -24,7 +24,7 @@ public abstract class MenuPanelBase : PanelBase
         if (!visible)
         {
             UIRoot.SetActive(false);
-            UIManager.RefreshUI();
+            LegacyUIManager.RefreshUI();
         }
     }
 
@@ -34,7 +34,7 @@ public abstract class MenuPanelBase : PanelBase
 
         MenuButton = UIFactory.CreateButton(Toolbar.ButtonContainer, $"{Name}_Button", Name);
         Toolbar.Instance._panels.Add(PanelType, this);
-        MenuButton.OnClick += () => { UIManager.TogglePanel(PanelType); };
+        MenuButton.OnClick += () => { LegacyUIManager.TogglePanel(PanelType); };
         layoutElement =
             UIFactory.SetLayoutElement(MenuButton.GameObject, minHeight: 25, minWidth: 50, preferredWidth: 150);
         MenuButton.Enabled = true;

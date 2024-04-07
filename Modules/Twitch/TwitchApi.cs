@@ -221,7 +221,7 @@ public class TwitchApi : ModuleBase
         TwitchEnableToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
 
         var button = UIFactory.CreateButton(twitchViewerGroup, "TwitchLoginButton", "Login");
-        var loginWindow = new TwitchLoginPanel(UIManager.UIBase);
+        var loginWindow = new TwitchLoginPanel(LegacyUIManager.UIBase);
         button.OnClick += () => { loginWindow.Toggle(); };
         UIFactory.SetLayoutElement(TwitchEnableToggle.gameObject, minHeight: 25, minWidth: 220);
         UIFactory.SetLayoutElement(button.GameObject, minHeight: 25, minWidth: 100);

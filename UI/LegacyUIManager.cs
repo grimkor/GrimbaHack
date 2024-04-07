@@ -10,7 +10,7 @@ using UniverseLib.UI.Panels;
 
 namespace GrimbaHack.UI;
 
-public static class UIManager
+public static class LegacyUIManager
 {
     public static bool ShowUI
     {

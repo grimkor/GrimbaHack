@@ -46,6 +46,6 @@ public class UISetup
 
     static void DelayInit()
     {
-        UIManager.Init();
+        LegacyUIManager.Init();
     }
 }

@@ -10,3 +10,4 @@ Please see the [Wiki](https://github.com/grimkor/GrimbaHack/wiki) for instructio
   - Better symbol coverage per character
   - Better way to edit this shit?
 - Remove old menus no longer required
+- Look at OnlineTrainingMode
