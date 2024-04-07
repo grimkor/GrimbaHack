@@ -31,6 +31,10 @@ public class ComboRecorderManager
         {
             Instance._enabled = value;
             Instance._statusOverlay.Enable = value;
+            if (!value)
+            {
+                ComboTrialManager.Instance.Teardown();
+            }
         }
     }
 
