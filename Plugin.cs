@@ -73,9 +73,6 @@ public class Plugin : BasePlugin
         CommandHistoryFix.Init();
         ComboTrialDataManager.Instance.Init();
 
-        OnEnterMainMenuActionHandler.Instance.AddCallback(() =>
-        {
-            SpriteMap.Instance.GenerateSpriteMap();
-        });
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => { SpriteMap.Instance.GenerateSpriteMap(); });
     }
 }
