@@ -6,7 +6,7 @@ using UniverseLib;
 
 namespace GrimbaHack.UI;
 
-public class UISetup
+public static class LegacyUISetup
 {
     public static BasePlugin Plugin { get; private set; }
 

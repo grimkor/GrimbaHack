@@ -90,7 +90,6 @@ public class ComboRecorderManager
 
     private void SetState(ComboRecorderState state)
     {
-        Plugin.Log.LogInfo($"SetState: {state}");
         switch (state)
         {
             case ComboRecorderState.Idle:

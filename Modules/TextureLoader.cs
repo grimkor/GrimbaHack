@@ -183,7 +183,6 @@ public class TextureLoader : ModuleBase
                         textureName = $"{textureName}{(hero.color == 2 ? $"{assetMap.colorSuffix}2" : "")}";
                     }
 
-                    Plugin.Log.LogInfo($"Loading {textureName} into Loader");
                     Instance.CharacterFilesForLoading[textureName] = texture.Value;
                 }
             }

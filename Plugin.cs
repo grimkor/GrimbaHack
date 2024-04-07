@@ -54,7 +54,7 @@ public class Plugin : BasePlugin
             "Enable experimental texture loader");
 
         Log = base.Log;
-        UISetup.Init(this);
+        LegacyUISetup.Init(this);
         var harmony = new Harmony("Base.Grimbakor.Mod");
         harmony.PatchAll(Assembly.GetExecutingAssembly());
         TextureLoader.Instance.CreateFolders();
