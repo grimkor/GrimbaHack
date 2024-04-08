@@ -1,18 +1,31 @@
 using System.Collections.Generic;
 using System.Linq;
-using nway.gameplay;
-using UnityEngine;
+using HarmonyLib;
+using nway.gameplay.simulation;
 
 namespace GrimbaHack.Modules.ComboTrial;
 
-public class PlayerInputPlaybackBehaviour : MonoBehaviour
+[HarmonyPatch(typeof(SimulationManager), nameof(SimulationManager.UpdateInput))]
+public class PlayerInputPlaybackBehaviour
 {
-    private List<uint> _inputs;
+    public static PlayerInputPlaybackBehaviour Instance = new();
+    private List<int> _inputs = new();
     private int _inputFrame;
-    private InputSystem _inputSystem;
-    private IController _controller;
+    private bool _enabled;
 
-    public void Playback(InputSystem inputSystem, List<uint> comboInputs, int delay = 0)
+
+    private static void Prefix(int simulationFrameCount, int slot, ref int input)
+    {
+        if (!Instance._enabled || slot != 0) return;
+        if (Instance._inputs.Count < 1 || Instance._inputFrame > Instance._inputs.Count -1)
+        {
+            Instance.Stop();
+            return;
+        }
+        input = Instance._inputs[Instance._inputFrame++];
+    }
+
+    public void Playback(List<int> comboInputs, int delay = 0)
     {
         var inputs = comboInputs.ToList();
         for (int i = 0; i < delay; i++)
@@ -20,41 +33,15 @@ public class PlayerInputPlaybackBehaviour : MonoBehaviour
             inputs.Insert(0,0);
         }
 
-        _controller = ControllerManager.GetController(0);
-        _inputSystem = inputSystem;
-        _inputs = inputs;
-        _inputFrame = 0;
-        enabled = true;
+        Instance._inputs = inputs;
+        Instance._inputFrame = 0;
+        Instance._enabled = true;
     }
 
     public void Stop()
     {
-        enabled = false;
-        _inputs = null;
-        _inputFrame = 0;
-    }
-
-    private void Update()
-    {
-        if (_inputs == null) return;
-        if (_inputs.Count < 1 || _inputSystem == null)
-        {
-            return;
-        }
-
-        if (_inputFrame > _inputs.Count -1)
-        {
-            Stop();
-            return;
-        }
-
-        if (_controller.GetPlayerButtonInput().Buttons != 0)
-        {
-            Stop();
-            return;
-        }
-
-        _inputSystem.SetInput(_inputs[_inputFrame]);
-        _inputFrame++;
+        Instance._enabled = false;
+        Instance._inputs.Clear();
+        Instance._inputFrame = 0;
     }
 }

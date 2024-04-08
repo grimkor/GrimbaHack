@@ -47,7 +47,6 @@ public class ComboRecorderManager
     private Character _dummy;
     private Vector3F _playerPosition;
     private Vector3F _dummyPosition;
-    private InputSystem _inputSystem;
     private readonly LabelValueOverlayText _statusOverlay = new("Status", "Idle", new Vector3(240, 240, 1));
     private bool _enabled;
 
@@ -55,10 +54,9 @@ public class ComboRecorderManager
     {
         var go = new GameObject("grim_input_recorder");
         Object.DontDestroyOnLoad(go);
-        Instance._recorder = go.AddComponent<InputRecorderBehaviour>();
-        Instance._recorder.enabled = false;
-        Instance._playbackController = go.AddComponent<PlayerInputPlaybackBehaviour>();
-        Instance._playbackController.enabled = false;
+        Instance._recorder = InputRecorderBehaviour.Instance;
+        Instance._recorder.SetEnabled(false);
+        Instance._playbackController = PlayerInputPlaybackBehaviour.Instance;
 
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Enabled = false);
         OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() =>
@@ -139,12 +137,12 @@ public class ComboRecorderManager
     {
         Instance._comboParts.Clear();
         Instance._recorder.Clean();
-        Instance._recorder.enabled = true;
+        Instance._recorder.SetEnabled(true);
     }
 
     private void StopRecording()
     {
-        Instance._recorder.enabled = false;
+        Instance._recorder.SetEnabled(false);
     }
 
     private void TogglePlayback()
@@ -163,15 +161,15 @@ public class ComboRecorderManager
         }
 
         Instance.SetStartingPositions();
-        Instance._playbackController.Playback(Instance._inputSystem, Instance.GetRecordedInputs());
+        Instance._playbackController.Playback(Instance.GetRecordedInputs());
     }
 
     private void StopPlayback()
     {
-        Instance._playbackController.enabled = false;
+        Instance._playbackController.Stop();
     }
 
-    public List<uint> GetRecordedInputs()
+    public List<int> GetRecordedInputs()
     {
         return Instance._recorder.Inputs;
     }
@@ -253,7 +251,6 @@ public class ComboRecorderManager
                 if (character.team == 0)
                 {
                     Instance._player = character;
-                    Instance._inputSystem = character.GetCharacterTeam().GetInputSystem();
                 }
                 else
                 {

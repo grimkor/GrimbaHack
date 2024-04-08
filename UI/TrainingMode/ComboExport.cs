@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using GrimbaHack.Modules.ComboTrial;
 using GrimbaHack.Modules.ComboTrial.UI;
 using nway.gameplay;
 
@@ -9,7 +8,7 @@ public class ComboExport
 {
     public string Title;
     public List<List<ComboItem>> Combo;
-    public List<uint> Inputs;
+    public List<int> Inputs;
     public string Character;
     public string Dummy;
     public List<FixedPoint> PlayerPosition;

@@ -78,8 +78,7 @@ public class ComboTrialManager
         Instance.IsComboTrial = true;
         Instance._playerInputGo = new GameObject("playbackBehaviour");
         Object.DontDestroyOnLoad(Instance._playerInputGo);
-        Instance._playbackBehaviour = Instance._playerInputGo.AddComponent<PlayerInputPlaybackBehaviour>();
-        Instance._playbackBehaviour.enabled = false;
+        Instance._playbackBehaviour = PlayerInputPlaybackBehaviour.Instance;
         Instance.SetCombo(combo);
         ComboTrialOverlay.Instance.Show();
     }
@@ -117,8 +116,7 @@ public class ComboTrialManager
 
     public void Playback()
     {
-        Instance._playbackBehaviour.Playback(Instance.player.GetCharacterTeam().GetInputSystem(),
-            Instance._combo.Inputs, 30);
+        Instance._playbackBehaviour.Playback(Instance._combo.Inputs, 30);
         Instance.playbackQueued = false;
     }
 
@@ -131,7 +129,7 @@ public class ComboTrialManager
     private void ResetTrial()
     {
         Instance.SetTrainingModeSettings();
-        Instance._playbackBehaviour.enabled = false;
+        Instance._playbackBehaviour.Stop();
         Instance._completed = false;
         Instance.GetCharacters();
         Instance.SetStartingPosition();
