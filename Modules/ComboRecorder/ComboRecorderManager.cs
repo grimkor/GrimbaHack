@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using BepInEx;
 using GrimbaHack.Modules.Combo;
 using GrimbaHack.Modules.ComboTrial;
 using GrimbaHack.Modules.ComboTrial.UI;
@@ -13,7 +14,6 @@ using nway.gameplay;
 using nway.gameplay.ai;
 using nway.gameplay.match;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace GrimbaHack.Modules.ComboRecorder;
 
@@ -34,13 +34,14 @@ public class ComboRecorderManager
             Instance._statusOverlay.Enable = value;
             if (!value)
             {
+                Instance.SetState(ComboRecorderState.Idle);
                 ComboTrialManager.Instance.Teardown();
             }
         }
     }
 
     private InputRecorderBehaviour _recorder;
-    private PlayerInputPlaybackBehaviour _playbackController;
+    private PlayerInputPlaybackController _playbackController;
     private ComboRecorderState _state = ComboRecorderState.Idle;
     private readonly List<string> _comboParts = new();
     private Character _player;
@@ -52,15 +53,15 @@ public class ComboRecorderManager
 
     static ComboRecorderManager()
     {
-        var go = new GameObject("grim_input_recorder");
-        Object.DontDestroyOnLoad(go);
         Instance._recorder = InputRecorderBehaviour.Instance;
         Instance._recorder.SetEnabled(false);
-        Instance._playbackController = PlayerInputPlaybackBehaviour.Instance;
+        Instance._statusOverlay.Enable = false;
+        Instance._playbackController = PlayerInputPlaybackController.Instance;
 
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Enabled = false);
         OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() =>
         {
+            if (!Instance.Enabled) return;
             Instance.GetActiveCharacters();
             switch (Instance._state)
             {
@@ -80,6 +81,7 @@ public class ComboRecorderManager
         });
         OnArmorTakeDamageCallbackHandler.Instance.AddPostfix(info =>
         {
+            if (!Instance._enabled) return;
             if (Instance._state != ComboRecorderState.RecordingRunning) return;
             if (info.isBlocked) return;
             Instance._comboParts.Add(info.attackName);
@@ -212,11 +214,11 @@ public class ComboRecorderManager
 
     private List<List<ComboItem>> ConvertToComboExport(List<string> combo)
     {
-        var convertedCombo = new List<List<ComboItem>>();
+        var convertedCombo = new List<List<ComboItem>>() { new() };
         for (var i = 0; i < combo.Count; i++)
         {
-            if (i == 0 || convertedCombo.Last().SelectMany(x => x.Notation).Where(x => x != "").ToList().Count % 15 ==
-                0)
+            int lastRowCount = convertedCombo.Last().SelectMany(x => x.GetNotation()).Where(x => x != "").ToList().Count;
+            if (lastRowCount != 0 && lastRowCount % 15 == 0)
             {
                 convertedCombo.Add(new());
             }
@@ -224,7 +226,9 @@ public class ComboRecorderManager
             var row = convertedCombo.Last();
             row.Add(new ComboItem
             {
-                Ids = new() { combo[i] }, Notation = new() { ComboQuickConverter.ConvertGia(combo[i]) }, Repeat = 1
+                Items = new()
+                    { new() { combo[i], ComboQuickConverter.ConvertInput(combo[i], Instance._player.GetHeroIndex()) } },
+                Repeat = 1
             });
         }
 
@@ -233,11 +237,12 @@ public class ComboRecorderManager
 
     public void ExportCombo()
     {
-        var options = new JsonSerializerOptions { IncludeFields = true, WriteIndented = true };
+        var options = new JsonSerializerOptions
+            { IncludeFields = true, WriteIndented = true, AllowTrailingCommas = true };
         var combo = Instance.GenerateExportCombo();
         if (combo == null) return;
         File.WriteAllText(
-            Path.Join(BepInEx.Paths.GameRootPath, "output",
+            Path.Join(Path.Join(Paths.PluginPath, "combos", "__EXPORT"),
                 $"{Instance._player.GetCharacterName()}_{Time.frameCount}.json"),
             JsonSerializer.Serialize(combo, options));
     }

@@ -17,11 +17,6 @@ public class BGMTrack
     public string Value;
 }
 
-public class LabelValue
-{
-    public string Label;
-    public int Value;
-}
 
 public class AssetHeroNameMap
 {
@@ -35,13 +30,10 @@ public class AssetHeroNameMap
 
 public enum PanelTypes
 {
-    Global,
     BGMPlayer,
-    TrainingMode,
     RecordingDummy,
     OnlineTrainingMode,
     Twitch,
-    Experimental
 }
 
 public enum DUMMY_INPUTS
@@ -55,7 +47,7 @@ public enum DUMMY_INPUTS
 
 public static class Global
 {
-    public static readonly string Version = "v1.4.0";
+    public static readonly string Version = "v3.0.0-alpha-5";
 
     public static readonly List<Stage> Stages = new()
     {
@@ -91,32 +83,6 @@ public static class Global
         new BGMTrack() { Value = "mus_arena_spd", Label = " Delta Base" },
         new BGMTrack() { Value = "mus_arena_cmd_fire", Label = " Command Center Story" },
         new BGMTrack() { Value = "mus_arena_twr", Label = " Tower" },
-    };
-
-    public static readonly List<LabelValue> PercentOptions = new()
-    {
-        new LabelValue() { Label = "Random", Value = -1 },
-        new LabelValue() { Label = "0%", Value = 0 },
-        new LabelValue() { Label = "5%", Value = 5 },
-        new LabelValue() { Label = "10%", Value = 10 },
-        new LabelValue() { Label = "15%", Value = 15 },
-        new LabelValue() { Label = "20%", Value = 20 },
-        new LabelValue() { Label = "25%", Value = 25 },
-        new LabelValue() { Label = "30%", Value = 30 },
-        new LabelValue() { Label = "35%", Value = 35 },
-        new LabelValue() { Label = "40%", Value = 40 },
-        new LabelValue() { Label = "45%", Value = 45 },
-        new LabelValue() { Label = "50%", Value = 50 },
-        new LabelValue() { Label = "55%", Value = 55 },
-        new LabelValue() { Label = "60%", Value = 60 },
-        new LabelValue() { Label = "65%", Value = 65 },
-        new LabelValue() { Label = "70%", Value = 70 },
-        new LabelValue() { Label = "75%", Value = 75 },
-        new LabelValue() { Label = "80%", Value = 80 },
-        new LabelValue() { Label = "85%", Value = 85 },
-        new LabelValue() { Label = "90%", Value = 90 },
-        new LabelValue() { Label = "95%", Value = 95 },
-        new LabelValue() { Label = "100%", Value = 100 },
     };
 
     public static readonly List<AssetHeroNameMap> AssetHeroInfoMapper = new()

@@ -25,17 +25,7 @@ public class ComboTrialOverlay
 
     static ComboTrialOverlay()
     {
-        OnEnterMainMenuActionHandler.Instance.AddCallback(() =>
-        {
-            Instance._comboLocation = 0;
-            if (Instance._overlayObject != null)
-            {
-                Object.DestroyObject(Instance._overlayObject);
-                Instance._overlayObject = null;
-            }
-
-            Instance._icons.Clear();
-        });
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => { Instance.Teardown(); });
 
         OnSimulationInitializeActionHandler.Instance.AddPostfix(() =>
         {
@@ -44,10 +34,50 @@ public class ComboTrialOverlay
         });
     }
 
-    public void Init(List<List<ComboItem>> combo)
+    public void Teardown()
     {
         Instance._comboLocation = 0;
-        Instance._combo = combo;
+        if (Instance._overlayObject != null)
+        {
+            Object.DestroyObject(Instance._overlayObject);
+            Instance._overlayObject = null;
+        }
+
+        Instance._icons.Clear();
+    }
+
+    public void Init(List<List<ComboItem>> combo)
+    {
+        Instance.Teardown();
+        Instance._comboLocation = 0;
+        var filtered = new List<List<ComboItem>>();
+
+        foreach (var row in combo)
+        {
+            var filteredRow = new List<ComboItem>();
+            foreach (var comboItem in row)
+            {
+                var filteredItems = comboItem.Items.Where(item =>
+                {
+                    return item[1] != "";
+                }).ToList();
+                if (filteredItems.Count > 0)
+                {
+                    filteredRow.Add(new()
+                    {
+                        Items = filteredItems,
+                        Repeat = comboItem.Repeat
+                    });
+                }
+            }
+
+            if (filteredRow.Count > 0)
+            {
+                filtered.Add(filteredRow);
+            }
+        }
+
+        Instance._combo = filtered;
         Instance.RenderRootObject();
     }
 
@@ -73,11 +103,6 @@ public class ComboTrialOverlay
             MatchManager.instance.matchType != MatchType.Training) return;
 
         Instance._overlayObject.SetActive(true);
-    }
-
-    public void Hide()
-    {
-        Instance._overlayObject?.SetActive(false);
     }
 
     private void RenderRootObject()
@@ -249,8 +274,8 @@ public class ComboTrialOverlay
             var boltSequence = DOTween.Sequence();
             textGo.transform.localPosition = new(2000, 0, 0);
             boltSpriteGo.transform.localScale = new Vector3(20, 20, 20);
-            boltSprite.color = new(1,1,1,1);
-            text.color = new(1,1,1,1);
+            boltSprite.color = new(1, 1, 1, 1);
+            text.color = new(1, 1, 1, 1);
             boltSequence.Append(boltSpriteGo.transform.DOScale(new Vector3(1.75f, 1.75f, 1.75f), .45f)
                 .SetEase(Ease.OutQuart));
             boltSequence.Insert(0.35f, textGo.transform.DOLocalMove(new Vector3(0, 0, 0), .4f).SetEase(Ease.OutBack));
@@ -283,7 +308,18 @@ public class ComboTrialOverlay
 
 public class ComboItem
 {
+    public List<List<string>> Items = new();
+
+    public int Repeat = 1;
+
+    public List<string> GetIds() => Items.Select(x => x[0]).ToList();
+    public List<string> GetNotation() => Items.Select(x => x[1]).ToList();
+}
+
+public class ComboItemOld
+{
     public List<string> Ids = new();
     public List<string> Notation = new();
+
     public int Repeat = 1;
 }

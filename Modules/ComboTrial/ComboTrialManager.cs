@@ -22,15 +22,17 @@ public class ComboTrialManager
     private int _comboIndex;
     private ComboExport _combo;
     private GameObject _playerInputGo;
-    private PlayerInputPlaybackBehaviour _playbackBehaviour;
+    private PlayerInputPlaybackController _playbackController;
     private Character player;
     private Character dummy;
     public bool IsComboTrial;
     private bool playbackQueued;
     private bool _completed;
+    private readonly LabelValueOverlayText _statusOverlay = new("Status", "Playback", new Vector3(240, 240, 1));
 
     static ComboTrialManager()
     {
+        Instance._statusOverlay.Enable = false;
         OnUIComboCounterOnBreakComboCallbackHandler.Instance.AddCallback((_, _) =>
         {
             if (Instance._completed) return;
@@ -76,9 +78,7 @@ public class ComboTrialManager
     public void SetupComboTrial(ComboExport combo)
     {
         Instance.IsComboTrial = true;
-        Instance._playerInputGo = new GameObject("playbackBehaviour");
-        Object.DontDestroyOnLoad(Instance._playerInputGo);
-        Instance._playbackBehaviour = PlayerInputPlaybackBehaviour.Instance;
+        Instance._playbackController = PlayerInputPlaybackController.Instance;
         Instance.SetCombo(combo);
         ComboTrialOverlay.Instance.Show();
     }
@@ -116,7 +116,8 @@ public class ComboTrialManager
 
     public void Playback()
     {
-        Instance._playbackBehaviour.Playback(Instance._combo.Inputs, 30);
+        Instance._statusOverlay.Enable = true;
+        Instance._playbackController.Playback(Instance._combo.Inputs);
         Instance.playbackQueued = false;
     }
 
@@ -128,8 +129,9 @@ public class ComboTrialManager
 
     private void ResetTrial()
     {
+        Instance._statusOverlay.Enable = false;
         Instance.SetTrainingModeSettings();
-        Instance._playbackBehaviour.Stop();
+        Instance._playbackController.Stop();
         Instance._completed = false;
         Instance.GetCharacters();
         Instance.SetStartingPosition();
@@ -164,7 +166,8 @@ public class ComboTrialManager
 
     public void Teardown()
     {
-        ComboTrialOverlay.Instance.Hide();
+        Instance._statusOverlay.Enable = false;
+        ComboTrialOverlay.Instance.Teardown();
         Instance.IsComboTrial = false;
         Instance._combo = new();
         if (Instance._playerInputGo)
@@ -211,7 +214,7 @@ public class ComboTrialManager
     {
         ScreenFader.Get.StartFadeOut(Color.black, 0.5f);
 
-        Instance.TestFlag = true;
+        Instance._isQuickSwitchingTrial = true;
         var loadingScreen = new UIPostMatchLoadingScreen();
         loadingScreen.ShowNonmodalWindow();
         var screen =
@@ -220,38 +223,8 @@ public class ComboTrialManager
         LevelManager.Get.LeaveZone(screen, new IContextWrapper(loadingScreen));
     }
 
-    [HarmonyPatch(typeof(ScreenTutorial), nameof(ScreenTutorial.OnExit))]
-    public class TestExit
-    {
-        public static bool Prefix()
-        {
-            if (Instance.TestFlag)
-            {
-                Instance.TestFlag = false;
-                return false;
-            }
 
-            return true;
-        }
-    }
-
-    [HarmonyPatch(typeof(ScreenTutorial), nameof(ScreenTutorial.OnEnter))]
-    public class Test
-    {
-        public static bool Prefix()
-        {
-            if (Instance.TestFlag)
-            {
-                SceneManager.HideLoadingScreen();
-                ComboTrialMenuManager.StartGame();
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    public bool TestFlag { get; set; }
+    private bool _isQuickSwitchingTrial { get; set; }
 
 
     public void ReturnToTrialSelect()
@@ -318,5 +291,36 @@ public class ComboTrialManager
         }
 
         return false;
+    }
+
+    [HarmonyPatch(typeof(ScreenTutorial), nameof(ScreenTutorial.OnExit))]
+    public class TestExit
+    {
+        public static bool Prefix()
+        {
+            if (Instance._isQuickSwitchingTrial)
+            {
+                Instance._isQuickSwitchingTrial = false;
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(ScreenTutorial), nameof(ScreenTutorial.OnEnter))]
+    public class Test
+    {
+        public static bool Prefix()
+        {
+            if (Instance._isQuickSwitchingTrial)
+            {
+                SceneManager.HideLoadingScreen();
+                ComboTrialMenuManager.StartGame();
+                return false;
+            }
+
+            return true;
+        }
     }
 }

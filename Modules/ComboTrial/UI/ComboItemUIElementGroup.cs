@@ -17,8 +17,7 @@ public class ComboItemUIElementGroup : ComboItem
 
     public ComboItemUIElementGroup(ComboItem comboItem, Transform parentObject)
     {
-        Ids = comboItem.Ids;
-        Notation = comboItem.Notation;
+        Items = comboItem.Items;
         Repeat = comboItem.Repeat;
         _uiElements = new();
         _parentTransform = parentObject;
@@ -61,7 +60,7 @@ public class ComboItemUIElementGroup : ComboItem
             _uiBrackets.Add(new ComboItemUIElement(_groupContainer, "("));
         }
 
-        foreach (var item in Notation)
+        foreach (var item in GetNotation())
         {
             _uiElements.Add(new ComboItemUIElement(_groupContainer, item));
         }
@@ -76,13 +75,13 @@ public class ComboItemUIElementGroup : ComboItem
 
     public bool CheckAttack(string attackName)
     {
-        if (Ids[_currentComboPoint] != attackName) return false;
+        if (GetIds()[_currentComboPoint] != attackName) return false;
         Next();
         // example Ids.Count = 3 - 1 == 2
         // 0 < 2 return false, more to match
         // 1 < 2 return false, more to match
         // 2 < 2 nothing more to match, see if done or repeats
-        if (_currentComboPoint++ < Ids.Count - 1) return false;
+        if (_currentComboPoint++ < GetIds().Count - 1) return false;
 
         if (_currentRepeatCount < Repeat)
         {

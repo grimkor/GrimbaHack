@@ -14,6 +14,7 @@ using GrimbaHack.UI.Popup.CommonElements;
 using GrimbaHack.Utility;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
+using nway.gameplay;
 
 
 namespace GrimbaHack;
@@ -56,19 +57,18 @@ public class Plugin : BasePlugin
         LegacyUISetup.Init(this);
         var harmony = new Harmony("Base.Grimbakor.Mod");
         harmony.PatchAll(Assembly.GetExecutingAssembly());
-        TextureLoader.Instance.CreateFolders();
         EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
-        EnumInjector.RegisterEnumInIl2Cpp<TrainingModeSelectables>();
         EnumInjector.RegisterEnumInIl2Cpp<StageSelectOverrideOptions>();
         ClassInjector.RegisterTypeInIl2Cpp<BetterRangeSelector>();
-
         ClassInjector.RegisterTypeInIl2Cpp<PlayerInputBehaviour>();
         EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
 
+        TextureLoader.Instance.CreateFolders();
         GrimUITrainingModeController.Init();
         GrimUIMainSettingsController.Init();
         CommandHistoryFix.Init();
         ComboTrialDataManager.Instance.Init();
+        MemoryLeakFix.SetDefault();
 
         OnEnterMainMenuActionHandler.Instance.AddCallback(() => { SpriteMap.Instance.GenerateSpriteMap(); });
     }
