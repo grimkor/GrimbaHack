@@ -1,10 +1,8 @@
 using System;
 using System.Diagnostics;
 using GrimbaHack.Utility;
-using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
-using UniverseLib.UI;
 
 namespace GrimbaHack.Modules;
 
@@ -43,8 +41,8 @@ public class FrameDataManager : ModuleBase
         Instance.Behaviour = go.AddComponent<FrameDataBehaviour>();
         Instance.Behaviour.enabled = false;
         OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => Instance.Enabled = Instance._enabled);
-        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Behaviour.SetEnable(false));
-        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Enabled = false);
+        OnSimulationInitializeActionHandler.Instance.AddPostfix(() =>
         {
             if (Instance.Enabled)
                 Instance.Behaviour.SetupUpdateOverlayTargets();
@@ -61,16 +59,6 @@ public class FrameDataManager : ModuleBase
             Behaviour.SetEnable(value);
             _enabled = value;
         }
-    }
-
-    public static void CreateUIControls(GameObject contentRoot)
-    {
-        var toggle = UIFactory.CreateToggle(contentRoot, "Show frame data for attacks", out var frameDataToggle,
-            out var frameDataToggleLabel);
-        frameDataToggle.isOn = false;
-        frameDataToggle.onValueChanged.AddListener(new Action<bool>((value) => { Instance.Enabled = value; }));
-        frameDataToggleLabel.text = "Show frame data for attacks";
-        UIFactory.SetLayoutElement(frameDataToggle.gameObject, minHeight: 25, minWidth: 50);
     }
 }
 
@@ -110,9 +98,9 @@ public class FrameDataBehaviour : MonoBehaviour
     public void SetEnable(bool value)
     {
         if (_startupOverlay != null)
-            _startupOverlay.Enable = value;
+            _startupOverlay.Enabled = value;
         if (_frameAdvantageOverlay != null)
-            _frameAdvantageOverlay.Enable = value;
+            _frameAdvantageOverlay.Enabled = value;
         enabled = value;
         if (enabled)
             SetupUpdateOverlayTargets();

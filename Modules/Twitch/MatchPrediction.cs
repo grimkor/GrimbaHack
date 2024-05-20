@@ -96,7 +96,6 @@ public class MatchPrediction : ModuleBase
                     return;
                 }
             
-                Plugin.Log.LogInfo(match.GetType());
                 if (match.GetMatchType() == MatchType.RANKED || match.GetMatchType() == MatchType.LOBBY)
                 {
                     Instance.Reset();
@@ -155,7 +154,7 @@ public class MatchPrediction : ModuleBase
                 UIFactory.CreateButton(matchPredictionViewerGroup, "predictionMessageButton", "Prediction Settings");
             predictionMessageButton.OnClick += () =>
             {
-                var panel = new TwitchBotPredictionMessagePanel(UIManager.UIBase);
+                var panel = new TwitchBotPredictionMessagePanel(LegacyUIManager.UIBase);
                 panel.Toggle();
             };
             

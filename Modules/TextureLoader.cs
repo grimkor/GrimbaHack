@@ -11,8 +11,6 @@ using nway.gameplay;
 using nway.gameplay.match;
 using nway.gameplay.ui;
 using UnityEngine;
-using UnityEngine.UI;
-using UniverseLib.UI;
 using MatchType = epoch.db.MatchType;
 
 namespace GrimbaHack.Modules;
@@ -49,7 +47,7 @@ public class TextureLoader : ModuleBase
     {
         Instance = new TextureLoader();
         Instance.Enabled = Plugin.EXPERIMENTAL_TextureLoader.Value;
-        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        OnSimulationInitializeActionHandler.Instance.AddPostfix(() =>
         {
             if (!Instance.Enabled)
             {
@@ -81,10 +79,10 @@ public class TextureLoader : ModuleBase
         OnEnterMainMenuActionHandler.Instance.AddCallback(() =>
         {
             Instance._loadedForScene = false;
-            Instance.Cleanup();
+            // Instance.Cleanup();
         });
 
-        OnZordSelectedActionHandler.Instance.AddPrefixCallback((__instance, team, zordIndex) =>
+        OnZordSelectedActionHandler.Instance.AddPrefixCallback((__instance, team, _) =>
         {
             var playerOneIsLocal = __instance?.directMatch?.localPlayerSlot != 1;
             if (team == 0)
@@ -183,7 +181,6 @@ public class TextureLoader : ModuleBase
                         textureName = $"{textureName}{(hero.color == 2 ? $"{assetMap.colorSuffix}2" : "")}";
                     }
 
-                    Plugin.Log.LogInfo($"Loading {textureName} into Loader");
                     Instance.CharacterFilesForLoading[textureName] = texture.Value;
                 }
             }
@@ -312,22 +309,23 @@ public class TextureLoader : ModuleBase
         Instance.Preloaded = true;
     }
 
-    private void Cleanup()
+    public void Cleanup()
     {
         Plugin.Log.LogInfo("Cleaning up");
         CharacterAssetManager.instance?.UnloadNonShared();
-        // Instance.LocalPlayerSkins = new[] { 1, 1, 1 };
+        Instance.LocalPlayerSkins = new[] { 1, 1, 1 };
         Instance.RemotePlayerSkins = new[] { 1, 1, 1 };
     }
 
     private static void MapPlayerTeam(UIHeroSelect.TeamSelectionController controller, int[] colorArr)
     {
         var selection = controller.teamSelection.selections;
-        var noNullHeroes= selection.ToList().TrueForAll(x => x.skin != null);
+        var noNullHeroes = selection.ToList().TrueForAll(x => x.skin != null);
         if (!noNullHeroes)
         {
             return;
         }
+
         var i = 0;
 
         foreach (var hero in selection)
@@ -337,28 +335,6 @@ public class TextureLoader : ModuleBase
             if (hero.skin.colorID < 3) continue;
             hero.skin = TableHeroAssetInfo.instance.GetSkinColorProperty(hero.skin.heroName, hero.skin.skinID, 1);
         }
-    }
-
-    public static void CreateUIControls(GameObject contentRoot)
-    {
-        var textureLoaderGroup = UIFactory.CreateUIObject("TextureLoaderGroup", contentRoot);
-        UIFactory.SetLayoutElement(textureLoaderGroup);
-        UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(textureLoaderGroup, false, false, true, true, padLeft: 25,
-            spacing: 10, childAlignment: TextAnchor.MiddleLeft);
-        UIFactory.CreateToggle(textureLoaderGroup, "TextureLoaderToggle", out var toggle,
-            out var label);
-        toggle.isOn = Instance.Enabled;
-        label.text = "Enable custom textures";
-        toggle.onValueChanged.AddListener(new Action<bool>((value) =>
-        {
-            Instance.Enabled = value;
-            if (value)
-            {
-                Instance.LoadFiles();
-            }
-        }));
-
-        UIFactory.SetLayoutElement(toggle.gameObject, minHeight: 25, minWidth: 50);
     }
 }
 
@@ -373,5 +349,14 @@ public class TestHandler
         {
             __result.colorID = 1;
         }
+    }
+}
+
+[HarmonyPatch(typeof(UIHeroSelect), nameof(UIHeroSelect.OnShow))]
+public class ResetTextureLoaderOnCharacterSelect
+{
+    public static void Prefix()
+    {
+        TextureLoader.Instance.Cleanup();
     }
 }

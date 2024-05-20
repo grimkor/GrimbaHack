@@ -6,6 +6,7 @@ namespace GrimbaHack.UI;
 
 public class UIBehaviour : MonoBehaviour
 {
+
     internal static void Setup()
     {
         ClassInjector.RegisterTypeInIl2Cpp<UIBehaviour>();
@@ -17,10 +18,10 @@ public class UIBehaviour : MonoBehaviour
 
     internal void Update()
     {
-        UIManager.Update();
+        LegacyUIManager.Update();
         if (Keyboard.current.f1Key.wasPressedThisFrame)
         {
-            UIManager.ShowUI = !UIManager.ShowUI;
+            LegacyUIManager.ShowUI = !LegacyUIManager.ShowUI;
         }
     }
 }

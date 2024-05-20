@@ -28,10 +28,10 @@ public class LabelValueOverlayText
         set { _containerObject.transform.position = value; }
     }
 
-    public bool Enable
+    public bool Enabled
     {
         get => _containerObject.active;
-        set { _containerObject.SetActive(value); }
+        set => _containerObject.SetActive(value);
     }
 
     public LabelValueOverlayText(string label, string value, Vector3 position)
@@ -46,17 +46,6 @@ public class LabelValueOverlayText
         var canvasGameObject =
             BaseUIManager.instance.Layers[UILayerType.ForegroundOrthographic].rootCanvas.gameObject;
 
-        var allTexts = GameObject.FindObjectsOfType<Text>();
-        Font font = null;
-        foreach (var text in allTexts)
-        {
-            // "Player" as in the player names have the font we want
-            if (text.text.ToLower().Contains("player"))
-            {
-                font = text.font;
-                break;
-            }
-        }
 
         // Container
         _containerObject = new GameObject();
@@ -105,15 +94,7 @@ public class LabelValueOverlayText
         valueShadow.useGraphicAlpha = true;
 
         // assign the font if we found it
-        if (font != null)
-        {
-            _labelText.TextComponent.font = font;
-            _valueText.TextComponent.font = font;
-        }
-        else
-        {
-            _labelText.TextComponent.AssignDefaultFont();
-            _valueText.TextComponent.AssignDefaultFont();
-        }
+            _labelText.TextComponent.font = FontAssetManager.Instance.OverlayFont;
+            _valueText.TextComponent.font = FontAssetManager.Instance.OverlayFont;
     }
 }

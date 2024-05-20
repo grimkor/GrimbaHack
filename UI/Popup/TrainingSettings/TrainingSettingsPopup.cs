@@ -1,6 +1,5 @@
 using System;
-using GrimbaHack.UI.Elements;
-using GrimbaHack.UI.Popup.TrainingSettings.Elements;
+using GrimbaHack.UI.Popup.TrainingSettings.MenuItems;
 using HarmonyLib;
 using nway;
 using nway.gameplay.ui;
@@ -18,7 +17,6 @@ public class TrainingSettingsPopup
     private static Action _callback;
     private static MenuPage _mainPage;
     private static UIStackedMenu stack;
-    public static string PageTemplateName = "templates/pages/pageTemplate";
     private static UIMenuComponentGenerator uiMenuGenerator;
 
     public static void Show(Action callback)
@@ -28,7 +26,7 @@ public class TrainingSettingsPopup
         _popup = new UISpectateOptions();
         if (window == null)
         {
-            nway.gameplay.ui.UIManager.Get.PopupManager.uiPopupAssetList.Remove(_popup.GetUIPath());
+            UIManager.Get.PopupManager.uiPopupAssetList.Remove(_popup.GetUIPath());
         }
 
         _callback = callback;
