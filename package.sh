@@ -42,35 +42,6 @@ mkdir -p textures \
  textures/s01_rita \
  textures/s22_sledge
 
-mkdir -p combos \
-combos/__EXPORT \
-combos/COM_BlackSentry \
-combos/COM_Drakkon \
-combos/COM_RangerSlayer \
-combos/COM_TriniBlackDragon \
-combos/MOV_BlueRanger \
-combos/S01_AdamPark \
-combos/S01_Goldar \
-combos/S01_GreenRanger \
-combos/S01_RedRanger \
-combos/S01_Rita \
-combos/S01_Scorpina \
-combos/S02_LordZedd \
-combos/S03_GoldRanger \
-combos/S07_MagnaDefender \
-combos/S09_PinkRanger \
-combos/S09_QuantumRanger \
-combos/S13_KatRanger \
-combos/S13_ShadowRanger \
-combos/S14_WhiteRanger \
-combos/S16_DaiShi \
-combos/S16_PurpleRanger \
-combos/S18_Lauren \
-combos/S21_YellowRanger \
-combos/S22_Poisandra \
-combos/SF_ChunLiRanger \
-combos/SF_RyuRanger
-
 zip -j GrimbaHack.zip bin/Debug/net6.0/publish/GrimbaHack.dll \
  bin/Debug/net6.0/publish/Twitch* \
  bin/Debug/net6.0/publish/Newtonsoft.Json.dll \

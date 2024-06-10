@@ -19,9 +19,22 @@ public class OnEnterTrainingMatchActionHandler
     }
 
     public static OnEnterTrainingMatchActionHandler Instance = new();
+    private readonly List<Action> _prefixCallbacks = new();
     private readonly List<Action> _postfixCallbacks = new();
+    private readonly List<Action> _pendingPrefixCallbacks = new();
     private readonly List<Action> _pendingPostfixCallbacks = new();
+    private bool _isRunningPrefixes;
     private bool _isRunningPostfixes;
+
+    public void AddPrefix(Action callback)
+    {
+        if (Instance._isRunningPrefixes)
+        {
+            Instance._pendingPrefixCallbacks.Add(callback);
+            return;
+        }
+        Instance._prefixCallbacks.Add(callback);
+    }
 
     public void AddPostfix(Action callback)
     {
@@ -31,6 +44,24 @@ public class OnEnterTrainingMatchActionHandler
             return;
         }
         Instance._postfixCallbacks.Add(callback);
+    }
+
+    public static void Prefix(AppState state)
+    {
+        if (!Data.Global.IsTrainingMatch()) return;
+        Instance._isRunningPrefixes = true;
+        foreach (var callback in Instance._prefixCallbacks)
+        {
+            callback();
+        }
+        foreach (var callback in Instance._pendingPrefixCallbacks)
+        {
+            callback();
+            Instance._prefixCallbacks.Add(callback);
+        }
+
+        Instance._pendingPrefixCallbacks.Clear();
+        Instance._isRunningPrefixes = false;
     }
 
     public static void Postfix(AppState state)
