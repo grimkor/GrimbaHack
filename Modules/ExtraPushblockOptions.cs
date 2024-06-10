@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using epoch.db;
 using GrimbaHack.Data;
 using GrimbaHack.Utility;
@@ -10,7 +8,6 @@ using nway.gameplay.ai;
 using nway.gameplay.match;
 using UnityEngine;
 using UnityEngine.UI;
-using UniverseLib.UI;
 using Random = System.Random;
 
 namespace GrimbaHack.Modules;
@@ -36,8 +33,8 @@ public sealed class ExtraPushblockOptions : ModuleBase
         GameObject.DontDestroyOnLoad(go);
         Instance.Behaviour = go.AddComponent<ExtraPushblockOptionsBehaviour>();
         Instance.Enabled = false;
-        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
-        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Behaviour.enabled = false);
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => Instance.Enabled = Instance._enabled);
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Enabled = false);
     }
 
     private bool _enabled;
@@ -56,50 +53,10 @@ public sealed class ExtraPushblockOptions : ModuleBase
 
     public void SetPercentToPushblock(int percentIndex)
     {
-        if (percentIndex >= 0 && percentIndex <= Global.PercentOptions.Count - 1)
-        {
-            var percent = Global.PercentOptions[percentIndex].Value;
-            if (percent >= -1 && percent <= 100)
+            if (percentIndex >= -1 && percentIndex <= 100)
             {
-                Behaviour.SetPercentToPushblock(percent);
+                Behaviour.SetPercentToPushblock(percentIndex);
             }
-        }
-    }
-
-
-    public static void CreateUIControls(GameObject contentRoot)
-    {
-        GameObject extraPushblockGroup = UIFactory.CreateUIObject("ExtraPushblockOptionsGroup", contentRoot);
-        UIFactory.SetLayoutElement(extraPushblockGroup);
-        UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(extraPushblockGroup, false, false, true, true, padLeft: 25,
-            padRight: 0, spacing: 10, childAlignment: TextAnchor.MiddleLeft);
-
-        // CREATE TOGGLE
-        UIFactory.CreateToggle(extraPushblockGroup, "ExtraPushblockOptionsToggle", out var _extraPushblockToggle,
-            out Text extraPushblockToggleText, checkHeight: 20, checkWidth: 20);
-        _extraPushblockToggle.onValueChanged.AddListener(new Action<bool>(enabled =>
-        {
-            // var canEnable = enabled && MatchManager.instance.matchType == MatchType.TRAINING;
-            Instance._extraPushblockDropdown.gameObject.active = enabled;
-            Instance.Enabled = enabled;
-        }));
-
-        extraPushblockToggleText.text = "Enable Enhanced Pushblock";
-
-        // CREATE DROPDOWN
-        UIFactory.CreateDropdown(extraPushblockGroup, "ExtraPushblockOptionsDropdown",
-            out Instance._extraPushblockDropdown,
-            "Random",
-            14,
-            i => { Instance.SetPercentToPushblock(i); },
-            Global.PercentOptions.ToArray().Select(stage => stage.Label).ToArray()
-        );
-
-        // LAYOUT ELEMENTS
-        UIFactory.SetLayoutElement(_extraPushblockToggle.gameObject, minWidth: 50, minHeight: 25);
-        UIFactory.SetLayoutElement(Instance._extraPushblockDropdown.gameObject, minWidth: 120, minHeight: 25);
-        _extraPushblockToggle.isOn = false;
-        Instance._extraPushblockDropdown.gameObject.active = false;
     }
 }
 
@@ -107,7 +64,7 @@ public class ExtraPushblockOptionsBehaviour : MonoBehaviour
 {
     public ExtraPushblockOptionsBehaviour()
     {
-        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        OnSimulationInitializeActionHandler.Instance.AddPostfix(() =>
         {
             if (MatchManager.instance.matchType != MatchType.TRAINING)
             {
@@ -150,7 +107,7 @@ public class ExtraPushblockOptionsBehaviour : MonoBehaviour
     private static Character _dummyCharacter;
     public static bool Ready;
     public static bool DummyIsStunned;
-    public static int PercentToPushblock = -1;
+    public static int PercentToPushblock = 100;
 
     public void SetPercentToPushblock(int percent)
     {

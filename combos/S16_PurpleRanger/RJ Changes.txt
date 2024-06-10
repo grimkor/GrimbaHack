@@ -1,0 +1,24 @@
+RJ Changes:
+
+Added Magic Series to start of beginner (Show that the normals are multiple hits)
+
+Added 2H > 5M Confirm to start of beginner (Show that you don't have to cancel into jS)
+
+Removed EZ BnB 2 (I wanted to keep any dashes mid combo out of beginner)
+
+Added Throw Confirm before beginner throw combo (Show that you can cancel into 6SM)
+
+Added Wolf Wheel Alpha midscreen Confirm to start of advanced (Practice the dashes)
+
+Added OTG Options to start of advanced (Show the different way RJ can OTG so they get creative with the order)
+
+Removed 6SM > 2L Confirm from advanced (Distance dependant but I'm saving the file just in case we decided to keep it later)
+
+Added Stump Loop Practice to start of expert (Show that you can stump with 5L or 2L)
+(Note: Idk if there's a way to show that 5L stumps aren't universal)
+
+Removed MidScreen Back Throw Confirm (Basically frame perfect, not worth it for learning the character bc no one goes for it)
+
+Changed all bonus combos to their respective difficulties
+
+

@@ -6,6 +6,7 @@ using nway.gameplay;
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
+using Object = UnityEngine.Object;
 
 namespace GrimbaHack.Modules;
 
@@ -17,9 +18,9 @@ public class CollisionBoxViewer : ModuleBase
     static CollisionBoxViewer()
     {
         Instance = new();
-        OnEnterTrainingMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
+        OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() => Instance.Enabled = Instance._enabled);
         OnEnterPremadeMatchActionHandler.Instance.AddCallback(() => Instance.Enabled = Instance._enabled);
-        OnEnterMainMenuActionHandler.Instance.AddCallback(() => CollisionBoxViewerController.Enabled = false);
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => Instance.Enabled = false);
     }
 
     private static bool _cameraInitialised;
@@ -28,11 +29,11 @@ public class CollisionBoxViewer : ModuleBase
 
     public bool Enabled
     {
-        get => _enabled;
+        get => Instance._enabled;
         set
         {
+            Instance._enabled = value;
             CollisionBoxViewerController.Enabled = value;
-            _enabled = value;
             toggleInstances.ForEach((toggle => toggle.isOn = value));
         }
     }
@@ -59,7 +60,7 @@ public static class CollisionBoxViewerController
 {
     static CollisionBoxViewerController()
     {
-        OnSimulationInitializeActionHandler.Instance.AddCallback(() =>
+        OnSimulationInitializeActionHandler.Instance.AddPostfix(() =>
         {
             if (Enabled)
             {
@@ -109,7 +110,7 @@ public static class CollisionBoxViewerController
     {
         if (!_cameraInitialised)
         {
-            var stackCamera = GameObject.FindObjectOfType<StackCamera>();
+            var stackCamera = Object.FindObjectOfType<StackCamera>();
             if (stackCamera == null) return;
             colliderRenderer = stackCamera.gameObject.AddComponent<ColliderRenderer>();
             colliderRenderer.isGlobalSleep = true;
@@ -129,7 +130,7 @@ public static class CollisionBoxViewerController
     {
         if (SceneStartup.instance == null) return;
         SceneStartup.instance.GamePlay._playerList[0].characterTeam.members
-            .ForEach(new Action<Character>(new Action<Character>(member => { member.renderColliderList.Clear(); })));
+            .ForEach(new Action<Character>(member => { member.renderColliderList.Clear(); }));
     }
 
     public static void MapColliders()

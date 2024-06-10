@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using GrimbaHack.Modules;
 using HarmonyLib;
 using nway.gameplay;
 using nway.gameplay.match;
-using nway.gameplay.ui;
 using Action = System.Action;
 
 namespace GrimbaHack.Utility;
@@ -18,39 +16,70 @@ public class OnEnterTrainingMatchActionHandler
 
     static OnEnterTrainingMatchActionHandler()
     {
-        Instance = new OnEnterTrainingMatchActionHandler();
     }
 
-    public static OnEnterTrainingMatchActionHandler Instance { get; set; }
-    private List<Action> callbacks = new();
-    private List<Action> prefixCallbacks = new();
+    public static OnEnterTrainingMatchActionHandler Instance = new();
+    private readonly List<Action> _prefixCallbacks = new();
+    private readonly List<Action> _postfixCallbacks = new();
+    private readonly List<Action> _pendingPrefixCallbacks = new();
+    private readonly List<Action> _pendingPostfixCallbacks = new();
+    private bool _isRunningPrefixes;
+    private bool _isRunningPostfixes;
 
-    public void AddCallback(Action callback)
+    public void AddPrefix(Action callback)
     {
-        Instance.callbacks.Add(callback);
-    }
-
-    public void AddPrefixCallback(Action callback)
-    {
-        Instance.prefixCallbacks.Add(callback);
-    }
-
-    public static void Postfix(AppState state)
-    {
-        if (!Data.Global.IsTrainingMatch()) return;
-        foreach (var callback in Instance.callbacks)
+        if (Instance._isRunningPrefixes)
         {
-            callback();
+            Instance._pendingPrefixCallbacks.Add(callback);
+            return;
         }
+        Instance._prefixCallbacks.Add(callback);
+    }
+
+    public void AddPostfix(Action callback)
+    {
+        if (Instance._isRunningPostfixes)
+        {
+            Instance._pendingPostfixCallbacks.Add(callback);
+            return;
+        }
+        Instance._postfixCallbacks.Add(callback);
     }
 
     public static void Prefix(AppState state)
     {
         if (!Data.Global.IsTrainingMatch()) return;
-        foreach (var callback in Instance.prefixCallbacks)
+        Instance._isRunningPrefixes = true;
+        foreach (var callback in Instance._prefixCallbacks)
         {
             callback();
         }
+        foreach (var callback in Instance._pendingPrefixCallbacks)
+        {
+            callback();
+            Instance._prefixCallbacks.Add(callback);
+        }
+
+        Instance._pendingPrefixCallbacks.Clear();
+        Instance._isRunningPrefixes = false;
+    }
+
+    public static void Postfix(AppState state)
+    {
+        if (!Data.Global.IsTrainingMatch()) return;
+        Instance._isRunningPostfixes = true;
+        foreach (var callback in Instance._postfixCallbacks)
+        {
+            callback();
+        }
+        foreach (var callback in Instance._pendingPostfixCallbacks)
+        {
+            callback();
+            Instance._postfixCallbacks.Add(callback);
+        }
+
+        Instance._pendingPostfixCallbacks.Clear();
+        Instance._isRunningPostfixes = false;
     }
 }
 
@@ -71,7 +100,6 @@ public class OnMatchManagerCreateTrainingNextActionHandler
 
     public void AddCallback(Action<TeamHeroSelection, TeamHeroSelection, string> callback)
     {
-        Plugin.Log.LogInfo("Adding callback");
         Instance.callbacks.Add(callback);
     }
 
@@ -81,7 +109,6 @@ public class OnMatchManagerCreateTrainingNextActionHandler
         string arenaIdOverride = null
     )
     {
-        Plugin.Log.LogInfo($"Running callbacks: {Instance.callbacks.Count}");
         foreach (var callback in Instance.callbacks)
         {
             callback(p1, p2, arenaIdOverride);

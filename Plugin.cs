@@ -3,9 +3,19 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
+using GrimbaHack.Data;
 using GrimbaHack.Modules;
+using GrimbaHack.Modules.ComboTrial;
+using GrimbaHack.Modules.ComboTrial.UI;
+using GrimbaHack.Modules.PlayerInput;
 using GrimbaHack.UI;
+using GrimbaHack.UI.MenuManagers;
+using GrimbaHack.UI.Popup.CommonElements;
+using GrimbaHack.Utility;
 using HarmonyLib;
+using Il2CppInterop.Runtime.Injection;
+using nway.gameplay.ui;
+
 
 namespace GrimbaHack;
 
@@ -44,10 +54,24 @@ public class Plugin : BasePlugin
             "Enable experimental texture loader");
 
         Log = base.Log;
-        UISetup.Init(this);
+        LegacyUISetup.Init(this);
         var harmony = new Harmony("Base.Grimbakor.Mod");
         harmony.PatchAll(Assembly.GetExecutingAssembly());
+        EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
+        EnumInjector.RegisterEnumInIl2Cpp<StageSelectOverrideOptions>();
+        ClassInjector.RegisterTypeInIl2Cpp<BetterRangeSelector>();
+        ClassInjector.RegisterTypeInIl2Cpp<PlayerInputBehaviour>();
+        EnumInjector.RegisterEnumInIl2Cpp<DefaultMenuOptions>();
+
         TextureLoader.Instance.CreateFolders();
+        FontAssetManager.Init();
+        GrimUITrainingModeController.Init();
+        GrimUIMainSettingsController.Init();
+        CommandHistoryFix.Init();
+        ComboTrialDataManager.Instance.Init();
+        MemoryLeakFix.SetDefault();
+
+        OnEnterMainMenuActionHandler.Instance.AddCallback(() => { SpriteMap.Instance.GenerateSpriteMap(); });
+        // OnArmorTakeDamageCallbackHandler.Instance.AddPostfix(info => Log.LogInfo($"{info.attackName} | {info.attacker.GetCharacterName()} | {info.victim.GetCharacterName()}"));
     }
 }
-

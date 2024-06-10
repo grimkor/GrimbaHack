@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using nway.gameplay;
+using nway.gameplay.ui;
 
 namespace GrimbaHack.Utility;
 
@@ -23,7 +24,7 @@ public class AppChangeCallbackHandler
     {
         Instance.callbacks.Add(callback);
     }
-    
+
     public static void Prefix(AppState state)
     {
         foreach (var callback in Instance.callbacks)

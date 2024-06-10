@@ -1,15 +1,9 @@
-﻿﻿using System;
-using GrimbaHack.Modules;
-using GrimbaHack.UI;
-using Il2CppInterop.Runtime.Injection;
-using nway.ui;
+﻿using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using UniverseLib.UI;
 using Object = UnityEngine.Object;
 
-namespace GrimbaHack;
+namespace GrimbaHack.Modules;
 
 public sealed class CameraControl : ModuleBase
 {
@@ -17,12 +11,11 @@ public sealed class CameraControl : ModuleBase
     {
     }
 
-    public static CameraControl Instance { get; private set; }
+    public static CameraControl Instance = new();
     private CameraControlBehaviour Behaviour;
 
     static CameraControl()
     {
-        Instance = new CameraControl();
         ClassInjector.RegisterTypeInIl2Cpp<CameraControlBehaviour>();
         GameObject go = new GameObject("CameraControlBehaviour");
         Object.DontDestroyOnLoad(go);
@@ -36,35 +29,6 @@ public sealed class CameraControl : ModuleBase
     {
         get => Behaviour.enabled;
         set => Behaviour.SetEnabled(value);
-    }
-
-    public static CameraControlHelpWindow HelpWindow;
-
-    public static void CreateUIControls(GameObject contentRoot)
-    {
-        HelpWindow = new CameraControlHelpWindow(UIManager.UIBase);
-        var cameraControlGroup = UIFactory.CreateUIObject("CameraControlGroup", contentRoot);
-        UIFactory.SetLayoutElement(cameraControlGroup);
-        UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(cameraControlGroup, false, false, true, true, padLeft: 25,
-            spacing: 10, childAlignment: TextAnchor.MiddleLeft);
-
-        // Enable Toggle
-        UIFactory.CreateToggle(cameraControlGroup, "CameraControlToggle", out Toggle CameraControlToggle,
-            out Text CameraControlToggleText, checkHeight: 20, checkWidth: 20);
-        CameraControlToggle.enabled = true;
-        CameraControlToggle.isOn = false;
-        CameraControlToggle.onValueChanged.AddListener(new Action<bool>(enabled => { Instance.Enabled = enabled; }));
-
-        // Toggle Text
-        CameraControlToggleText.text = "Enable Freecam";
-
-        // Help Button
-        var button = UIFactory.CreateButton(cameraControlGroup, "CameraControlHelpButton", "?");
-        button.OnClick += () => { HelpWindow.Toggle(); };
-
-        // Layout elements
-        UIFactory.SetLayoutElement(CameraControlToggle.gameObject);
-        UIFactory.SetLayoutElement(button.GameObject, minHeight: 25, minWidth: 25);
     }
 }
 

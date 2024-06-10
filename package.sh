@@ -49,4 +49,5 @@ zip -j GrimbaHack.zip bin/Debug/net6.0/publish/GrimbaHack.dll \
  textures
 
 zip -r GrimbaHack textures
+zip -r GrimbaHack combos
 rm textures -r
