@@ -204,7 +204,7 @@ public class ComboTrialOverlay
         }
 
         var rect = Instance._overlayObject.GetComponent<RectTransform>();
-        if (rect != null)
+        if (rect is not null)
         {
             rect.localPosition = new(0, 0, 0);
             rect.pivot = new(0.5f, 0);
@@ -216,7 +216,7 @@ public class ComboTrialOverlay
         Instance._animationGo.transform.SetParent(Instance._rootGameObject.transform);
         Instance._animationGo.AddComponent<LayoutElement>().ignoreLayout = true;
         var animationRect = Instance._animationGo.transform.GetComponent<RectTransform>();
-        if (animationRect != null)
+        if (animationRect is not null)
         {
             animationRect.localPosition = Vector3.zero;
             animationRect.anchoredPosition = new(0, 0);
@@ -228,7 +228,7 @@ public class ComboTrialOverlay
         boltSprite.sprite = SpriteMap.Instance.GetMapping("bolt");
         boltSprite.preserveAspect = true;
         var boltRect = boltSpriteGo.GetComponent<RectTransform>();
-        if (boltRect != null)
+        if (boltRect is not null)
         {
             boltRect.localPosition = Vector3.zero;
             boltRect.anchorMin = Vector2.zero;
@@ -249,7 +249,7 @@ public class ComboTrialOverlay
         textGo.AddComponent<Outline>();
 
         var tRect = textGo.GetComponent<RectTransform>();
-        if (tRect != null)
+        if (tRect is not null)
         {
             tRect.anchoredPosition = Vector2.zero;
             tRect.anchorMin = new(0.5f, 0.5f);

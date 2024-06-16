@@ -6,7 +6,7 @@ namespace GrimbaHack.Modules;
 
 public class LabelValueOverlayText
 {
-    private GameObject _containerObject;
+    public GameObject _containerObject;
     private LocalizedText _labelText;
     private LocalizedText _valueText;
 
@@ -61,6 +61,15 @@ public class LabelValueOverlayText
         frameAdvantageContainer.transform.SetParent(_containerObject.transform);
         frameAdvantageContainer.transform.localPosition = new Vector3(1, 1, 1);
         frameAdvantageContainer.transform.localScale = new Vector3(1, 1, 1);
+        var layout = frameAdvantageContainer.AddComponent<HorizontalLayoutGroup>();
+        layout.childControlHeight = true;
+        layout.childControlWidth = false;
+        layout.childScaleHeight = false;
+        layout.childScaleWidth = false;
+        layout.childForceExpandHeight = false;
+        layout.childForceExpandWidth = false;
+        layout.childAlignment = TextAnchor.MiddleLeft;
+        layout.spacing = 8;
         frameAdvantageContainer.AddComponent<LayoutElement>();
 
         var labelGo = new GameObject();
@@ -72,29 +81,26 @@ public class LabelValueOverlayText
         _labelText.normalText = labelText;
         _labelText.TextComponent.horizontalOverflow = HorizontalWrapMode.Overflow;
         _labelText.TextComponent.fontSize = 30;
-        _labelText.TextComponent.alignment = TextAnchor.UpperLeft;
         var labelShadow = labelGo.AddComponent<Shadow>();
         labelShadow.effectColor = new Color(0, 0, 0, 1);
         labelShadow.effectDistance = new Vector2(4, -4);
         labelShadow.useGraphicAlpha = true;
+        _labelText.TextComponent.font = FontAssetManager.Instance.OverlayFont;
 
         var valueGo = new GameObject();
         valueGo.transform.SetParent(frameAdvantageContainer.transform);
         valueGo.AddComponent<CanvasRenderer>();
         _valueText = valueGo.AddComponent<LocalizedText>();
         valueGo.transform.localScale = new Vector3(1, 1, 1);
-        valueGo.transform.localPosition = new Vector3(300, 1, 1);
+        valueGo.transform.localPosition = new Vector3(1, 1, 1);
         _valueText.normalText = valueText;
         _valueText.TextComponent.horizontalOverflow = HorizontalWrapMode.Overflow;
         _valueText.TextComponent.fontSize = 30;
-        _valueText.TextComponent.alignment = TextAnchor.UpperRight;
         var valueShadow = valueGo.AddComponent<Shadow>();
         valueShadow.effectColor = new Color(0, 0, 0, 1);
         valueShadow.effectDistance = new Vector2(4, -4);
         valueShadow.useGraphicAlpha = true;
 
-        // assign the font if we found it
-            _labelText.TextComponent.font = FontAssetManager.Instance.OverlayFont;
-            _valueText.TextComponent.font = FontAssetManager.Instance.OverlayFont;
+        _valueText.TextComponent.font = FontAssetManager.Instance.OverlayFont;
     }
 }

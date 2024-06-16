@@ -53,7 +53,7 @@ public class StageSelectOverrideSelectorNew
         selector.CurrentItem = StageSelectOverride.Stage.Key;
         selector.OnValueChanged = (Action<StageSelectOverrideOptions, StageSelectOverrideOptions>)((newValue, _) =>
         {
-            var stage = Data.Global.Stages.Find(x => x.Key == newValue);
+            var stage = Global.Stages.Find(x => x.Key == newValue);
             if (stage != null)
             {
                 StageSelectOverride.SetStage(stage);
@@ -113,7 +113,7 @@ public class StageSelectOverrideSelectorNew
     private void CreateRandomSelectOptions(UIPage uiPage)
     {
         var stages = new Il2CppSystem.Collections.Generic.List<StageSelectOverrideOptions>();
-        foreach (var stage in Data.Global.Stages)
+        foreach (var stage in Global.Stages)
         {
             stages.Add(stage.Key);
         }

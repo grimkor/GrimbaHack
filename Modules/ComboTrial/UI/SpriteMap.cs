@@ -30,8 +30,8 @@ public class SpriteMap
         { ">", new() },
         { "A1", new() },
         { "A2", new() },
-        {"panel_streak", new()},
-        {"bolt", new()}
+        { "panel_streak", new() },
+        { "bolt", new() }
     };
 
 
@@ -137,10 +137,71 @@ public class SpriteMap
                 Instance.SetMapping("9", sprite);
             }
 
+            if (sprite.name == "button_xbox_a")
+            {
+                Instance.SetMapping("button_xbox_a", sprite);
+            }
+
+            if (sprite.name == "button_xbox_b")
+            {
+                Instance.SetMapping("button_xbox_b", sprite);
+            }
+
+            if (sprite.name == "button_xbox_x")
+            {
+                Instance.SetMapping("button_xbox_x", sprite);
+            }
+
+            if (sprite.name == "button_xbox_y")
+            {
+                Instance.SetMapping("button_xbox_y", sprite);
+            }
+
+            if (sprite.name == "button_xbox_LB")
+            {
+                Instance.SetMapping("button_xbox_LB", sprite);
+            }
+
+            if (sprite.name == "button_xbox_LT")
+            {
+                Instance.SetMapping("button_xbox_LT", sprite);
+            }
+
+            if (sprite.name == "button_xbox_RB")
+            {
+                Instance.SetMapping("button_xbox_RB", sprite);
+            }
+
+            if (sprite.name == "button_xbox_RT")
+            {
+                Instance.SetMapping("button_xbox_RT", sprite);
+            }
+
+            if (sprite.name == "button_xbox_change")
+            {
+                Instance.SetMapping("button_xbox_change", sprite);
+            }
+
+            if (sprite.name == "button_xbox_menu")
+            {
+                Instance.SetMapping("button_xbox_menu", sprite);
+            }
+
+            if (sprite.name == "button_xbox_left_stick")
+            {
+                Instance.SetMapping("button_xbox_left_stick", sprite);
+            }
+
+            if (sprite.name == "button_xbox_right_stick")
+            {
+                Instance.SetMapping("button_xbox_right_stick", sprite);
+            }
+
             if (sprite.name == "panel_streak")
             {
                 Instance.SetMapping("panel_streak", sprite);
             }
+
             if (sprite.name == "bolt")
             {
                 Instance.SetMapping("bolt", sprite);

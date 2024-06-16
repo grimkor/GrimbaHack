@@ -10,4 +10,4 @@ cp bin/Debug/net6.0/publish/GrimbaHack.dll "$PLUGIN_DIR" -v && \
 cp bin/Debug/net6.0/publish/Twitch* "$PLUGIN_DIR" -v && \
 cp bin/Debug/net6.0/publish/Newtonsoft.Json.dll "$PLUGIN_DIR" -v && \
 cp deps/UniverseLib.IL2CPP.Interop.dll "$PLUGIN_DIR" -v && \
-cp -r combos "$PLUGIN_DIR"
+cp -r package/BepInEx/plugins "$PLUGIN_DIR"
