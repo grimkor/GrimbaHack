@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GrimbaHack.Modules.Combo;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using UnityEngine.UI;
@@ -75,7 +76,7 @@ public class ComboItemUIElementGroup : ComboItem
 
     public bool CheckAttack(string attackName)
     {
-        if (GetIds()[_currentComboPoint] != attackName) return false;
+        if (GetIds()[_currentComboPoint] != ComboQuickConverter.SanitiseAttackName(attackName)) return false;
         Next();
         // example Ids.Count = 3 - 1 == 2
         // 0 < 2 return false, more to match
@@ -125,7 +126,6 @@ public class ComboItemUIElementGroup : ComboItem
 
     public void Destroy()
     {
-
         Object.Destroy(_groupContainer);
     }
 }

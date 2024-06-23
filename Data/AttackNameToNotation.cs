@@ -261,7 +261,6 @@ public static class AttackNameToNotation
                 { "SF_RyuRanger_combat_sp_3_h_2", "214H" },
                 { "SF_RyuRanger_combat_sp_5_0", "~214H" },
                 { "SF_RyuRanger_combat_cn_1_0", "6M" },
-                // { "SF_RyuRanger_combat_cn_1_1_otg", "6M" },
                 { "SF_RyuRanger_combat_sp_1_ex_0", "236L+M" },
                 { "SF_RyuRanger_combat_sp_2_ex_0", "623L+M" },
                 { "SF_RyuRanger_combat_sp_3_ex_0", "214L+M" },
@@ -325,14 +324,21 @@ public static class AttackNameToNotation
                 { "S22_Poisandra_combat_high_heavy_3_2", "6H" },
                 { "S22_Sledge_combat_sp_1_sledge_gunfire_0", "5[S]" },
                 { "S22_Sledge_combat_sp_1_sledge_run", "5[S]~6" },
-                { "S22_Sledge_combat_sp_1_sledge_fly_end", "5[S]~4" }
+                { "S22_Sledge_combat_sp_1_sledge_fly_end", "5[S]~4" },
+                { "S22_Poisandra_combat_sp_ex_1_0", "EX"},
+                { "S22_Poisandra_combat_sp_ex_1_1", "EX"},
+                { "S22_Poisandra_combat_sp_ex_1_2", "EX"},
+                { "S22_Poisandra_combat_sp_ex_1_3", "EX"},
+                { "S22_Poisandra_combat_sp_ex_2_0", "EX"},
+                { "S22_Poisandra_combat_sp_ex_2_1", "EX"},
+                { "S22_Poisandra_combat_sp_ex_2_2", "EX"},
+                { "S22_Poisandra_combat_sp_ex_2_3", "EX"}
             }
         },
         {
             // S01_Rita
             26, new()
             {
-                { "S01_Rita_combat_low_heavy_0_a", "2H" },
                 { "S01_Rita_combat_sp_airspec_0_otg", "9S" },
                 { "S01_Rita_combat_sp_3_putty_punch", "6S" },
                 { "S01_Rita_combat_sp_2_0_b_1", "S" },

@@ -47,6 +47,7 @@ public class ComboTrialManager
                 Instance.IsPaused = false;
                 return;
             }
+
             if (!Instance.IsComboTrial) return;
             Instance.ResetTrial();
             if (Instance.playbackQueued)
@@ -107,6 +108,7 @@ public class ComboTrialManager
         var dummyDriver = drivers.FindExtension<TrainingDummyDriver>();
         dummyDriver.Behavior = TrainingOptions.EnemyBehavior.Dummy;
         dummyDriver.Recovery = TrainingOptions.EnemyRecovery.InPlace;
+        dummyDriver.Guard = TrainingOptions.EnemyGuard.NoGuard;
         dummyDriver.PushBlock = TrainingOptions.EnemyPushBlock.Never;
         dummyDriver.Pose = TrainingOptions.EnemyPose.Standing;
 
@@ -124,6 +126,7 @@ public class ComboTrialManager
     public void Playback()
     {
         Instance._statusOverlay.Enabled = true;
+        PlaybackOverlayText.Enabled = false;
         Instance._playbackController.Playback(Instance._combo.Inputs);
         Instance.playbackQueued = false;
     }
@@ -138,6 +141,11 @@ public class ComboTrialManager
     private void ResetTrial()
     {
         Instance._statusOverlay.Enabled = false;
+        if (!PlaybackOverlayText.Enabled)
+        {
+            PlaybackOverlayText.Setup();
+        }
+
         Instance.SetTrainingModeSettings();
         Instance._playbackController.Stop();
         Instance._completed = false;
@@ -175,6 +183,7 @@ public class ComboTrialManager
     public void Teardown()
     {
         Instance._statusOverlay.Enabled = false;
+        PlaybackOverlayText.Teardown();
         ComboTrialOverlay.Instance.Teardown();
         Instance.IsComboTrial = false;
         Instance._combo = new();

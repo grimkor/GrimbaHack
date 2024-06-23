@@ -24,87 +24,10 @@
           [
             "S01_GreenRanger_combat_high_heavy_1_0",
             "H+S 5H"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S01_GreenRanger_combat_sup_start_0",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S01_GreenRanger_combat_sup_start_dummy_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S01_GreenRanger_combat_sp_3_charged_0",
             "6[S]"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S01_GreenRanger_combat_sup_start_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S01_GreenRanger_combat_sup_start_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S01_GreenRanger_combat_sp_3_charged_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S01_GreenRanger_combat_sp_3_charged_2",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S01_GreenRanger_combat_sp_3_charged_3",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S01_GreenRanger_combat_sup_start_2",
-            ""
           ]
         ],
         "Repeat": 1
@@ -208,12 +131,7 @@
           [
             "S01_GreenRanger_combat_cn_1_0",
             "6M"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S01_GreenRanger_combat_sup_start_0",
             "Super"
@@ -298,12 +216,7 @@
           [
             "S01_GreenRanger_combat_sp_2_0",
             "4S"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S01_GreenRanger_combat_sp_3_charged_0",
             "6[S]"

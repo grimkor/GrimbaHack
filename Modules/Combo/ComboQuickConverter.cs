@@ -12,10 +12,19 @@ public static class ComboQuickConverter
             return BaseConverter(attackName);
     }
 
+    public static string SanitiseAttackName(string attackName)
+    {
+        if (attackName is null) return "";
+        var newName = attackName.Replace("_far", "").Replace("_near", "");
+        newName = newName.Replace("_a", "").Replace("_b", "");
+        return newName;
+    }
+
     private static string BaseConverter(string attackName)
     {
         // Poisandra sucks
         attackName = attackName.Replace("_far", "").Replace("_near", "");
+        attackName = attackName.Replace("_a", "").Replace("_b", "");
         if (!attackName.EndsWith("0") && !attackName.EndsWith("otg")) return "";
         if (attackName.Contains("_ex_0"))
         {

@@ -1,5 +1,5 @@
 {
-  "Title": "(Advanced) - Shoryuken Loops",
+  "Title": "(Advanced) Shoryuken Loops",
   "Combo": [
     [
       {
@@ -118,7 +118,7 @@
           ]
         ],
         "Repeat": 1
-      },
+      }
     ],
     [
       {

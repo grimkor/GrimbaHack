@@ -39,7 +39,7 @@
           ],
 		  [
             "SF_RyuRanger_combat_high_medium_1_0",
-            "M~L+M"
+            "(M~L) M"
           ],
 		  [
             "SF_RyuRanger_combat_high_medium_2_0",
@@ -80,7 +80,7 @@
           ]
         ],
         "Repeat": 1
-      },
+      }
     ],
     [
       {
@@ -183,7 +183,7 @@
           ]
         ],
         "Repeat": 1
-      },
+      }
 	],
 	[
       {
@@ -238,7 +238,7 @@
         "Items": [
           [
             "SF_RyuRanger_combat_sup_start_0_beam_air_1",
-            "H\u002BS"
+            "Super"
           ]
         ],
         "Repeat": 1
@@ -251,7 +251,7 @@
           ]
         ],
         "Repeat": 1
-      },
+      }
     ]
   ],
   "Inputs": [

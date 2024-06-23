@@ -44,11 +44,11 @@
         "Items": [
           [
             "S01_GreenRanger_combat_low_light_0",
-            "2L "
+            "2L"
           ],
           [
             "S01_GreenRanger_combat_low_medium_0",
-            "2M "
+            "2M"
           ],
           [
             "S01_GreenRanger_combat_high_heavy_1_0",
@@ -56,7 +56,7 @@
           ],
           [
             "S01_GreenRanger_combat_low_medium_0",
-            "2M "
+            "2M"
           ],
           [
             "S01_GreenRanger_combat_high_heavy_1_0",
@@ -93,12 +93,7 @@
           [
             "S01_GreenRanger_combat_cn_1_0",
             "6M"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S01_GreenRanger_combat_sup_start_0",
             "Super"
@@ -183,12 +178,7 @@
           [
             "S01_GreenRanger_combat_sp_2_0",
             "4S"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S01_GreenRanger_combat_sp_3_charged_0",
             "6[S]"

@@ -1,5 +1,5 @@
 {
-  "Title": "(Beginner) forward throw combo",
+  "Title": "(Beginner) Forward Throw combo",
   "Combo": [
     [
       {
@@ -32,7 +32,7 @@
           ]
         ],
         "Repeat": 1
-      },
+      }
     ]
   ],
   "Inputs": [

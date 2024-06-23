@@ -1,5 +1,5 @@
 {
-  "Title": "(Expert) same-side Overhead",
+  "Title": "(Expert) Same-side Overhead",
   "Combo": [
     [
       {
@@ -29,15 +29,6 @@
           [
             "SF_RyuRanger_combat_high_light_1_0",
             "5LM~L"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "SF_RyuRanger_combat_cn_1_1",
-            "4M"
           ]
         ],
         "Repeat": 1

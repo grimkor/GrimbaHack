@@ -47,10 +47,11 @@ public enum DUMMY_INPUTS
 
 public static class Global
 {
-    public static readonly string Version = "v2.0.0";
+    public static readonly string Version = "v2.1.0";
 
     public static readonly List<Stage> Stages = new()
     {
+        new Stage() { Label = "Disabled", Value = "Disabled", Key = StageSelectOverrideOptions.Disabled },
         new Stage() { Label = "Training", Value = "Arena_MET", Key = StageSelectOverrideOptions.Training },
         new Stage() { Label = "Harwood County", Value = "Arena_WAR", Key = StageSelectOverrideOptions.HarwoodCounty },
         new Stage() { Label = "Mystic Forest", Value = "Arena_FOR", Key = StageSelectOverrideOptions.MysticForest },
