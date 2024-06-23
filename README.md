@@ -1,3 +1,4 @@
+[![Support me on Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-ff5e5b?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/grimbakor)
 # GrimbaHack - Power Rangers Battle for the Grid Mod
 
 Please see the [Wiki](https://github.com/grimkor/GrimbaHack/wiki) for instructions on how to install and use the mod.
