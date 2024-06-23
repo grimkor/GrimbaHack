@@ -22,7 +22,20 @@ public class ComboTrialDataManager
     public void Init()
     {
         Instance.CreateFolders();
+        Instance.PatchFix();
         Instance.Convert();
+    }
+
+    private void PatchFix()
+    {
+        if (File.Exists(Path.Join(Paths.PluginPath, "combos", "S18_Lauren", "1_S18_Lauren_27_Corner_TOD.json")))
+        {
+            Plugin.Log.LogInfo("******");
+            Plugin.Log.LogInfo(
+                $"REMOVING FILE: {Path.Join(Paths.PluginPath, "combos", "S18_Lauren", "1_S18_Lauren_27_Corner_TOD.json")}");
+            Plugin.Log.LogInfo("******");
+            File.Delete(Path.Join(Paths.PluginPath, "combos", "S18_Lauren", "1_S18_Lauren_27_Corner_TOD.json"));
+        }
     }
 
     private void Convert()
