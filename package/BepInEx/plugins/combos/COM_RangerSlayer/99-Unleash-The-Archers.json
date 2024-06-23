@@ -15,7 +15,7 @@
         "Items": [
           [
             "COM_RangerSlayer_combat_low_medium_0_otg",
-            "L+M~6M (M~L) 2M"
+            "(66)~6M(M~L) 2M"
           ]
         ],
         "Repeat": 1
@@ -56,7 +56,7 @@
         "Items": [
           [
             "COM_RangerSlayer_combat_low_medium_0",
-            "2M"
+            "(66) 2M"
           ],
           [
             "COM_RangerSlayer_combat_high_heavy_1_0",
@@ -86,7 +86,7 @@
         "Items": [
           [
             "COM_RangerSlayer_combat_low_light_0",
-            "2L"
+            "5S 2L"
           ],
           [
             "COM_RangerSlayer_combat_low_medium_0",
@@ -126,7 +126,7 @@
         "Items": [
           [
             "COM_RangerSlayer_combat_cn_2_nock_0",
-            "6M"
+            "6M(M~L)"
           ]
         ],
         "Repeat": 1
@@ -170,7 +170,7 @@
         "Items": [
           [
             "COM_RangerSlayer_combat_sp_3_l_0",
-            "6S~L"
+            "(66) 6S~L"
           ]
         ],
         "Repeat": 1

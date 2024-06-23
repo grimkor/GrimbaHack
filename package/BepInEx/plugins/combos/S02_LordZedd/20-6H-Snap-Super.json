@@ -6,7 +6,7 @@
         "Items": [
           [
             "S02_LordZedd_combat_cn_1_0",
-            "6H"
+            "6H 2S+A1"
           ]
         ],
         "Repeat": 1
@@ -15,58 +15,20 @@
         "Items": [
           [
             "S02_LordZedd_combat_low_medium_0",
-            "2S+A1 2M"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+            "2M"
+          ],
           [
             "S02_LordZedd_combat_high_heavy_1_0",
             "5H"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_high_heavy_1_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S02_LordZedd_combat_high_heavy_2_0",
-            "5H"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_high_heavy_2_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+            "-5H"
+          ],
           [
             "S02_LordZedd_combat_sp_2_1_0",
             "4S"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S02_LordZedd_combat_sup_start_0_air",
             "Super"
@@ -79,24 +41,10 @@
           [
             "S02_LordZedd_combat_high_medium_1_0",
             "5M"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S02_LordZedd_combat_high_medium_2_0",
-            "5M"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_high_medium_2_1",
-            ""
+            "-5M"
           ]
         ],
         "Repeat": 1
@@ -106,30 +54,11 @@
           [
             "S02_LordZedd_combat_low_medium_0",
             "2M"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S02_LordZedd_combat_high_heavy_1_0",
             "5H"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_high_heavy_1_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S02_LordZedd_combat_sp_2_2_0",
             "4S"
@@ -140,23 +69,9 @@
       {
         "Items": [
           [
-            "S02_LordZedd_combat_sp_2_2_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
             "S02_LordZedd_combat_low_light_0",
             "2L"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S02_LordZedd_combat_high_medium_1_0",
             "5M(H~M)"
@@ -169,57 +84,24 @@
           [
             "S02_LordZedd_combat_low_light_0",
             "2L"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S02_LordZedd_combat_high_medium_1_0",
             "5M"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S02_LordZedd_combat_high_heavy_1_0",
             "5H"
+          ],
+          [
+            "S02_LordZedd_combat_high_heavy_2_0",
+            "-5H5S"
           ]
         ],
         "Repeat": 1
       }
     ],
     [
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_high_heavy_1_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_high_heavy_2_0",
-            "5H 5S"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_high_heavy_2_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
       {
         "Items": [
           [
@@ -232,208 +114,33 @@
       {
         "Items": [
           [
-            "S02_LordZedd_combat_sp_1_0",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_1_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_1_2",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_1_3",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
             "S02_LordZedd_combat_low_heavy_0",
-            "2H 6S"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+            "2H6S"
+          ],
           [
             "S02_LordZedd_combat_sp_2_1_0",
-            "4S"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_3_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+            " 4S"
+          ],
           [
             "S02_LordZedd_combat_high_heavy_1_0",
-            "5H"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+            " 5H"
+          ],
           [
             "S02_LordZedd_combat_sp_2_2_0",
             "4S"
           ]
         ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_2_2_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_low_heavy_0",
-            "2H 6S"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_2_1_0",
-            "4S"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_3_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
+        "Repeat": 2
       },
       {
         "Items": [
           [
             "S02_LordZedd_combat_high_heavy_1_0",
             "5H"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_2_2_0",
-            "4S"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_2_2_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_high_heavy_1_0",
-            "5H"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S02_LordZedd_combat_sp_ex_0",
             "EX"
-          ]
-        ],
-        "Repeat": 1
-      }
-    ],
-    [
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_ex_4",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_ex_1",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_ex_3",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_ex_5",
-            ""
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "S02_LordZedd_combat_sp_ex_2",
-            ""
           ]
         ],
         "Repeat": 1

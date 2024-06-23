@@ -5,7 +5,7 @@
       {
         "Items": [
           [
-            "SF_RyuRaner_combat_high_special_0",
+            "SF_RyuRanger_combat_high_special_0",
             "5S"
           ]
         ],
@@ -29,23 +29,6 @@
           [
             "SF_RyuRanger_combat_high_light_1_0",
             "5LM~L"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
-          [
-            "SF_RyuRanger_combat_low_light_0",
-            "2L"
-          ],
-		  [
-            "SF_RyuRanger_combat_high_medium_1_0",
-            "5M"
-          ],
-		  [
-            "SF_RyuRanger_combat_high_heavy_1_0",
-            "5H"
           ]
         ],
         "Repeat": 1

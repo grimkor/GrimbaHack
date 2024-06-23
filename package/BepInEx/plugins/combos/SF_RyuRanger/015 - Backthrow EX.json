@@ -23,7 +23,7 @@
 		  [
             "SF_RyuRanger_combat_sp_1_ex_2",
             "236L+M"
-          ],
+          ]
         ],
         "Repeat": 1
       },
@@ -106,7 +106,7 @@
           ]
         ],
         "Repeat": 1
-      },
+      }
     ],
     [
       {
@@ -197,7 +197,7 @@
 		  [
             "SF_RyuRanger_combat_sp_5_0",
             "~214H"
-          ],
+          ]
 		  
         ],
         "Repeat": 1

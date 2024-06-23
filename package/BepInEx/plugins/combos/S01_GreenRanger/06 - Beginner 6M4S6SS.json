@@ -46,12 +46,7 @@
           [
             "S01_GreenRanger_combat_sp_2_0",
             "4S"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S01_GreenRanger_combat_sp_3_charged_0",
             "6[S]"
@@ -116,15 +111,15 @@
         "Items": [
           [
             "S01_GreenRanger_combat_low_light_0",
-            "2L "
+            "2L"
           ],
           [
             "S01_GreenRanger_combat_high_medium_1_0",
-            "5M "
+            "5M"
           ],
           [
             "S01_GreenRanger_combat_low_medium_0",
-            "2M "
+            "2M"
           ],
           [
             "S01_GreenRanger_combat_high_heavy_1_0",

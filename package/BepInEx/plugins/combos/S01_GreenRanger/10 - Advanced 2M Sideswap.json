@@ -131,12 +131,7 @@
           [
             "S01_GreenRanger_combat_cn_1_0",
             "6M"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S01_GreenRanger_combat_sup_start_0",
             "Super"
@@ -221,12 +216,7 @@
           [
             "S01_GreenRanger_combat_sp_2_0",
             "4S"
-          ]
-        ],
-        "Repeat": 1
-      },
-      {
-        "Items": [
+          ],
           [
             "S01_GreenRanger_combat_sp_3_charged_0",
             "6[S]"

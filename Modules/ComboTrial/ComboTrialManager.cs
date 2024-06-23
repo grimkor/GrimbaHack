@@ -108,6 +108,7 @@ public class ComboTrialManager
         var dummyDriver = drivers.FindExtension<TrainingDummyDriver>();
         dummyDriver.Behavior = TrainingOptions.EnemyBehavior.Dummy;
         dummyDriver.Recovery = TrainingOptions.EnemyRecovery.InPlace;
+        dummyDriver.Guard = TrainingOptions.EnemyGuard.NoGuard;
         dummyDriver.PushBlock = TrainingOptions.EnemyPushBlock.Never;
         dummyDriver.Pose = TrainingOptions.EnemyPose.Standing;
 

@@ -1,5 +1,5 @@
 {
-  "Title": "(Beginner) corner-to-corner",
+  "Title": "(Beginner) Corner-to-Corner",
   "Combo": [
     [
       {
@@ -81,7 +81,7 @@
           ]
         ],
         "Repeat": 1
-      },
+      }
     ],
     [
       {
@@ -139,7 +139,7 @@
           ]
         ],
         "Repeat": 1
-      },
+      }
     ]
   ],
   "Inputs": [

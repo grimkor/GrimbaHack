@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using epoch.db;
+using GrimbaHack.Modules.Combo;
 using GrimbaHack.Utility;
 using nway.gameplay.match;
 using UnityEngine;
@@ -300,7 +301,8 @@ public class ComboItem
 
     public int Repeat = 1;
 
-    public List<string> GetIds() => Items.Select(x => x[0]).ToList();
+    public List<string> GetIds() => Items.Select(x => ComboQuickConverter.SanitiseAttackName(x[0])).ToList();
+
     public List<string> GetNotation() => Items.Select(x => x[1]).ToList();
 }
 
