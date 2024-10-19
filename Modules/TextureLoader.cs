@@ -246,10 +246,13 @@ public class TextureLoader : ModuleBase
         {
             Directory.CreateDirectory(Path.Join(rootPath, "_static"));
         }
+
+        Plugin.Log.LogInfo("Finished creating folder structure for textures");
     }
 
     public void LoadFiles()
     {
+        Plugin.Log.LogInfo("Preloading textures into memory...");
         if (Instance.Preloaded)
         {
             Plugin.Log.LogInfo("Preload already happened, returning with no action.");
@@ -257,36 +260,40 @@ public class TextureLoader : ModuleBase
         }
 
         var filepath = Path.Join(Paths.PluginPath, "textures");
-        Instance.CreateFolders();
 
+        Plugin.Log.LogInfo("loading textures found in _static...");
         foreach (var file in Directory.GetFiles(Path.Join(filepath, "_static")))
         {
             var filename = Path.GetFileName(file).Split(".")[0];
-            CoreFilesForLoading[filename] = File.ReadAllBytes(Path.Join(file));
+            Instance.CoreFilesForLoading[filename] = File.ReadAllBytes(Path.Join(file));
         }
 
+        Plugin.Log.LogInfo("Finished loading _static");
+        Plugin.Log.LogInfo("loading character textures...");
         var characterFolders = Directory.GetDirectories(filepath);
         foreach (var characterFolder in characterFolders)
         {
             if (Path.GetFileName(characterFolder) == "_static") continue;
             var characterFolderName = Path.GetFileName(characterFolder);
-            _characterFilesInMemory[characterFolderName] = new();
+            Instance._characterFilesInMemory[characterFolderName] = new();
             var skinFolders = Directory.GetDirectories(Path.Join(filepath, characterFolderName));
             foreach (var skinFolder in skinFolders)
             {
                 var skinFolderName = Path.GetFileName(skinFolder);
-                _characterFilesInMemory[characterFolderName][skinFolderName] = new();
+                Instance._characterFilesInMemory[characterFolderName][skinFolderName] = new();
                 var skinFiles = Directory.GetFiles(Path.Join(filepath, characterFolderName, skinFolderName));
                 foreach (var file in skinFiles)
                 {
                     var filename = Path.GetFileName(file).Split('.')[0];
-                    _characterFilesInMemory[characterFolderName][skinFolderName][filename] =
+                    Instance._characterFilesInMemory[characterFolderName][skinFolderName][filename] =
                         File.ReadAllBytes(Path.Join(file));
                 }
             }
         }
 
-        foreach (var character in _characterFilesInMemory)
+        Plugin.Log.LogInfo("finished loading character textures");
+        Plugin.Log.LogInfo("Adding additional options to character select screen...");
+        foreach (var character in Instance._characterFilesInMemory)
         {
             var mapper = Global.AssetHeroInfoMapper.Find(x => x.folder == character.Key);
             var heroAssetTable = TableHeroAssetInfo.instance;
@@ -305,7 +312,8 @@ public class TextureLoader : ModuleBase
             }
         }
 
-        Plugin.Log.LogInfo("Preloaded");
+        Plugin.Log.LogInfo("Finished loading additional options to character select screen");
+        Plugin.Log.LogInfo("Preloaded textures");
         Instance.Preloaded = true;
     }
 

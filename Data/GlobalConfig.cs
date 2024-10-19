@@ -47,7 +47,7 @@ public enum DUMMY_INPUTS
 
 public static class Global
 {
-    public static readonly string Version = "v2.1.1";
+    public static readonly string Version = "v2.1.2";
 
     public static readonly List<Stage> Stages = new()
     {
@@ -97,6 +97,11 @@ public static class Global
         {
             folder = "s01_greenv2", skinColorPropertyPrefix = "S01_GreenRanger-GreenV2", colorSuffix = "_color",
             skinType = "GreenV2", skinOption = "S01_GreenRanger", hasCombos = false
+        },
+        new AssetHeroNameMap()
+        {
+            folder = "s01_white", skinColorPropertyPrefix = "S01_GreenRanger-WhiteRanger", colorSuffix = "_color",
+            skinType = "WhiteRanger", skinOption = "S01_GreenRanger", hasCombos = false
         },
         new AssetHeroNameMap()
         {
@@ -172,11 +177,6 @@ public static class Global
         {
             folder = "s03_gold", skinColorPropertyPrefix = "S03_GoldRanger-Default", colorSuffix = "_color",
             skinType = "Default", skinOption = "S03_GoldRanger", hasCombos = true
-        },
-        new AssetHeroNameMap()
-        {
-            folder = "s01_white", skinColorPropertyPrefix = "S14_WhiteRanger-Default", colorSuffix = "_color",
-            skinType = "Default", skinOption = "S14_WhiteRanger", hasCombos = true
         },
         new AssetHeroNameMap()
         {
