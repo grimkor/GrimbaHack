@@ -52,9 +52,10 @@ public class LabelValueOverlayText
         _containerObject.transform.SetParent(canvasGameObject.transform);
         _containerObject.transform.localPosition = position;
         _containerObject.transform.localScale = new Vector3(1, 1, 1);
-        _containerObject.AddComponent<CanvasRenderer>();
-        _containerObject.AddComponent<VerticalLayoutGroup>();
         _containerObject.AddComponent<ContentSizeFitter>();
+        var containerCsf = _containerObject.AddComponent<ContentSizeFitter>();
+        containerCsf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+        containerCsf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
         // Frame Advantage pair
         var frameAdvantageContainer = new GameObject();
@@ -63,14 +64,17 @@ public class LabelValueOverlayText
         frameAdvantageContainer.transform.localScale = new Vector3(1, 1, 1);
         var layout = frameAdvantageContainer.AddComponent<HorizontalLayoutGroup>();
         layout.childControlHeight = true;
-        layout.childControlWidth = false;
-        layout.childScaleHeight = false;
-        layout.childScaleWidth = false;
-        layout.childForceExpandHeight = false;
-        layout.childForceExpandWidth = false;
-        layout.childAlignment = TextAnchor.MiddleLeft;
+        layout.childControlWidth = true;
+        layout.childScaleHeight = true;
+        layout.childScaleWidth = true;
+        layout.childForceExpandHeight = true;
+        layout.childForceExpandWidth = true;
         layout.spacing = 8;
-        frameAdvantageContainer.AddComponent<LayoutElement>();
+        var csf = frameAdvantageContainer.AddComponent<ContentSizeFitter>();
+        csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+        csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        var layoutElement = frameAdvantageContainer.AddComponent<LayoutElement>();
+        layoutElement.preferredWidth = 300;
 
         var labelGo = new GameObject();
         labelGo.transform.SetParent(frameAdvantageContainer.transform);
@@ -81,6 +85,7 @@ public class LabelValueOverlayText
         _labelText.normalText = labelText;
         _labelText.TextComponent.horizontalOverflow = HorizontalWrapMode.Overflow;
         _labelText.TextComponent.fontSize = 30;
+        _labelText.TextComponent.alignment = TextAnchor.MiddleLeft;
         var labelShadow = labelGo.AddComponent<Shadow>();
         labelShadow.effectColor = new Color(0, 0, 0, 1);
         labelShadow.effectDistance = new Vector2(4, -4);
@@ -96,6 +101,7 @@ public class LabelValueOverlayText
         _valueText.normalText = valueText;
         _valueText.TextComponent.horizontalOverflow = HorizontalWrapMode.Overflow;
         _valueText.TextComponent.fontSize = 30;
+        _valueText.TextComponent.alignment = TextAnchor.MiddleRight;
         var valueShadow = valueGo.AddComponent<Shadow>();
         valueShadow.effectColor = new Color(0, 0, 0, 1);
         valueShadow.effectDistance = new Vector2(4, -4);
