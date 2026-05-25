@@ -175,8 +175,8 @@ public static class Global
         },
         new AssetHeroNameMap()
         {
-            folder = "s01_white", skinColorPropertyPrefix = "S14_WhiteRanger-Default", colorSuffix = "_color",
-            skinType = "Default", skinOption = "S14_WhiteRanger", hasCombos = true
+            folder = "s01_white", skinColorPropertyPrefix = "S01_GreenRanger-WhiteRanger", colorSuffix = "_color",
+            skinType = "WhiteRanger", skinOption = "S01_GreenRanger", hasCombos = true
         },
         new AssetHeroNameMap()
         {
