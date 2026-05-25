@@ -14,7 +14,6 @@ using GrimbaHack.UI.Popup.CommonElements;
 using GrimbaHack.Utility;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
-using nway.gameplay.ui;
 
 
 namespace GrimbaHack;
