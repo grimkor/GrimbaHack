@@ -128,14 +128,28 @@ public static class CollisionBoxViewerController
 
     public static void ClearColliders()
     {
-        if (SceneStartup.instance == null) return;
-        SceneStartup.instance.GamePlay._playerList[0].characterTeam.members
-            .ForEach(new Action<Character>(member => { member.renderColliderList.Clear(); }));
+        // Guard every link of the chain: in a freshly entered match (e.g. an online match
+        // joined straight from a training match) the team, the members list or a character's
+        // renderColliderList can still be null - the game only populates them later.
+        var gamePlay = SceneStartup.instance?.GamePlay;
+        var playerList = gamePlay?._playerList;
+        if (playerList == null || playerList.Count == 0 || playerList[0] == null) return;
+        var members = playerList[0].characterTeam?.members;
+        if (members == null) return;
+        members.ForEach(new Action<Character>(member =>
+        {
+            if (member != null && member.renderColliderList != null)
+                member.renderColliderList.Clear();
+        }));
     }
 
     public static void MapColliders()
     {
         ClearColliders();
-        SceneStartup.instance.GamePlay._playerList[0].renderColliderList = ColliderManager.instance.core.colliders;
+        var gamePlay = SceneStartup.instance?.GamePlay;
+        var playerList = gamePlay?._playerList;
+        var colliders = ColliderManager.instance?.core?.colliders;
+        if (playerList == null || playerList.Count == 0 || playerList[0] == null || colliders == null) return;
+        playerList[0].renderColliderList = colliders;
     }
 }

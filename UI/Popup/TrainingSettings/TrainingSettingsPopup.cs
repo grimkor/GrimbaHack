@@ -58,6 +58,7 @@ public class TrainingSettingsPopup
         GameSpeedSlider.Generate(_mainPage, _popup.buttonBarConfig, _popup);
         DummyExPunishSelector.Generate(_mainPage.Page);
         EnhancedDummyPushblockSelector.Generate(_mainPage.Page);
+        RankedQueueSelector.Generate(_mainPage.Page, () => _popup.CloseWindow(true));
 
         _popup.startingSelection = _mainPage.Page.GetDefaultSelection();
         _mainPage.Page.CreateChain(true, true, _popup.InputLayer);
@@ -80,6 +81,7 @@ public class TrainingSettingsPopup
         _popup.SetOnHideCallback((Action)(() =>
         {
             // GoBack();
+            RankedQueueSelector.OnWindowClosed();
             _popup.OnHide();
             if (_callback != null)
             {
