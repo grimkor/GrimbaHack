@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using epoch.db;
-using Gee.External.Capstone;
 using GrimbaHack.Data;
 using GrimbaHack.UI.Popup.TrainingSettings.MenuItems;
 using GrimbaHack.Utility;
@@ -80,15 +79,6 @@ public static class TrainingModeQueue
     public static void SetEnabled(bool value)
     {
         _enabled = value;
-        if (value)
-        {
-            StartQueue();
-        }
-        else
-        {
-            CancelSearch();
-        }
-        ShowSpinner(value);
     }
 
     private static void ShowSpinner(bool visible)
@@ -233,7 +223,6 @@ public static class TrainingModeQueue
         };
 
         GameManager.Get.CheckOnlineServiceAndProceed(true, serviceGate);
-        SetEnabled(true);
     }
 
     public static void CancelSearch()
@@ -492,6 +481,23 @@ public static class TrainingModeQueue
     }
     internal static bool IsHeadlessWindow(UISearchingOpponent candidate)
         => _listenerWindow != null && candidate.Pointer == _listenerWindow.Pointer;
+
+    [HarmonyPatch(typeof(UISpectateOptions), nameof(UISpectateOptions.OnHide))]
+    class  UISpectateOptionsOnInitializeComponents
+    {
+        static void Postfix()
+        {
+            if (_enabled && !_searchActive)
+            {
+                StartQueue();
+            }
+            else if (!_enabled)
+            {
+                CancelSearch();
+            }
+            ShowSpinner(_enabled);
+        }
+    }
 }
 
 public class RankedQueueSpinnerBehaviour : MonoBehaviour
