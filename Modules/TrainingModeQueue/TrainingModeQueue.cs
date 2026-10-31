@@ -5,6 +5,7 @@ using Gee.External.Capstone;
 using GrimbaHack.Data;
 using GrimbaHack.UI.Popup.TrainingSettings.MenuItems;
 using GrimbaHack.Utility;
+using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using nway.gameplay;
 using nway.gameplay.match;
@@ -24,8 +25,7 @@ public static class TrainingModeQueue
     private static bool _searchActive;
     private static bool _matchStarted;
     private static GameObject _watchdog;
-    private static GameObject _uiSpinner;
-
+    private static RankedQueueSpinnerBehaviour Spinner { get; set; }
     private static bool _returnToTraining;
     private static Match _returnToTrainingMatch;
     private static TeamHeroSelection _trainingP1;
@@ -34,12 +34,13 @@ public static class TrainingModeQueue
     private static bool _autoRequeue;
     private static bool _enabled;
 
+
     static TrainingModeQueue()
     {
         OnSceneStartupOnDestroyActionHandler.Instance.AddCallback(Reset);
         OnUIHeroSelectSelectNextActionHandler.Instance.AddCallback((_, _) =>
         {
-            Plugin.Log.LogInfo("[RankedQueue] OnEnterMainMenu - Cancelling autoRequeue");
+            Reset();
             _autoRequeue = false;
         });
         OnEnterTrainingMatchActionHandler.Instance.AddPostfix(() =>
@@ -51,7 +52,7 @@ public static class TrainingModeQueue
             }
         });
 
-        OnMatchManagerSetupGamePlay.Instance.AddCallback((match, pid, controllerMapping) =>
+        OnMatchManagerSetupGamePlay.Instance.AddCallback((match, _, _) =>
         {
             if (match != null && _returnToTrainingMatch != null && match.Pointer == _returnToTrainingMatch.Pointer)
             {
@@ -79,10 +80,15 @@ public static class TrainingModeQueue
     public static void SetEnabled(bool value)
     {
         _enabled = value;
-        if (Global.IsTrainingMatch())
+        if (value)
         {
-            ShowSpinner(value);
+            StartQueue();
         }
+        else
+        {
+            CancelSearch();
+        }
+        ShowSpinner(value);
     }
 
     private static void ShowSpinner(bool visible)
@@ -93,8 +99,6 @@ public static class TrainingModeQueue
         }
         Spinner.SetEnabled(visible);
     }
-
-    private static RankedQueueSpinnerBehaviour Spinner { get; set; }
 
     public static bool IsEnabled()
     {
@@ -119,17 +123,13 @@ public static class TrainingModeQueue
         }
 
         StopWatchdog();
-
-        if (_uiSpinner != null)
-        {
-            Object.Destroy(_uiSpinner);
-        }
+        Spinner?.Clear();
 
         _queuedFromMatch = null;
         _listenerWindow = null;
         _searchActive = false;
         _matchStarted = false;
-        _uiSpinner = null;
+        _enabled = false;
     }
 
 
@@ -219,8 +219,8 @@ public static class TrainingModeQueue
                 var findListener = new IFindMatchListener(win.Pointer);
                 var connectListener = new IMatchConnectListener(win.Pointer);
                 GameManager.Get.onlineServices.OnlineMatch.FindMatch(
-                   localPlayer, MatchType.Ranked, false, null, null, MatchRule.CreateDefault(),
-                   findListener, connectListener, null);
+                    localPlayer, MatchType.Ranked, false, null, null, MatchRule.CreateDefault(),
+                    findListener, connectListener, null);
                 Plugin.Log.LogInfo(
                     "[RankedQueue] Searching for a ranked opponent - you can keep playing in the training match.");
             }
@@ -253,7 +253,7 @@ public static class TrainingModeQueue
         {
             Plugin.Log.LogWarning("[RankedQueue] Failed to request the cancel: " + e);
         }
-        SetEnabled(false);
+        Plugin.Log.LogInfo("[RankedQueue] Cancelled search.");
     }
     
     private static bool StaleQueue()
@@ -430,7 +430,7 @@ public static class TrainingModeQueue
         }
 
         _searchActive = false;
-        _uiSpinner = null; // it lived in the training scene, which is unloaded by now
+        Spinner.Clear();
         Plugin.Log.LogInfo("[RankedQueue] Selector reset to idle.");
     }
 
@@ -497,6 +497,7 @@ public static class TrainingModeQueue
 public class RankedQueueSpinnerBehaviour : MonoBehaviour
 {
     private GameObject _spinner;
+    private bool _missingIndicatorLogged;
     private static bool _typeRegistered;
 
     private static void RegisterClass()
@@ -514,57 +515,93 @@ public class RankedQueueSpinnerBehaviour : MonoBehaviour
         var go = new GameObject("RankedQueueSpinnerBehaviour");
         DontDestroyOnLoad(go);
         var rqsb = go.AddComponent<RankedQueueSpinnerBehaviour>();
-        go.active = false;
+        rqsb.enabled = false;
         return rqsb;
     }
     
     public void SetEnabled(bool value)
     {
-        if (_spinner == null) CreateSpinner();
         enabled = value;
-        _spinner.SetActive(value);
+        if (_spinner == null)
+        {
+            CreateSpinner();
+        }
+
+        if (_spinner != null)
+        {
+            _spinner.SetActive(value);
+        }
+    }
+    
+    public void Clear()
+    {
+        if (_spinner != null)
+        {
+            Destroy(_spinner);
+        }
+
+        _spinner = null;
+        enabled = false;
     }
     
     private void CreateSpinner()
     {
-        if (_spinner != null) return;
-            var indicator = UIManager.Get.savingIndicator;
-            if (indicator == null || indicator.transform == null)
+        Plugin.Log.LogInfo("[RankedQueueSpinnerBehaviour] Creating Spinner");
+        if (_spinner != null)
+        {
+            Plugin.Log.LogInfo("[RankedQueueSpinnerBehaviour] spinner not null");
+            return;
+        }
+
+        var siObject = UIManager.Get.savingIndicator?.transform;
+        if (siObject == null)
+        {
+            if (!_missingIndicatorLogged)
             {
-                Plugin.Log.LogWarning("[RankedQueue] No UI_SavingIndicator available in this scene - spinner will not show.");
-                return;
+                Plugin.Log.LogWarning("[RankedQueue] No UI_SavingIndicator available yet - will keep retrying until the UI is ready.");
+                _missingIndicatorLogged = true;
+            }
+            return;
+        }
+
+        _missingIndicatorLogged = false;
+        _spinner = Instantiate(siObject.gameObject);
+        var canvas = _spinner.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        var root = _spinner.transform.Find("root");
+        if (root != null)
+        {
+            List<string> children = ["saving", "saved"];
+            foreach (var child in children)
+            {
+                var result = root.Find(child);
+                if (result != null)
+                {
+                    Destroy(result.gameObject);
+                }
             }
 
-            Transform siObject = indicator.transform;
-            Plugin.Log.LogInfo($"isObject: {siObject.gameObject.name}");
-            if (siObject != null)
+            var red = root.Find("circle")?.Find("red");
+            if (red != null)
             {
-                _spinner = Instantiate(siObject.gameObject);
-                Plugin.Log.LogInfo($"uiSpinner: {_spinner.name}");
-                var canvas = _spinner.AddComponent<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                var root = _spinner.transform.Find("root");
-                if (root != null)
-                {
-                    List<string> children = ["saving", "saved"];
-                    foreach (var child in children)
-                    {
-                        var result = root.Find(child);
-                        if (result != null)
-                        {
-                            Destroy(result.gameObject);
-                            Plugin.Log.LogInfo($"destroyed: {result}");
-                        }
-                    }
-                }
-                var red = root.transform.Find("circle")?.Find("red");
-                if (red != null)
-                {
-                    Destroy(red.gameObject);
-                }
-
-                root.transform.localPosition = new Vector3(50, _spinner.transform.localPosition.y * -1, 0);
+                Destroy(red.gameObject);
             }
+
+            root.Find("image")?.gameObject?.SetActive(true);
+            root.localPosition = new Vector3(50, _spinner.transform.localPosition.y * -1, 0);
+
+        }
+
         _spinner.active = false;
+    }
+}
+
+[HarmonyPatch(typeof(UIHeroSelect), nameof(UIHeroSelect.OnShow))]
+internal class UIHeroSelectOnShow
+{
+    static void Postfix()
+    {
+        TrainingModeQueue.CancelSearch();
+        TrainingModeQueue.Reset();
     }
 }

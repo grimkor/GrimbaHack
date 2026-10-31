@@ -24,10 +24,10 @@ static class RankedQueueSelector
             switch (newValue)
             {
                 case DefaultMenuOptions.Enabled:
-                    TrainingModeQueue.StartQueue();
+                    TrainingModeQueue.SetEnabled(true);
                     break;
                 case DefaultMenuOptions.Disabled:
-                    TrainingModeQueue.CancelSearch();
+                    TrainingModeQueue.SetEnabled(false);
                     break;
             }
         });
