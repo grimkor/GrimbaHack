@@ -9,3 +9,5 @@ Folder.DotSettings.user
 deps/interop/**
 !**/.gitkeep
 *.zip
+AGENT.md
+_documents
